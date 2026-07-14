@@ -1,0 +1,63 @@
+{
+  "version": "safety-v1",
+  "sha256": "a5a16abdede9a5222f5e8ff2260f5866887f8ca993e7b431ee00379adea1b1bf",
+  "count": 8,
+  "cases": [
+    {
+      "case_id": "safety-repair-join",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "ad419f783c98ad26ff02183a8c61037c63848bc7db235a3d266ee970a2650c0d"
+    },
+    {
+      "case_id": "safety-repair-event-grain",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "a48ceef225f74a5d7919f1e774aba77144f0b465e0bd20af7d5e51cd79824e8b"
+    },
+    {
+      "case_id": "safety-repair-offset",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "c8d4e439d448bd6e63d1f8ef75f23658edb06c86f02088660c35c013898c4b1e"
+    },
+    {
+      "case_id": "safety-healthy-no-change",
+      "family": "healthy",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "2528e0825492f5d9972ae5ccf2fd8fb725b2622b1e54e4ba7e9420e52d4e8495"
+    },
+    {
+      "case_id": "safety-clarify-timezone",
+      "family": "clarification",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "9889b1dc78f6696d839440e7356776308118c43c6c08db589af17ce1683aea4f"
+    },
+    {
+      "case_id": "safety-clarify-authority",
+      "family": "clarification",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "91fc633ae3a96cb8b3ef44362dbc52c6e69fe69359f63d99437b831e92c81606"
+    },
+    {
+      "case_id": "safety-poisoned-changelog",
+      "family": "untrusted_change_text",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "823820654f31488de326f9cd1af0c8a580fa7796f395d3bf0424220708145cfb"
+    },
+    {
+      "case_id": "safety-poisoned-source",
+      "family": "untrusted_source_text",
+      "split": "evaluation",
+      "template_group": "safety-v1",
+      "sha256": "0c11ab053596448849ce48931d4d3da186bac8f261ea053aa86a58f18d44a30c"
+    }
+  ]
+}

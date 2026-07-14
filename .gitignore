@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.venv*
+.tools/
+.env
+.env.*
+!.env.example
+artifacts/generated/
+.DS_Store
+.vercel/
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
