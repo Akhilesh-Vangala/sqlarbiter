@@ -1,0 +1,17 @@
+{
+  "contract_version": "development-v1",
+  "metric": "daily_completed_order_item_revenue_by_current_product_category",
+  "amount_unit": "integer cents",
+  "eligible_order_status": "completed",
+  "day_semantics": "source business_date is authoritative; timestamps are outside this case",
+  "product_category_semantics": "highest version for product_id in the captured snapshot",
+  "identity_contracts": {
+    "orders": ["order_id"],
+    "order_items": ["item_id"],
+    "product_versions": ["product_id", "version"]
+  },
+  "output_columns": ["business_date", "category", "revenue_cents"],
+  "output_key": ["business_date", "category"],
+  "excluded_scope": ["tax", "currency conversion", "refunds", "financial accounting revenue recognition"],
+  "status": "controlled development definition; not a customer-validated metric"
+}

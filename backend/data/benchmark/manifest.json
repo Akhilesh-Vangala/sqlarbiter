@@ -1,0 +1,273 @@
+{
+  "version": "synthetic-v1",
+  "sha256": "638f33bf362d0edabc3cc65bc8b745330e91427956dea85fd5e6aa3a06f8e564",
+  "count": 38,
+  "cases": [
+    {
+      "case_id": "case-001",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "a9be4735812f05c7fe9fefe61d5046c776f46c89b4ab2b5bf3824962c6cc241a"
+    },
+    {
+      "case_id": "case-002",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "39d19dae7a3ab5adbcb2aaf9b489ecb42d5e6c3337493beb639bf88cc3179d95"
+    },
+    {
+      "case_id": "case-003",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "a6814fcd24b6b61ebe118811faeffacfe6320234fb2a8a770d084c6aa150b7bd"
+    },
+    {
+      "case_id": "case-004",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "4975e4e3e28bbb918f7ddda955f25a78bdf72a3a1972b41c49f290af1db85095"
+    },
+    {
+      "case_id": "case-005",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "9ee6e7be23bfdd9ae738e06a3b4d2e90e1954d50dcda4857f42aabfdade85c05"
+    },
+    {
+      "case_id": "case-006",
+      "family": "development_control",
+      "split": "calibration",
+      "template_group": "control",
+      "sha256": "07731407b1a5ef87a666281b8ac9858153131c333c6841240b2649359d59dc15"
+    },
+    {
+      "case_id": "case-007",
+      "family": "join_fanout",
+      "split": "calibration",
+      "template_group": "join_fanout-shape-a",
+      "sha256": "b3d787516d44e8acc4c819d85bd3fe0046d58a76a0de0549fd1d0f40beb45fbf"
+    },
+    {
+      "case_id": "case-008",
+      "family": "join_fanout",
+      "split": "calibration",
+      "template_group": "join_fanout-shape-a",
+      "sha256": "d9e2df2013813c9e73827b629339159198ff924f323a468c22db01e373924e62"
+    },
+    {
+      "case_id": "case-009",
+      "family": "join_fanout",
+      "split": "calibration",
+      "template_group": "join_fanout-shape-a",
+      "sha256": "0c41081922491d3391f2977d86513ea44b858cfef869318c7bb05c34a4c5b12f"
+    },
+    {
+      "case_id": "case-010",
+      "family": "join_fanout",
+      "split": "calibration",
+      "template_group": "join_fanout-shape-a",
+      "sha256": "7ec9d093f384424ddcd426156322b39981d35865308f48ba0f3d65fa417a3ccb"
+    },
+    {
+      "case_id": "case-011",
+      "family": "join_fanout",
+      "split": "evaluation",
+      "template_group": "join_fanout-shape-b",
+      "sha256": "830109a5cad25f5a50ddaf048a1bf4481d9f00e3b1f2ed2dd28b3088945783e7"
+    },
+    {
+      "case_id": "case-012",
+      "family": "join_fanout",
+      "split": "evaluation",
+      "template_group": "join_fanout-shape-b",
+      "sha256": "478d1560ad73f21e46bdffef2ef984fd67895e09011031613a2d4aada305fce5"
+    },
+    {
+      "case_id": "case-013",
+      "family": "join_fanout",
+      "split": "evaluation",
+      "template_group": "join_fanout-shape-b",
+      "sha256": "c18edc181a4db86dc25a89565c893cc1f025fc5d5924ac5fd71843bff0720dd7"
+    },
+    {
+      "case_id": "case-014",
+      "family": "join_fanout",
+      "split": "evaluation",
+      "template_group": "join_fanout-shape-b",
+      "sha256": "bc42485ce647a55669cb4834fb6551e1bd5a253543e48f3ae3b15a69f2fbd373"
+    },
+    {
+      "case_id": "case-015",
+      "family": "outer_join_nulls",
+      "split": "calibration",
+      "template_group": "outer_join_nulls-shape-a",
+      "sha256": "0657bf465da91a0317223450ec5cae9498413b74420fff53fd65caf0a9be048f"
+    },
+    {
+      "case_id": "case-016",
+      "family": "outer_join_nulls",
+      "split": "calibration",
+      "template_group": "outer_join_nulls-shape-a",
+      "sha256": "a2decceaeec0a19fe9646d9e5c9c49d5a61d94b2050ca213dde7171d7c54c868"
+    },
+    {
+      "case_id": "case-017",
+      "family": "outer_join_nulls",
+      "split": "calibration",
+      "template_group": "outer_join_nulls-shape-a",
+      "sha256": "77142fa19ca0667c750b1e7025b2cdf08c2840ed80fcd0446e092362d8df9ea7"
+    },
+    {
+      "case_id": "case-018",
+      "family": "outer_join_nulls",
+      "split": "calibration",
+      "template_group": "outer_join_nulls-shape-a",
+      "sha256": "1ba2b147aa38e89f29d97d205b9507f55ef75b53549f0e53f2987b2b27b87daa"
+    },
+    {
+      "case_id": "case-019",
+      "family": "outer_join_nulls",
+      "split": "evaluation",
+      "template_group": "outer_join_nulls-shape-b",
+      "sha256": "1c20ac85a5c828e45e01ed766c1d0b2788f21f45e98ec246f3f33d1f957d5bcc"
+    },
+    {
+      "case_id": "case-020",
+      "family": "outer_join_nulls",
+      "split": "evaluation",
+      "template_group": "outer_join_nulls-shape-b",
+      "sha256": "7bfdf337ea30ef2a460aa8c34fe3c815a1944a4c2ac8f9764fba58f6a15a62d1"
+    },
+    {
+      "case_id": "case-021",
+      "family": "outer_join_nulls",
+      "split": "evaluation",
+      "template_group": "outer_join_nulls-shape-b",
+      "sha256": "9db426ad8edc6f646f757d7d9969b228b36fefd03236b060b82f3be0ef30d7ec"
+    },
+    {
+      "case_id": "case-022",
+      "family": "outer_join_nulls",
+      "split": "evaluation",
+      "template_group": "outer_join_nulls-shape-b",
+      "sha256": "8b03704cb4a4a6f75e40661e855bdb81adb4ebb66fa4ca8d8bca988144674a61"
+    },
+    {
+      "case_id": "case-023",
+      "family": "status_filter",
+      "split": "calibration",
+      "template_group": "status_filter-shape-a",
+      "sha256": "96339c10a320b33da56d128cc42fc77083839918fe1c864e8807bd22f1897d88"
+    },
+    {
+      "case_id": "case-024",
+      "family": "status_filter",
+      "split": "calibration",
+      "template_group": "status_filter-shape-a",
+      "sha256": "b39cb3bf4e069b5f21695470c2d368159f5c2adc66598e6d880b5f621997cda0"
+    },
+    {
+      "case_id": "case-025",
+      "family": "status_filter",
+      "split": "calibration",
+      "template_group": "status_filter-shape-a",
+      "sha256": "32017cfe2f5e188729b2f18d353f09a7d48688288d66fb175f7f16e5670a71c9"
+    },
+    {
+      "case_id": "case-026",
+      "family": "status_filter",
+      "split": "calibration",
+      "template_group": "status_filter-shape-a",
+      "sha256": "d38a73af3a44616628dfd394f9544d46ae1a82e9e9200e5490a6a906fe821953"
+    },
+    {
+      "case_id": "case-027",
+      "family": "status_filter",
+      "split": "evaluation",
+      "template_group": "status_filter-shape-b",
+      "sha256": "1ad85b79e846d4d4a30710e10bf4b31d6b44a6e26d5ed180b5ba9caffc41284a"
+    },
+    {
+      "case_id": "case-028",
+      "family": "status_filter",
+      "split": "evaluation",
+      "template_group": "status_filter-shape-b",
+      "sha256": "287eb1b19e9d509221440a86aca4dd959b0f028486f2f0a5de79e47a94051d34"
+    },
+    {
+      "case_id": "case-029",
+      "family": "status_filter",
+      "split": "evaluation",
+      "template_group": "status_filter-shape-b",
+      "sha256": "88c78e984c4224e4fd477c5c23d02cb9a33eb04ca03cec3ad45da0b8ea8e4494"
+    },
+    {
+      "case_id": "case-030",
+      "family": "status_filter",
+      "split": "evaluation",
+      "template_group": "status_filter-shape-b",
+      "sha256": "1767b3e853a5001bee259ace2558ed1b07a5d84625abeb6e5aa73af670a25a92"
+    },
+    {
+      "case_id": "case-031",
+      "family": "utc_boundary",
+      "split": "calibration",
+      "template_group": "utc_boundary-shape-a",
+      "sha256": "bcfb8b40489b29b3f306fb90920351b4fc11256b02d3bdc5c990c3fe675d924c"
+    },
+    {
+      "case_id": "case-032",
+      "family": "utc_boundary",
+      "split": "calibration",
+      "template_group": "utc_boundary-shape-a",
+      "sha256": "631a42d9197362e50d070f4960bcedef3fbe780e132927d983635464856fdeb8"
+    },
+    {
+      "case_id": "case-033",
+      "family": "utc_boundary",
+      "split": "calibration",
+      "template_group": "utc_boundary-shape-a",
+      "sha256": "787a0f3c2a0e5ed3834b177f664999fca49dd2ae8816d8a39bbd35e380b237cd"
+    },
+    {
+      "case_id": "case-034",
+      "family": "utc_boundary",
+      "split": "calibration",
+      "template_group": "utc_boundary-shape-a",
+      "sha256": "0640d01289dc5dca93b1930d0dfec9c4a1e98ba3a43157d0f970251062e54bce"
+    },
+    {
+      "case_id": "case-035",
+      "family": "utc_boundary",
+      "split": "evaluation",
+      "template_group": "utc_boundary-shape-b",
+      "sha256": "971b7a05f2ea8c3caa091a6bd3245ebc83fb09f83451c7e9bd081edff7102c89"
+    },
+    {
+      "case_id": "case-036",
+      "family": "utc_boundary",
+      "split": "evaluation",
+      "template_group": "utc_boundary-shape-b",
+      "sha256": "7045e0b25c917a758c5e680f4b7bca995c981083bccc409ee6896d12c995ba77"
+    },
+    {
+      "case_id": "case-037",
+      "family": "utc_boundary",
+      "split": "evaluation",
+      "template_group": "utc_boundary-shape-b",
+      "sha256": "98fda4d1bc66244afc21a31d538d796ea41659c394501587ab51d35dc5353e3f"
+    },
+    {
+      "case_id": "case-038",
+      "family": "utc_boundary",
+      "split": "evaluation",
+      "template_group": "utc_boundary-shape-b",
+      "sha256": "5bb5fb0141b08d9fd365738907d28adabf65a5101394cba2e53040581c8f6681"
+    }
+  ]
+}

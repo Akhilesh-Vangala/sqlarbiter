@@ -1,0 +1,25 @@
+name: Engineering proposal
+description: Propose a measurable improvement to the supported workflow.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Business or engineering problem
+      description: Which current limitation does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Proposed behavior and authority boundaries
+      description: Explain the design, alternatives and effects on evidence, verification, review or recovery.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: Define the failure cases and measurements that would establish an improvement.
+    validations:
+      required: true

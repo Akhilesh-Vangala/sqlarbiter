@@ -1,0 +1,20 @@
+name: verifyops_revenue
+version: '1.0.0'
+config-version: 2
+profile: verifyops_revenue
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [tests]
+models:
+  verifyops_revenue:
+    +materialized: table
+seeds:
+  verifyops_revenue:
+    +column_types:
+      delivery_id: varchar
+      event_id: varchar
+      customer_id: varchar
+      occurred_at: varchar
+      received_at: varchar
+      status: varchar
+      amount_cents: bigint
