@@ -1,0 +1,20 @@
+name: sqlarbiter_revenue
+version: '1.0.0'
+config-version: 2
+profile: sqlarbiter_revenue
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [tests]
+models:
+  sqlarbiter_revenue:
+    +materialized: table
+seeds:
+  sqlarbiter_revenue:
+    +column_types:
+      delivery_id: varchar
+      event_id: varchar
+      customer_id: varchar
+      occurred_at: varchar
+      received_at: varchar
+      status: varchar
+      amount_cents: bigint
