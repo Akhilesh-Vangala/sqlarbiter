@@ -1,0 +1,96 @@
+# Reproducible local production topology. PostgreSQL owns durable coordination;
+# the shared state volume holds bounded execution workspaces and local evidence.
+x-environment: &environment
+  SQLARBITER_ACCESS_TOKEN: ${SQLARBITER_ACCESS_TOKEN:?Set a private operator access code of at least 32 characters}
+  SQLARBITER_OPERATOR_NAME: ${SQLARBITER_OPERATOR_NAME:-operator}
+  SQLARBITER_PUBLIC_ORIGIN: ${SQLARBITER_PUBLIC_ORIGIN:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  SQLARBITER_ANTHROPIC_MODEL: ${SQLARBITER_ANTHROPIC_MODEL:-}
+  SQLARBITER_STATE_DIR: /state
+  SQLARBITER_DATABASE_URL: postgresql://sqlarbiter:${SQLARBITER_POSTGRES_PASSWORD:?Set SQLARBITER_POSTGRES_PASSWORD}@postgres:5432/sqlarbiter
+  SQLARBITER_CHECKPOINT_DATABASE_URL: postgresql://sqlarbiter:${SQLARBITER_POSTGRES_PASSWORD}@postgres:5432/sqlarbiter
+  SQLARBITER_DATABASE_POOL_SIZE: ${SQLARBITER_DATABASE_POOL_SIZE:-5}
+  SQLARBITER_RUN_BUDGET_USD: ${SQLARBITER_RUN_BUDGET_USD:-1}
+  SQLARBITER_TOTAL_BUDGET_USD: ${SQLARBITER_TOTAL_BUDGET_USD:-5}
+  SQLARBITER_SQL_ENGINE: ${SQLARBITER_SQL_ENGINE:-duckdb}
+  SQLARBITER_OTLP_ENDPOINT: ${SQLARBITER_OTLP_ENDPOINT:-http://phoenix:6006/v1/traces}
+
+x-runtime: &runtime
+  build:
+    context: .
+    dockerfile: backend/docker/Dockerfile
+    target: runtime
+  environment: *environment
+  volumes:
+    - state:/state
+  read_only: true
+  tmpfs:
+    - /tmp:size=256m,mode=1777
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  init: true
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: sqlarbiter
+      POSTGRES_USER: sqlarbiter
+      POSTGRES_PASSWORD: ${SQLARBITER_POSTGRES_PASSWORD:?Set SQLARBITER_POSTGRES_PASSWORD}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sqlarbiter -d sqlarbiter"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  phoenix:
+    image: arizephoenix/phoenix@sha256:d240d8d4e364ee3483ed2de41ec12b760cc90bb0d4c6e2f190388772aba6fe1f
+    ports:
+      - "127.0.0.1:6006:6006"
+    volumes:
+      - traces:/root/.phoenix
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  migrate:
+    <<: *runtime
+    command: ["python", "-m", "sqlarbiter.persistence.migrations"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    <<: *runtime
+    ports:
+      - "127.0.0.1:${SQLARBITER_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      phoenix:
+        condition: service_started
+
+  worker:
+    <<: *runtime
+    command: ["python", "-m", "sqlarbiter.workers.worker", "--state-dir", "/state"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      phoenix:
+        condition: service_started
+    healthcheck:
+      disable: true
+
+volumes:
+  postgres:
+  state:
+  traces:
