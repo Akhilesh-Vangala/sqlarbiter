@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlarbiter-worker
+spec:
+  replicas: 3
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: worker
+    spec:
+      serviceAccountName: sqlarbiter-worker
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-schema
+          image: sqlarbiter
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "sqlarbiter.workers.wait_for_database"]
+          envFrom:
+            - configMapRef:
+                name: sqlarbiter-config
+            - secretRef:
+                name: sqlarbiter-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: worker
+          image: sqlarbiter
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "sqlarbiter.workers.worker", "--state-dir", "/state"]
+          envFrom:
+            - configMapRef:
+                name: sqlarbiter-config
+            - secretRef:
+                name: sqlarbiter-secrets
+          volumeMounts:
+            - name: state
+              mountPath: /state
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: sqlarbiter-state
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqlarbiter-config
+data:
+  SQLARBITER_STATE_DIR: /state
+  SQLARBITER_OPERATOR_NAME: authenticated-operator
+  SQLARBITER_PUBLIC_ORIGIN: https://sqlarbiter.example.com
+  SQLARBITER_DATABASE_POOL_SIZE: "5"
+  SQLARBITER_SQL_ENGINE: duckdb
+  SQLARBITER_RUN_BUDGET_USD: "1"
+  SQLARBITER_TOTAL_BUDGET_USD: "5"
+  SQLARBITER_LOAD_DOTENV: "0"
+  SQLARBITER_DATABASE_WAIT_SECONDS: "120"

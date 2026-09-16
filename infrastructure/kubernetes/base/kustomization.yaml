@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: sqlarbiter
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - serviceaccounts.yaml
+  - state-pvc.yaml
+  - migrate-job.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - worker-deployment.yaml
+  - api-pdb.yaml
+  - worker-pdb.yaml
+  - api-hpa.yaml
+  - network-policies.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/name: sqlarbiter
+      app.kubernetes.io/part-of: sqlarbiter
+    includeSelectors: true
+images:
+  - name: sqlarbiter
+    newName: sqlarbiter
+    newTag: local

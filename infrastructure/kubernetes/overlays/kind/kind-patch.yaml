@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqlarbiter-config
+data:
+  SQLARBITER_PUBLIC_ORIGIN: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlarbiter-state
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlarbiter-api
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlarbiter-worker
+spec:
+  replicas: 2
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sqlarbiter-api
+$patch: delete
