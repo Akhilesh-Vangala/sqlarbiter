@@ -1,0 +1,15 @@
+# Handoff
+
+Read README, PLAN, docs/DECISIONS.md and workspace context. Current advanced flagship: local web application plus analytical investigation/verifier/evaluation infrastructure. GitHub URL TBD; local project Git initialized; publication/remote CI pending new repository details/access.
+
+**Current verified state:** Python 3.11.17 locally and in Linux ARM64 containers; 59 unittest and 13 Chromium workflow checks pass in both. Official async Anthropic SDK handles typed streaming/count-token preflight/bounded retries; controller bounds rounds, tools, repetition and context. SDK/controller tests are scripted and no live model generation occurred. Private .env exists as a 0600 template; API key absent. Await the user's key/configuration response; never print secrets.
+
+DuckDB is the app/benchmark default analytical backend; SQLite remains supported for evidence and used for single-host job state. Seven evidence tools provide paginated schema, bounded profiles and SELECT results; partial data cannot pass grading. Frozen corpus has 38 known synthetic scenarios, including eight new SQL-shape templates with data variants/private regressions. Both engines pass fixed workflow; DuckDB 114/114 local attempts, container 38/38. These are not AI accuracy or real-world generalization.
+
+Host app runs at http://127.0.0.1:8000 using .venv311 (also available as .venv symlink); process may need restarting on resume. .venv39-legacy preserves earlier environment. User history remains in artifacts/generated/app; do not delete it. .env is auto-loaded by entrypoints, except VDIR_LOAD_DOTENV=0. Tests clear model credentials.
+
+Docker Engine 29.8.2 runs in a project-local Lima 2.2.1 VM with no host mounts. LIMA_HOME=/private/tmp/vdir-lima-501; this temporary VM is verification infrastructure, not durable cloud storage. Guest project /home/akhileshvangala.guest/vdir; isolated generated test token, no Anthropic credentials. API loopback port 8001, Phoenix UI 6006. API/worker/collector Compose workflows passed; six jobs persisted across API/worker restart; Phoenix received 63 actual spans across six propagated job traces. All evidence under artifacts/generated/remediation-001. See docs/07-SETUP-AND-DEPLOYMENT.md and docs/10-REMEDIATION-AND-BENCHMARK.md.
+
+Next: obtain private key and run live six-case comparison; inspect failures before a broader paid benchmark. Await new GitHub repository name/visibility and publication access, then push and confirm actual Actions results. User checklist authorizes new-project publication, not existing repository cleanup. Cloud provider/account selection remains pending; AWS proposed. Do not use existing personal repos for inspiration.
+
+Still required: realistic incident diversity, learned policy experiments/ablations, OS-isolated investigation/verification, individual identity, distributed durable state/object artifacts, load/cancellation/recovery testing and cloud deployment. SQLite is single-host; do not market it as distributed concurrency. portfolio/ remains completely empty. Preserve earlier milestones as history, superseded where indicated.

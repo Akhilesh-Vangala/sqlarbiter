@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+.venv*
+.tools/
+.env
+.env.*
+!.env.example
+artifacts/generated/
+.DS_Store

@@ -1,0 +1,9 @@
+.venv*
+.tools
+.git
+.env
+.env.*
+artifacts
+__pycache__
+*.pyc
+notebooks

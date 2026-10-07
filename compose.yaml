@@ -1,0 +1,37 @@
+# One host, shared local volume. Not a multi-host SQLite deployment.
+x-environment: &environment
+  VDIR_ACCESS_TOKEN: ${VDIR_ACCESS_TOKEN:?Set a private operator access code of at least 32 characters}
+  VDIR_OPERATOR_NAME: ${VDIR_OPERATOR_NAME:-operator}
+  VDIR_PUBLIC_ORIGIN: ${VDIR_PUBLIC_ORIGIN:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  VDIR_ANTHROPIC_MODEL: ${VDIR_ANTHROPIC_MODEL:-}
+  VDIR_SQL_ENGINE: ${VDIR_SQL_ENGINE:-duckdb}
+  VDIR_OTLP_ENDPOINT: ${VDIR_OTLP_ENDPOINT:-http://phoenix:6006/v1/traces}
+services:
+  phoenix:
+    image: arizephoenix/phoenix@sha256:d240d8d4e364ee3483ed2de41ec12b760cc90bb0d4c6e2f190388772aba6fe1f
+    ports:
+      - "127.0.0.1:6006:6006"
+    volumes:
+      - traces:/root/.phoenix
+    restart: unless-stopped
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:${VDIR_PORT:-8000}:8000"
+    environment: *environment
+    volumes:
+      - state:/state
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["python", "-m", "vdir.worker", "--state-dir", "/state"]
+    environment: *environment
+    volumes:
+      - state:/state
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+volumes:
+  state:
+  traces:

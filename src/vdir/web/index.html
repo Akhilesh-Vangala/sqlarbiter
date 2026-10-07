@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#14251e" />
+    <title>VDIR — Data incident workbench</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="VDIR home"
+        ><span class="brand-mark">v/</span
+        ><span>VDIR<span class="brand-sub">DATA RELIABILITY</span></span></a
+      >
+      <div class="workspace-label">WORKSPACE</div>
+      <nav>
+        <a class="nav-item active" href="#workbench"
+          ><span class="nav-symbol">◈</span
+          ><span class="nav-text">Investigations</span></a
+        ><a class="nav-item" href="#history"
+          ><span class="nav-symbol">↺</span
+          ><span class="nav-text">Run history</span></a
+        ><button class="nav-item" id="about-button">
+          <span class="nav-symbol">ⓘ</span
+          ><span class="nav-text">About this workspace</span>
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="environment-dot"></span
+        ><span class="nav-text"
+          >Development workspace<span class="sidebar-note"
+            >Original, reproducible scenarios</span
+          ></span
+        >
+      </div>
+    </aside>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <span class="muted">Data reliability</span
+          ><span class="slash">/</span>Investigations
+        </div>
+        <span class="environment-tag">DEVELOPMENT</span>
+      </header>
+      <main id="workbench">
+        <section class="hero">
+          <div>
+            <div class="eyebrow">THE INCIDENT WORKBENCH</div>
+            <h1>Find the cause.<br /><span>Prove the repair.</span></h1>
+            <p>
+              Follow the evidence from a questionable metric<br
+                class="desktop-break"
+              />
+              to a checked, reviewable change.
+            </p>
+          </div>
+          <div class="hero-aside">
+            <div class="mini-flow">
+              <span>Investigate</span><span>→</span><span>Verify</span
+              ><span>→</span><span>Review</span>
+            </div>
+            <p>
+              Every proposal has a trace.<br />Every review names an exact
+              version.
+            </p>
+          </div>
+        </section>
+        <section class="stats" aria-label="Workspace totals">
+          <div>
+            <span class="stat-label">Available scenarios</span
+            ><strong id="scenario-count">—</strong
+            ><small>Original development cases</small>
+          </div>
+          <div>
+            <span class="stat-label">Completed investigations</span
+            ><strong id="completed-count">0</strong
+            ><small>Across this workspace</small>
+          </div>
+          <div>
+            <span class="stat-label">Verified repair candidates</span
+            ><strong id="verified-count">0</strong
+            ><small>Passed independent checks</small>
+          </div>
+        </section>
+        <section class="launch-panel" aria-label="Start investigation">
+          <div class="step-label">
+            <span class="step-number">01</span>
+            <div>
+              <strong>Scope the investigation</strong
+              ><span>Select a metric and investigator.</span>
+            </div>
+          </div>
+          <div class="launch-fields">
+            <label
+              >Metric scenario<select
+                id="incident"
+                aria-label="Metric scenario"
+              ></select></label
+            ><label
+              >Investigator<select id="investigator" aria-label="Investigator">
+                <option value="baseline">Fixed diagnostic workflow</option>
+                <option value="anthropic" disabled>
+                  Hosted AI · not configured
+                </option>
+              </select></label
+            ><button class="primary" id="run-button">
+              Run investigation <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <p class="scenario-description" id="scenario-description"></p>
+        </section>
+        <section class="work-grid">
+          <aside class="history-panel" id="history">
+            <div class="panel-heading">
+              <h2>Run history</h2>
+              <span class="count-pill" id="run-count">0</span>
+            </div>
+            <div id="job-list">
+              <p class="empty-history">Your investigations will appear here.</p>
+            </div>
+          </aside>
+          <section class="detail-panel" aria-label="Investigation detail">
+            <div id="detail"></div>
+          </section>
+        </section>
+        <footer>
+          Original development scenarios. Verification checks known source
+          contracts; production promotion is not connected.
+        </footer>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" hidden></div>
+    <dialog id="auth-dialog">
+      <form id="auth-form">
+        <div class="eyebrow">WORKSPACE ACCESS</div>
+        <h2>Connect to your workspace</h2>
+        <p>Enter the operator access code configured for this service.</p>
+        <label
+          >Access code<input
+            id="access-code"
+            type="password"
+            autocomplete="off"
+            required
+        /></label>
+        <p class="form-error" id="auth-error"></p>
+        <button class="primary" type="submit">Connect</button>
+      </form>
+    </dialog>
+    <dialog id="about-dialog">
+      <div class="eyebrow">VERIFIED DATA INCIDENT RESOLUTION</div>
+      <h2>Evidence before action.</h2>
+      <p>
+        This workbench investigates business-metric correctness using original
+        source scenarios, bounded diagnostic tools and independent regression
+        checks.
+      </p>
+      <p>
+        The fixed diagnostic workflow is available locally. Hosted AI appears
+        when the service is configured. The environment is still in development;
+        model training, realistic evaluation and production integration remain
+        in progress.
+      </p>
+      <p>
+        Approvals record a review of an exact result. They do not apply SQL to
+        any business system.
+      </p>
+      <button id="about-close" class="primary">Back to workbench</button>
+    </dialog>
+  </body>
+</html>
