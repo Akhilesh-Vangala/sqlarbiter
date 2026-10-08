@@ -2,6 +2,12 @@
 
 Earlier dated entries preserve historical milestones; the most recent entry defines current status.
 
+## October 8, 2026 — Public GitHub publication
+
+User requested publication. Created [new public project repository](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution), pushedmain at01d31be9e6f39903c2d26022151b4d57385a4644 and verified exact remote head. [Actual Actions run37850106096](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/runs/37850106096) started for that commit; subsequent push status is available in workflow history. Remote conclusions are checked before marking the workspace public-repo/CI milestone complete.
+
+Fresh publication checks:111unit tests in42.009seconds and96browser checks (31workbench/20scriptedgraph/23automation/22pages), JavaScript syntax, documentation links and staged whitespace pass. Source/history/staged sensitive-pattern scan excludes credentials/artifacts/venvs/tools; no findings. CI now includes all four native browser suites with read-only workflow permissions and archived reports, plus existing Docker test/runtime stages. Only project source/docs/config/data definitions were published. Live generation, cloud delivery, policy training and actual user feedback remain unverified. [Publication details](docs/14-GITHUB-PUBLICATION.md).
+
 ## October 8, 2026 — Page-based workspace and internal query improvements
 
 Executed current Linux ARM64 packaging also passes **92 unit / 31 workflow browser / 18 graph browser checks**, container exit 0; fixed benchmark **38/38**. Evidence: artifacts/generated/workspace-pages-001/summary.json/logs/copied reports. Image vdir:workspace-pages-test; completed container vdir-workspace-pages-check. No Compose redeployment this turn; its earlier evidence is historical. This supersedes pending packaging statements in the initial local milestone below.

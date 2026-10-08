@@ -50,12 +50,12 @@ Advanced destination: incident environment, learned investigation policy and del
 - [x] API/concurrency tests and real-browser workflow/mobile validation.
 - [x] Prepare Docker/Compose and GitHub CI definitions.
 - [x] Build/run test/runtime containers and real Compose API/worker/Phoenix workflows.
-- [ ] Publish new repository and execute remote CI.
+- [x] Publish new public repository and execute remote CI; [actual runs/evidence](docs/14-GITHUB-PUBLICATION.md). Release completion additionally requires independently confirmed successful checks.
 - [ ] Cloud account/provider configuration, staging deployment, TLS and operational monitoring.
 - [ ] Individual authentication, durable distributed state and detailed failure accounting.
 - [ ] Isolated execution, promotion/rollback and reproducible release experiments.
 
-GitHub, model/GPU and cloud account remain TBD. Container definitions are not evidence of deployment.
+GitHub: [Akhilesh-Vangala/verified-data-incident-resolution](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution). Model/GPU and cloud configuration remain pending. Container definitions are not evidence of cloud deployment.
 
 No paid resources provisioned.
 

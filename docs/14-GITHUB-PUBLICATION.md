@@ -4,7 +4,9 @@ October 8, 2026. User instruction: “lets first push this into the github”. P
 
 ## Current publication status
 
-GitHub CLI authentication is verified as `Akhilesh-Vangala`; publication is being prepared. Intended repository: `Akhilesh-Vangala/verified-data-incident-resolution`, public, matching the project slug and requested public portfolio milestone. No remote repository URL or successful remote CI is established yet.
+Published public repository: [Akhilesh-Vangala/verified-data-incident-resolution](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution), default branch `main`.
+
+Initial push succeeded at commit `01d31be9e6f39903c2d26022151b4d57385a4644`; the remote main SHA was independently checked with `git ls-remote`. The first actual [GitHub Actions verification run](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/runs/37850106096) started for that exact commit. Use the [workflow history](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/workflows/checks.yml) for subsequent pushes and current conclusions. Launching a run alone does not establish a pass.
 
 The connected GitHub account reports `Akhilesh-Vangala`; available connector tools can read/write supported existing repository resources but do not create a new repository. No matching local GitHub credential was initially available. Official GitHub CLI2.102.0 is installed in ignored `.tools/bin/gh` after matching the release archive's SHA256 checksum. The user completed browser device authorization. Default configuration storage was unwritable; project-local ignored `.tools/gh-config` stores non-secret account settings and the token remains in macOS Keychain. Use `GH_CONFIG_DIR="$PWD/.tools/gh-config"` when invoking this CLI. No credentials are placed in repository files or chat.
 
@@ -20,11 +22,11 @@ Fresh publication checks:111unit tests passed in42.009seconds; all96browser chec
 
 ## Completion evidence
 
-Once publication succeeds, record the repository URL, pushed commit SHA, remote main SHA and GitHub Actions run URL/conclusion here. The milestone “Public GitHub repository with reproducible CI” requires an accessible public repository and successful remote checks on the published source. A local commit alone does not complete it. No live model, cloud, training, user feedback or generalization milestone is inferred from publication.
+The repository URL, initial pushed/remote SHA and actual Actions run URL are recorded above. The milestone “Public GitHub repository with reproducible CI” requires an accessible public repository and successful remote checks on the published source. Conclusions are independently read from GitHub Actions before the workspace completion tracker marks this milestone. No live model, cloud, training, user feedback or generalization milestone is inferred from publication.
 
-## Intended commands
+## Publication commands
 
-From the project root, after sign-in and checks:
+From the project root, after verified sign-in and checks, the following commands were executed:
 
 ```sh
 GH_CONFIG_DIR="$PWD/.tools/gh-config" .tools/bin/gh repo create Akhilesh-Vangala/verified-data-incident-resolution --public --source=. --remote=origin --description "Evidence-driven data incident investigation with independent SQL verification and a checkpointed LangGraph workflow" --push
@@ -32,4 +34,4 @@ GH_CONFIG_DIR="$PWD/.tools/gh-config" .tools/bin/gh repo view Akhilesh-Vangala/v
 GH_CONFIG_DIR="$PWD/.tools/gh-config" .tools/bin/gh run list --repo Akhilesh-Vangala/verified-data-incident-resolution --limit 5
 ```
 
-These commands are planned, not yet executed. Never force-push or overwrite an existing unrelated repository if the name is occupied. Review the actual remote head before any follow-up update.
+Creation/push succeeded; metadata confirms public visibility and main as the default branch. No force-push, unrelated repository or workspace publication occurred. The initial111unit/96browser verification is recorded above; remote checks can be inspected through the actual run links.

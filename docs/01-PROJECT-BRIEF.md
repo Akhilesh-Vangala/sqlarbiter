@@ -6,4 +6,4 @@ Advanced scope: original incident environment, learned diagnostic policy and dep
 
 Implemented scenarios: completed order-item revenue with versioned product enrichment; authoritative event-ID revenue deduplication; UTC daily counts with missing or explicit offsets. Healthy SQL and conflicting event payloads exercise no-change and clarification behavior. These controlled definitions exclude accounting revenue recognition and are not validated customer incidents.
 
-[Current architecture](02-ARCHITECTURE.md) and [evidence/limitations](10-REMEDIATION-AND-BENCHMARK.md). GitHub TBD.
+[Current architecture](02-ARCHITECTURE.md) and [evidence/limitations](10-REMEDIATION-AND-BENCHMARK.md). [GitHub repository](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution).
