@@ -1,10 +1,14 @@
-# Verified Data Incident Resolution
+# VerifyOps
+
+Evidence-driven data incident investigation with independent SQL verification and a checkpointed LangGraph workflow.
+
+> Formerly *Verified Data Incident Resolution*.
 
 Current development release: a monochrome investigation application with bounded analytical tools, a checkpointed LangGraph workflow, independent repair verification and exact-version operator review. Live model quality and cloud operation remain unverified. [GitHub publication status and CI scope](docs/14-GITHUB-PUBLICATION.md). The dated entries below preserve implementation history; the latest page milestone defines current coverage.
 
-[Repository](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution) · [GitHub Actions](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/workflows/checks.yml)
+[Repository](https://github.com/Akhilesh-Vangala/verifyops) · [GitHub Actions](https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml)
 
-![Verify workbench](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/workflows/checks.yml/badge.svg)
+![Verify workbench](https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg)
 
 October 8 proper-page milestone: full investigation/workflow setup, separate workflow collection/detail, searchable metric catalog/current public definitions and read-only settings. Evidence/SQL/activity/contract sections have native links and URLs with reload/history. Monochrome styling and existing review/cancellation remain. **111 unit / 96 browser checks pass locally and in Linux ARM64 Docker** (31existing/20scriptedgraph/23automation/22pages); host45views/92,049neutralcolors, no mutations/errors/overflow, one existing run/version preserved. [Page map and implementation](docs/13-APPLICATION-PAGES.md). Current evidence: artifacts/generated/proper-pages-001/summary.json. Earlier page/dialog and test counts below are historical.
 
