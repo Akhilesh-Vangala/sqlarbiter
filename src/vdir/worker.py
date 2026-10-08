@@ -25,7 +25,7 @@ def main():
     for number in (signal.SIGINT, signal.SIGTERM):
         signal.signal(number, lambda *_: stopped.set())
     while not stopped.is_set():
-        if not process_next(store):
+        if not process_next(store, stopped):
             stopped.wait(0.5)
 
 

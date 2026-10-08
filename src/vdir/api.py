@@ -30,7 +30,7 @@ LABELS = {
 class NewJob(BaseModel):
     model_config = ConfigDict(extra="forbid")
     case_id: str = Field(min_length=1, max_length=64)
-    investigator: Literal["baseline", "anthropic"] = "baseline"
+    investigator: Literal["baseline", "anthropic", "langgraph"] = "baseline"
     engine: Literal["duckdb", "sqlite"] = "duckdb"
 
 
@@ -45,6 +45,25 @@ class Review(BaseModel):
     version: str = Field(pattern=r"^[a-f0-9]{64}$")
     action: Literal["approved", "rejected"]
     note: str = Field(default="", max_length=2000)
+
+
+class GraphContinuation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    parent_version: str = Field(pattern=r"^[a-f0-9]{64}$")
+    guidance: str = Field(min_length=1, max_length=2000)
+
+
+class CancelWork(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    reason: str = Field(default="Operator requested cancellation", max_length=500)
+
+
+class NewWorkflow(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1, max_length=80)
+    case_ids: list[str] = Field(min_length=1, max_length=6)
+    investigator: Literal["baseline", "anthropic", "langgraph"] = "baseline"
+    engine: Literal["duckdb", "sqlite"] = "duckdb"
 
 
 def create_app(state_dir=None, token=None, public_origin=None, operator=None):
@@ -120,13 +139,27 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     def config():
         return {"hosted_available": bool(os.environ.get("ANTHROPIC_API_KEY")
                                          and os.environ.get("VDIR_ANTHROPIC_MODEL")),
-                "operator": operator, "scope": "development", "default_engine": "duckdb"}
+                "operator": operator, "scope": "development", "default_engine": "duckdb",
+                "access_mode": "shared_operator" if token else "local_loopback"}
 
     @app.get("/api/incidents")
     def case_list():
         return [{"id": case.case_id, "title": LABELS[case.case_id][0],
                  "description": LABELS[case.case_id][1], "metric": case.contract["metric"],
                  "input_version": case_version(case)} for case in incidents()]
+
+    @app.get("/api/incidents/{case_id}")
+    def case_detail(case_id: str):
+        try:
+            case = find_case(case_id)
+        except ValueError:
+            raise NotFound("Metric not found") from None
+        source = case.sources[0]
+        return {"id": case.case_id, "title": LABELS[case.case_id][0],
+            "description": LABELS[case.case_id][1], "contract": case.contract,
+            "current_sql": case.current_sql, "lineage": case.lineage,
+            "schema": {table: list(definitions) for table, (definitions, rows) in source.tables.items()},
+            "snapshot_id": source.snapshot_id, "input_version": case_version(case)}
 
     @app.get("/api/jobs")
     def list_jobs():
@@ -142,7 +175,7 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
             case = find_case(body.case_id)
         except ValueError:
             raise NotFound("Incident not found")
-        if body.investigator == "anthropic" and not config()["hosted_available"]:
+        if body.investigator in ("anthropic", "langgraph") and not config()["hosted_available"]:
             return JSONResponse({"detail": "Hosted investigator is not configured"}, status_code=503)
         request = {"kind": "investigation", "case_id": body.case_id,
                    "investigator": body.investigator, "engine": body.engine, "input_version": case_version(case, body.engine)}
@@ -152,6 +185,39 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.get("/api/jobs/{job_id}")
     def get_job(job_id: str):
         return store.get(job_id)
+
+    @app.post("/api/jobs/{job_id}/cancel")
+    def cancel_job(job_id: str, body: CancelWork):
+        return store.cancel(job_id, operator, body.reason)
+
+    @app.get("/api/workflows")
+    def workflow_list():
+        return store.list_workflows()
+
+    @app.post("/api/workflows")
+    def workflow_new(body: NewWorkflow, idempotency_key: Optional[str] = Header(None)):
+        if not body.name.strip() or len(set(body.case_ids)) != len(body.case_ids):
+            raise Conflict("Provide a name and unique incident IDs")
+        if body.investigator in ("anthropic", "langgraph") and not config()["hosted_available"]:
+            return JSONResponse({"detail": "Hosted investigator is not configured"}, status_code=503)
+        requests = []
+        for case_id in body.case_ids:
+            try:
+                case = find_case(case_id)
+            except ValueError:
+                raise NotFound("Incident not found")
+            requests.append({"kind": "investigation", "case_id": case_id, "engine": body.engine,
+                "investigator": body.investigator, "input_version": case_version(case, body.engine)})
+        identity, created = store.enqueue_workflow({"name": body.name.strip(), "jobs": requests}, key(idempotency_key), operator)
+        return JSONResponse(store.get_workflow(identity), status_code=202 if created else 200)
+
+    @app.get("/api/workflows/{workflow_id}")
+    def workflow_get(workflow_id: str):
+        return store.get_workflow(workflow_id)
+
+    @app.post("/api/workflows/{workflow_id}/cancel")
+    def workflow_cancel(workflow_id: str, body: CancelWork):
+        return store.cancel_workflow(workflow_id, operator, body.reason)
 
     @app.post("/api/jobs/{job_id}/candidates")
     def revise(job_id: str, body: CandidateRevision, idempotency_key: Optional[str] = Header(None)):
@@ -170,6 +236,20 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     def review_job(job_id: str, body: Review):
         return store.review(job_id, body.version, body.action, operator, body.note)
 
+    @app.post("/api/jobs/{job_id}/resume")
+    def resume_graph(job_id: str, body: GraphContinuation, idempotency_key: Optional[str] = Header(None)):
+        parent = store.get(job_id)
+        if not body.guidance.strip():
+            raise Conflict("Investigation guidance cannot be empty")
+        if not config()["hosted_available"]:
+            return JSONResponse({"detail": "Hosted investigator is not configured"}, status_code=503)
+        request = {"kind": "graph_resume", "case_id": parent["request"]["case_id"],
+            "investigator": "langgraph", "engine": parent["request"].get("engine", "duckdb"),
+            "input_version": parent["request"]["input_version"], "parent_id": job_id,
+            "parent_version": body.parent_version, "guidance": body.guidance}
+        new_id, created = store.enqueue(request, key(idempotency_key), operator)
+        return JSONResponse(store.get(new_id), status_code=202 if created else 200)
+
     @app.get("/api/jobs/{job_id}/report")
     def report(job_id: str):
         value = store.get(job_id)
@@ -179,7 +259,21 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     app.mount("/assets", StaticFiles(directory=str(STATIC)), name="assets")
 
     @app.get("/", include_in_schema=False)
+    @app.get("/investigations", include_in_schema=False)
+    @app.get("/investigations/{job_id}", include_in_schema=False)
+    @app.get("/runs", include_in_schema=False)
+    @app.get("/workflows", include_in_schema=False)
+    @app.get("/workflows/{workflow_id}", include_in_schema=False)
+    @app.get("/metrics", include_in_schema=False)
+    @app.get("/metrics/{case_id}", include_in_schema=False)
+    @app.get("/settings", include_in_schema=False)
     def index():
+        return FileResponse(STATIC / "index.html")
+
+    @app.get("/investigations/{job_id}/{section}", include_in_schema=False)
+    def investigation_section(job_id: str, section: str):
+        if not re.fullmatch(r"[a-f0-9]{32}", job_id) or section not in {"evidence", "sql", "activity", "definition"}:
+            raise NotFound("Page not found")
         return FileResponse(STATIC / "index.html")
 
     return app

@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", type=Path, help="Evaluate this SELECT against all development cases")
     parser.add_argument("--investigate", type=Path, help="Investigate into a new output directory")
-    parser.add_argument("--investigator", choices=("baseline", "anthropic"), default="baseline")
+    parser.add_argument("--investigator", choices=("baseline", "anthropic", "langgraph"), default="baseline")
     parser.add_argument("--engine", choices=("sqlite", "duckdb"), default="duckdb")
     args = parser.parse_args()
     if args.investigate:

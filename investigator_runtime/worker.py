@@ -14,7 +14,8 @@ from tools import EvidenceTools, ToolRejected
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--workspace", type=Path, required=True)
-    parser.add_argument("--mode", choices=("baseline", "anthropic", "rpc"), default="baseline")
+    parser.add_argument("--mode", choices=("baseline", "anthropic", "langgraph", "rpc"), default="baseline")
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
     from telemetry import Telemetry
     telemetry = Telemetry(args.workspace) if args.mode != "rpc" else None
@@ -27,14 +28,19 @@ def main():
         except (ValueError, ToolRejected) as error:
             print(json.dumps({"error": str(error), "trace": tools.trace}))
             raise SystemExit(1)
-    elif args.mode == "anthropic":
+    elif args.mode in ("anthropic", "langgraph"):
         from model import AnthropicClient, InvestigationFailed, investigate as model_investigate
+        if args.mode == "langgraph":
+            from graph import investigate as model_investigate
         try:
+            continuation = json.loads(sys.stdin.read()) if args.resume else {}
+            if continuation and (args.mode != "langgraph" or set(continuation) - {"guidance", "recover"}):
+                raise InvestigationFailed("Invalid graph continuation")
             async def run():
                 client = AnthropicClient(telemetry=telemetry, event_path=args.workspace / "stream-events.jsonl")
                 try:
                     async with asyncio.timeout(240):
-                        return await model_investigate(tools, client)
+                        return await model_investigate(tools, client, **continuation)
                 finally:
                     await client.close()
             with telemetry.root("investigation", **{"vdir.mode": args.mode, "vdir.engine": tools.engine}):

@@ -5,6 +5,11 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import signal
+import tempfile
+import time
+from contextvars import ContextVar
+from contextlib import contextmanager
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -13,7 +18,7 @@ from pathlib import Path
 from .cases import incidents
 
 RUNTIME = Path(__file__).resolve().parents[2] / "investigator_runtime"
-RUNTIME_FILES = ("tools.py", "baseline.py", "model.py", "worker.py", "engines.py", "telemetry.py")
+RUNTIME_FILES = ("tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py")
 
 
 def materialize(source, path, engine="sqlite"):
@@ -33,8 +38,9 @@ def materialize(source, path, engine="sqlite"):
             if any(not re.fullmatch(r"[a-z][a-z_]*", name) for name in columns):
                 raise ValueError("Invalid internal column name")
             conn.execute("CREATE TABLE %s (%s)" % (table, ", ".join(definitions)))
-            conn.executemany("INSERT INTO %s VALUES (%s)" %
-                             (table, ",".join("?" for _ in columns)), rows)
+            if rows:
+                conn.executemany("INSERT INTO %s VALUES (%s)" %
+                                 (table, ",".join("?" for _ in columns)), rows)
             schema[table] = {"columns": columns, "definitions": list(definitions)}
         conn.commit()
     finally:
@@ -66,7 +72,42 @@ class InvestigatorError(RuntimeError):
         self.response = response
 
 
-def run_worker(workspace, *, mode="baseline", requests=None):
+EXECUTION_CONTROL = ContextVar("vdir_execution_control", default=None)
+
+
+class ExecutionInterrupted(RuntimeError):
+    pass
+
+
+@contextmanager
+def execution_scope(control):
+    token = EXECUTION_CONTROL.set(control)
+    try:
+        yield
+    finally:
+        EXECUTION_CONTROL.reset(token)
+
+
+def _stop_process(process):
+    if process.poll() is not None:
+        return
+    try:
+        if os.name == "posix":
+            os.killpg(process.pid, signal.SIGTERM)
+        else:
+            process.terminate()
+        process.wait(timeout=1)
+    except subprocess.TimeoutExpired:
+        if os.name == "posix":
+            os.killpg(process.pid, signal.SIGKILL)
+        else:
+            process.kill()
+        process.wait(timeout=3)
+    except ProcessLookupError:
+        process.wait(timeout=3)
+
+
+def run_worker(workspace, *, mode="baseline", requests=None, continuation=None):
     workspace = Path(workspace).resolve()
     environment = {"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"}
     for name in ("VDIR_OTLP_ENDPOINT", "VDIR_TRACEPARENT"):
@@ -76,20 +117,48 @@ def run_worker(workspace, *, mode="baseline", requests=None):
     context = trace.get_current_span().get_span_context()
     if context.is_valid:
         environment["VDIR_TRACEPARENT"] = "00-%032x-%016x-%02x" % (context.trace_id, context.span_id, int(context.trace_flags))
-    if mode == "anthropic":
+    if continuation is not None and (mode != "langgraph" or requests is not None):
+        raise ValueError("Only a graph investigator supports continuation")
+    if mode in ("anthropic", "langgraph"):
         for name in ("ANTHROPIC_API_KEY", "VDIR_ANTHROPIC_MODEL"):
             if not os.environ.get(name):
                 raise ValueError("Set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL locally")
             environment[name] = os.environ[name]
-    process = subprocess.run(
-        [sys.executable, "-I", "-B", str(workspace / "runtime" / "worker.py"),
-         "--workspace", str(workspace), "--mode", mode],
-        input=requests, text=True, capture_output=True,
-        timeout=270 if mode == "anthropic" else 30, cwd=str(workspace), env=environment,
-    )
+    control = EXECUTION_CONTROL.get()
+    if control:
+        control()
+    command = [sys.executable, "-I", "-B", str(workspace / "runtime" / "worker.py"),
+         "--workspace", str(workspace), "--mode", mode] + (["--resume"] if continuation is not None else [])
+    timeout = 270 if mode in ("anthropic", "langgraph") else 30
+    with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as input_file, tempfile.TemporaryFile() as output_file, tempfile.TemporaryFile() as error_file:
+        input_file.write(json.dumps(continuation) if continuation is not None else requests or "")
+        input_file.seek(0)
+        process = subprocess.Popen(command, stdin=input_file, stdout=output_file, stderr=error_file,
+            cwd=str(workspace), env=environment, start_new_session=os.name == "posix")
+        started = time.monotonic()
+        try:
+            while process.poll() is None:
+                if control:
+                    control()
+                if time.monotonic() - started >= timeout:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                if output_file.tell() > 2000000 or error_file.tell() > 2000000:
+                    raise InvestigatorError({"decision": {}, "trace": [], "error": "Worker output budget exceeded"})
+                try:
+                    process.wait(timeout=0.2)
+                except subprocess.TimeoutExpired:
+                    pass
+            if control:
+                control()
+            if output_file.tell() > 2000000 or error_file.tell() > 2000000:
+                raise InvestigatorError({"decision": {}, "trace": [], "error": "Worker output budget exceeded"})
+            output_file.seek(0)
+            stdout = output_file.read(2000001).decode("utf-8")
+        finally:
+            _stop_process(process)
     if process.returncode:
         try:
-            response = json.loads(process.stdout)
+            response = json.loads(stdout)
         except (ValueError, TypeError):
             response = {"decision": {}, "trace": [], "error": "Worker exited without a valid response"}
         response.setdefault("decision", {})
@@ -97,8 +166,8 @@ def run_worker(workspace, *, mode="baseline", requests=None):
         (workspace / "failed-investigation.json").write_text(json.dumps(response, indent=2))
         raise InvestigatorError(response)
     if mode == "rpc":
-        return [json.loads(line) for line in process.stdout.splitlines()]
-    return json.loads(process.stdout)
+        return [json.loads(line) for line in stdout.splitlines()]
+    return json.loads(stdout)
 
 
 def reference_outcome(case, source):
@@ -283,9 +352,9 @@ def grade(case, response, scratch, engine="sqlite"):
 
 
 def evaluate_all(output, mode="baseline", engine="sqlite"):
-    if mode not in ("baseline", "anthropic"):
+    if mode not in ("baseline", "anthropic", "langgraph"):
         raise ValueError("Unknown investigator mode")
-    if mode == "anthropic" and any(not os.environ.get(name) for name in
+    if mode in ("anthropic", "langgraph") and any(not os.environ.get(name) for name in
                                   ("ANTHROPIC_API_KEY", "VDIR_ANTHROPIC_MODEL")):
         raise ValueError("Set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL locally")
     output = Path(output)

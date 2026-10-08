@@ -76,6 +76,7 @@ def execute(path, engine, schema, sql, limit=100):
             timer.join()
             conn.close()
     elif engine == "sqlite":
+        cte_names = {cte.alias for cte in sqlglot.parse_one(sql, read="sqlite").find_all(exp.CTE)}
         conn = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)
         try:
             def modifier(*args):
@@ -88,7 +89,11 @@ def execute(path, engine, schema, sql, limit=100):
             def authorize(action, first, second, database, trigger):
                 if action in (sqlite3.SQLITE_SELECT, sqlite3.SQLITE_RECURSIVE):
                     return sqlite3.SQLITE_OK
-                if action == sqlite3.SQLITE_READ and database == "main" and first in schema:
+                # SQLite emits a database-less, empty-column read for optimized
+                # COUNT(*) over a declared source table inside nested CTEs.
+                if action == sqlite3.SQLITE_READ and (
+                    (first in schema and database == "main") or
+                    (first in set(schema) | cte_names and database is None and second == "")):
                     return sqlite3.SQLITE_OK
                 if action == sqlite3.SQLITE_FUNCTION and second in {
                     "sum", "count", "max", "min", "abs", "coalesce", "substr", "date", "printf",

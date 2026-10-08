@@ -88,7 +88,7 @@ def summarize(records):
 
 
 def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, split="all", case_ids=None, pricing=None):
-    if investigator not in ("baseline", "anthropic") or engine not in ("sqlite", "duckdb") or split not in ("all", "calibration", "evaluation"):
+    if investigator not in ("baseline", "anthropic", "langgraph") or engine not in ("sqlite", "duckdb") or split not in ("all", "calibration", "evaluation"):
         raise ValueError("Invalid benchmark configuration")
     if pricing is not None:
         required = ("input_per_million", "output_per_million", "cache_write_per_million", "cache_read_per_million")
@@ -106,7 +106,7 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
                 and (not case_ids or case.incident.case_id in case_ids)]
     if not selected or case_ids and set(case_ids) - {c.incident.case_id for c in selected}:
         raise ValueError("No cases selected or unknown case ID/split combination")
-    if investigator == "anthropic":
+    if investigator in ("anthropic", "langgraph"):
         import os
         if not os.environ.get("ANTHROPIC_API_KEY") or not os.environ.get("VDIR_ANTHROPIC_MODEL"):
             raise ValueError("Configure the private model credentials before creating a live run")
@@ -156,7 +156,7 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
                       "decision": response.get("decision", {})}
             if "model_run" in response:
                 record["model_run"] = response["model_run"]
-            record["cost_usd_estimate"] = estimate_cost(response.get("model_run"), pricing) if investigator == "anthropic" else 0.0
+            record["cost_usd_estimate"] = estimate_cost(response.get("model_run"), pricing) if investigator in ("anthropic", "langgraph") else 0.0
             (root / "trace.json").write_text(json.dumps(response, indent=2))
             report["records"].append(record)
             checkpoint()
@@ -172,7 +172,7 @@ def main():
     load_local_configuration()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--investigator", choices=("baseline", "anthropic"), default="baseline")
+    parser.add_argument("--investigator", choices=("baseline", "anthropic", "langgraph"), default="baseline")
     parser.add_argument("--engine", choices=("duckdb", "sqlite"), default="duckdb")
     parser.add_argument("--samples", type=int, default=1)
     parser.add_argument("--split", choices=("all", "calibration", "evaluation"), default="all")

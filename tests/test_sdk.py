@@ -15,16 +15,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "investigator_runti
 from model import AnthropicClient, InvestigationFailed
 
 
-def sse():
+def sse(name="contract", params=None):
     message = {"id": "msg-test", "type": "message", "role": "assistant", "model": "configured-model",
                "content": [], "stop_reason": None, "stop_sequence": None,
                "usage": {"input_tokens": 20, "output_tokens": 0}}
     events = [
         {"type": "message_start", "message": message},
         {"type": "content_block_start", "index": 0,
-         "content_block": {"type": "tool_use", "id": "t1", "name": "contract", "input": {}}},
+         "content_block": {"type": "tool_use", "id": "t1", "name": name, "input": {}}},
         {"type": "content_block_delta", "index": 0,
-         "delta": {"type": "input_json_delta", "partial_json": "{}"}},
+         "delta": {"type": "input_json_delta", "partial_json": json.dumps(params or {})}},
         {"type": "content_block_stop", "index": 0},
         {"type": "message_delta", "delta": {"stop_reason": "tool_use", "stop_sequence": None},
          "usage": {"output_tokens": 10}}, {"type": "message_stop"}]
@@ -98,3 +98,47 @@ class SDKTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("/v1/messages", paths)
         finally:
             await client.close()
+
+    async def test_langgraph_uses_real_sdk_streaming_with_mock_http_transport(self):
+        from graph import investigate as graph_investigate
+        from tools import EvidenceTools
+        from vdir.cases import incidents
+        from vdir.evaluation import export_workspace
+        from telemetry import Telemetry
+        rounds = 0
+        async def handler(request):
+            nonlocal rounds
+            if "/models/" in request.url.path:
+                return httpx2.Response(200, json={"type": "model", "id": "configured-model",
+                    "created_at": "2026-01-01T00:00:00Z", "display_name": "Test", "lifecycle": "active"})
+            if request.url.path.endswith("count_tokens"):
+                self.assertIn("record_plan", json.loads(request.content)["system"])
+                return httpx2.Response(200, json={"input_tokens": 20})
+            rounds += 1
+            if rounds == 1:
+                stream = sse()
+            else:
+                messages = json.loads(request.content)["messages"]
+                evidence = json.loads(messages[-1]["content"][0]["content"])["evidence_id"]
+                stream = sse("finish", {"status": "no_change", "explanation": "Current contract satisfied.",
+                                         "evidence_ids": [evidence]})
+            return httpx2.Response(200, headers={"content-type": "text/event-stream"}, content=stream)
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = export_workspace(incidents()[4], Path(directory) / "evidence")
+            telemetry = Telemetry(workspace)
+            tools = EvidenceTools(workspace, telemetry=telemetry)
+            client = await self.make_client(handler)
+            try:
+                with telemetry.root("investigation"):
+                    response = await graph_investigate(tools, client)
+            finally:
+                await client.close()
+                telemetry.close()
+            self.assertEqual(rounds, 2)
+            self.assertEqual(response["model_run"]["usage"]["input_tokens"], 40)
+            self.assertEqual(response["model_run"]["resolved_model"], "configured-model")
+            self.assertIn('graph.model', (workspace / "spans.jsonl").read_text())
+            self.assertIn('graph.precheck', (workspace / "spans.jsonl").read_text())
+            self.assertEqual(response["agent_workflow"]["public_precheck"]["status"], "passed")
+            for filename in ("model-run.json", "graph-receipts.sqlite", "graph-checkpoints.sqlite"):
+                self.assertNotIn(b"test-only-secret", (workspace / filename).read_bytes())

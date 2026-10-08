@@ -34,8 +34,9 @@ class AnthropicClient:
 
     async def complete(self, messages, definitions, max_tokens=2048):
         from anthropic import APIError
+        system = getattr(self, "system", SYSTEM)
         body = {"model": self.model, "max_tokens": max_tokens,
-                "system": SYSTEM, "messages": messages, "tools": definitions}
+                "system": system, "messages": messages, "tools": definitions}
         if len(json.dumps(body).encode()) > 250000:
             raise InvestigationFailed("Provider request exceeds context byte budget")
         try:
@@ -46,7 +47,7 @@ class AnthropicClient:
                 self.resolved_model = info.id
             body["model"] = self.resolved_model
             counted = await self.sdk.messages.count_tokens(
-                model=self.resolved_model, messages=messages, system=SYSTEM, tools=definitions)
+                model=self.resolved_model, messages=messages, system=system, tools=definitions)
             if counted.input_tokens > 16000 or self.context_tokens_requested + counted.input_tokens > 64000:
                 raise InvestigationFailed("Provider input-token budget exceeded before generation")
             self.context_tokens_requested += counted.input_tokens
@@ -106,6 +107,11 @@ def definitions():
                   "input_schema": {"type": "object", "properties": {
                       "sql": {"type": "string", "maxLength": 50000}},
                       "required": ["sql"], "additionalProperties": False}})
+    tools.append({"name": "inspect_sql", "description": "Statically inspect allowlisted SQL tables, joins, aggregates and grouping. Does not execute or prove correctness.",
+        "input_schema": {"type": "object", "properties": {"sql": {"type": "string", "maxLength": 50000}}, "required": ["sql"], "additionalProperties": False}})
+    tools.append({"name": "check_join", "description": "Profile an equality join: key duplication, unmatched/null keys and exact joined row count on the public snapshot. Use declared tables/columns; metric semantics require separate checks.",
+        "input_schema": {"type": "object", "properties": {name: {"type": "string"} for name in ("left_table", "left_key", "right_table", "right_key")},
+            "required": ["left_table", "left_key", "right_table", "right_key"], "additionalProperties": False}})
     tools.append({"name": "finish", "description": "Submit the final evidence-supported decision",
                   "input_schema": {"type": "object", "properties": {
                       "status": {"type": "string", "enum": ["candidate", "no_change",

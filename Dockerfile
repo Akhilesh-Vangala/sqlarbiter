@@ -2,6 +2,7 @@ FROM python:3.11.17-slim AS dependencies
 WORKDIR /app
 ENV PYTHONPATH=/app/src PYTHONDONTWRITEBYTECODE=1 VDIR_LOAD_DOTENV=0
 COPY requirements-web.txt ./
+COPY pyproject.toml ./
 RUN pip install --no-cache-dir -r requirements-web.txt
 
 FROM dependencies AS test

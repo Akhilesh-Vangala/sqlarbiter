@@ -6,6 +6,8 @@ CLI loads known candidates or a supplied file, executes each on fresh snapshots,
 
 Implemented browser flow: select scenario → idempotently enqueue → atomically claim work → collect evidence/propose outcome → independent replay/regression grade → inspect result → verify edited candidate as a new job → record exact-version approval/rejection → export. Healthy inputs and missing evidence produce no-change/clarification. Process failures/interruption remain visible.
 
-Planned: realistic incident intake, competing-hypothesis/impact reports, OS-isolated verification, cancellation, controlled promotion and observed outcome. Approval currently records a review only.
+Planned: realistic incident intake, competing-hypothesis/impact reports, OS-isolated verification, controlled promotion and observed outcome. Approval currently records a review only.
 
 Passing checks is not authorization. Operational business-rule validation differs from agreement with hidden benchmark references.
+
+Implemented October 8: [one-off metric workflows and owner-fenced cancellation](12-WORKFLOWS-AND-CANCELLATION.md), including workflow-to-member navigation and source-cited graph findings.

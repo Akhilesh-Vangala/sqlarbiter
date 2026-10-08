@@ -1,5 +1,7 @@
 name: Verify workbench
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -21,6 +23,18 @@ jobs:
         env:
           PYTHONPATH: src
           VDIR_LOAD_DOTENV: "0"
+      - run: python tests/browser_graph_smoke.py
+        env:
+          PYTHONPATH: src
+          VDIR_LOAD_DOTENV: "0"
+      - run: python tests/browser_automation_smoke.py
+        env:
+          PYTHONPATH: src
+          VDIR_LOAD_DOTENV: "0"
+      - run: python tests/browser_pages_smoke.py
+        env:
+          PYTHONPATH: src
+          VDIR_LOAD_DOTENV: "0"
       - run: python -m vdir.benchmark --output artifacts/generated/ci-benchmark --samples 1
         env:
           PYTHONPATH: src
@@ -29,7 +43,12 @@ jobs:
         if: always()
         with:
           name: browser-evidence
-          path: artifacts/generated/browser-smoke-*
+          path: |
+            artifacts/generated/browser-smoke-*
+            artifacts/generated/browser-graph-*
+            artifacts/generated/browser-automation-*
+            artifacts/generated/browser-pages-*
+            artifacts/generated/ci-benchmark
   container:
     runs-on: ubuntu-latest
     steps:

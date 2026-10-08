@@ -76,6 +76,37 @@ class PersistentJobTests(unittest.TestCase):
         with self.assertRaisesRegex(Conflict, "Queue is full"):
             self.store.enqueue(request(), "overflow")
 
+    def test_summary_projection_keeps_outcomes_without_loading_evidence_or_private_fields(self):
+        import json
+        job_id, _ = self.store.enqueue(request(), "summary-projection")
+        self.store.finish(self.store.claim(), result={"grading": {"passed": True},
+            "response": {"decision": {"status": "candidate"}, "trace": ["large-evidence" * 1000]}})
+        self.store.enqueue(request(), "pending-summary")
+        original_loads = json.loads
+        with patch("vdir.jobs.json.loads", wraps=original_loads) as loader:
+            summaries = self.store.list()
+            self.assertEqual(loader.call_count, 2)
+            self.assertTrue(all("large-evidence" not in call.args[0] for call in loader.call_args_list))
+        completed = next(item for item in summaries if item["id"] == job_id)
+        self.assertEqual(completed["outcome"], {"status": "candidate", "passed": True})
+        for item in summaries:
+            self.assertTrue({"owner", "lease_until", "request_hash", "idempotency_key", "result", "result_json"}.isdisjoint(item))
+        self.assertNotIn("outcome", next(item for item in summaries if item["status"] == "queued"))
+
+    def test_workspace_aggregates_cover_more_than_recent_page_and_exclude_paused_or_failed_repairs(self):
+        self.assertEqual(self.store.stats(), {"completed": 0, "verified_candidates": 0})
+        for index in range(52):
+            self.store.enqueue(request(), "aggregate-%d" % index)
+            result = {"grading": {"passed": index % 2 == 0},
+                      "response": {"decision": {"status": "candidate"}}}
+            if index == 51:
+                result["response"]["graph_run"] = {"status": "paused"}
+            self.store.finish(self.store.claim(), result=result)
+        with patch("vdir.jobs.json.loads", side_effect=AssertionError("Stats must not hydrate results")):
+            self.assertEqual(self.store.stats(), {"completed": 51, "verified_candidates": 26})
+        self.assertEqual(len(self.store.list()), 50)
+        self.assertEqual(len(JobStore(self.root).list()), 50)
+
 
 if __name__ == "__main__":
     unittest.main()

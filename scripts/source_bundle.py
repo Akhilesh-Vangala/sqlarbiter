@@ -5,7 +5,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[1]
 output = root / ".tools" / "docker-source.tar.gz"
 output.parent.mkdir(exist_ok=True)
-allowed = ["Dockerfile", ".dockerignore", "compose.yaml", "requirements-web.txt", "requirements-dev.txt",
+allowed = ["Dockerfile", ".dockerignore", "compose.yaml", "pyproject.toml", "requirements-web.txt", "requirements-dev.txt",
            "src", "investigator_runtime", "tests", "data", "scripts"]
 with tarfile.open(output, "w:gz") as bundle:
     for name in allowed:

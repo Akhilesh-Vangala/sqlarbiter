@@ -34,6 +34,31 @@ class WorkbenchAPITests(unittest.TestCase):
     def enqueue(self, case_id="case-001", key="request-001"):
         return self.client.post("/api/jobs", json={"case_id": case_id}, headers={"Idempotency-Key": key})
 
+    def test_metric_definition_exposes_only_current_public_metadata_and_requires_access(self):
+        from vdir.cases import incidents
+        case = incidents()[0]
+        response = self.client.get("/api/incidents/" + case.case_id)
+        value = response.json()
+        self.assertEqual(value["contract"], case.contract)
+        self.assertEqual(value["current_sql"], case.current_sql)
+        self.assertEqual(value["snapshot_id"], case.sources[0].snapshot_id)
+        self.assertEqual(value["schema"], {table: list(definitions) for table, (definitions, rows) in case.sources[0].tables.items()})
+        self.assertEqual(set(value), {"id", "title", "description", "contract", "current_sql", "lineage", "schema", "snapshot_id", "input_version"})
+        for source in case.sources[1:]:
+            if source.snapshot_id != case.sources[0].snapshot_id:
+                self.assertNotIn(source.snapshot_id, response.text)
+        self.assertEqual(self.client.get("/api/incidents/missing").status_code, 404)
+        with TestClient(create_app(self.root, token="test-access-" + "x" * 32), base_url="http://localhost") as protected:
+            self.assertEqual(protected.get("/api/incidents/" + case.case_id).status_code, 401)
+            self.assertEqual(protected.get("/api/config").status_code, 401)
+
+    def test_deep_investigation_pages_validate_section_and_keep_security_headers(self):
+        for section in ("evidence", "sql", "activity", "definition"):
+            response = self.client.get("/investigations/" + "1" * 32 + "/" + section)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("script-src 'self'", response.headers["Content-Security-Policy"])
+        self.assertEqual(self.client.get("/investigations/" + "1" * 32 + "/unknown").status_code, 404)
+
     def completed(self, case_id="case-001"):
         response = self.enqueue(case_id)
         self.assertEqual(response.status_code, 202)
@@ -146,11 +171,80 @@ class WorkbenchAPITests(unittest.TestCase):
     def test_static_page_has_csp_and_public_deployment_requires_access(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Prove the repair", response.text)
+        self.assertIn("New investigation", response.text)
         self.assertIn("frame-ancestors 'none'", response.headers["content-security-policy"])
         self.assertEqual(self.client.get("/assets/app.js").status_code, 200)
         with self.assertRaises(ValueError):
             create_app(self.root, token="", public_origin="https://workbench.example")
+
+    def test_page_routes_reload_without_exposing_protected_job_data(self):
+        token = "private-operator-" + "x" * 32
+        with TestClient(create_app(self.root, token=token), base_url="http://localhost") as client:
+            for path in ("/", "/investigations", "/runs", "/investigations/" + "a" * 32):
+                response = client.get(path)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('id="home-view"', response.text)
+                self.assertIn("frame-ancestors 'none'", response.headers["content-security-policy"])
+                self.assertNotIn(token, response.text)
+            self.assertEqual(client.get("/api/jobs/" + "a" * 32).status_code, 401)
+            self.assertEqual(client.get("/api/missing").status_code, 401)
+            self.assertEqual(client.get("/unrelated-path").status_code, 404)
+
+    def test_graph_selection_requires_configuration(self):
+        with patch.dict(os.environ, {}, clear=True):
+            response = self.client.post("/api/jobs", json={"case_id": "case-003", "investigator": "langgraph"},
+                headers={"Idempotency-Key": "graph-not-configured"})
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(len(self.store.list()), 0)
+        self.assertIn("LangGraph AI", self.client.get("/").text)
+
+    def test_graph_api_service_pause_resume_keeps_original_and_verifies_continuation(self):
+        import asyncio
+        from graph import investigate as graph_investigate
+        from tools import EvidenceTools
+        from test_model import ScriptedClient, completion, call
+        from vdir import evaluation
+        original_worker = evaluation.run_worker
+        def provider(workspace, *, mode="baseline", requests=None, continuation=None):
+            if mode != "langgraph":
+                return original_worker(workspace, mode=mode, requests=requests)
+            def clarify(messages):
+                import json
+                if continuation:
+                    self.assertIn("operator_guidance", messages[-1]["content"][0]["content"])
+                    evidence = parent["result"]["response"]["trace"][0]["evidence_id"]
+                else:
+                    evidence = json.loads(messages[-1]["content"][0]["content"])["evidence_id"]
+                return completion([call("finish", {"status": "needs_information", "explanation": "Offsets missing.",
+                    "evidence_ids": [evidence], "affected_ids": ["t1", "t2"], "required_fields": ["utc_offset_minutes"]})])
+            steps = [clarify] if continuation else [completion([call("contract", {})]), clarify]
+            return asyncio.run(graph_investigate(EvidenceTools(workspace), ScriptedClient(steps), **(continuation or {})))
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-only", "VDIR_ANTHROPIC_MODEL": "test-only"}), \
+                patch("vdir.evaluation.run_worker", side_effect=provider):
+            response = self.client.post("/api/jobs", json={"case_id": "case-003", "investigator": "langgraph"},
+                headers={"Idempotency-Key": "graph-pausing"})
+            self.assertEqual(response.status_code, 202)
+            process_next(self.store)
+            parent = self.client.get("/api/jobs/" + response.json()["id"]).json()
+            self.assertEqual(parent["status"], "paused")
+            self.assertTrue(parent["result"]["grading"]["passed"])
+            url = "/api/jobs/" + parent["id"] + "/resume"
+            body = {"parent_version": parent["result_version"], "guidance": "Keep asking for source offsets."}
+            self.assertEqual(self.client.post(url, json=dict(body, parent_version="0" * 64),
+                headers={"Idempotency-Key": "stale-graph"}).status_code, 409)
+            child = self.client.post(url, json=body, headers={"Idempotency-Key": "graph-continuation"})
+            self.assertEqual(child.status_code, 202)
+            self.assertEqual(self.client.post(url, json=body, headers={"Idempotency-Key": "graph-continuation"}).status_code, 200)
+            self.assertEqual(self.client.post(url, json=body, headers={"Idempotency-Key": "duplicate-graph"}).status_code, 409)
+            process_next(self.store)
+            resumed = self.client.get("/api/jobs/" + child.json()["id"]).json()
+            self.assertEqual(resumed["status"], "paused")
+            self.assertEqual(resumed["result"]["response"]["model_run"]["rounds"], 3)
+            self.assertEqual(len(resumed["result"]["response"]["trace"]), 1)
+            self.assertTrue(resumed["result"]["grading"]["passed"])
+            unchanged = self.client.get("/api/jobs/" + parent["id"]).json()
+            self.assertEqual(unchanged["result_version"], parent["result_version"])
+            self.assertEqual(unchanged["result"], parent["result"])
 
 
 if __name__ == "__main__":
