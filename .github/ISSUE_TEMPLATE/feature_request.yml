@@ -1,0 +1,25 @@
+name: Change request
+description: Describe a change to the supported workflow.
+title: "[Change]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Business or engineering problem
+      description: Which current limitation does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Behavior and authority boundaries
+      description: Explain the design, alternatives and effects on evidence, verification, review or recovery.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: Define the failure cases and measurements that would establish an improvement.
+    validations:
+      required: true
