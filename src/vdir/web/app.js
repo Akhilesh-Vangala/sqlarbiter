@@ -7,6 +7,7 @@ let accessCode = "",
   current = null;
 let configuration = null, selectedMetric = null, metricRequest = 0, metricRendered = "", setupReturnPath = "/", workflowReturnPath = "/workflows";
 let spendStatus = null;
+let dbtProjects = [], dbtRendered = "", dbtListRendered = "";
 const tabPaths = {"Summary": "", "Evidence": "/evidence", "SQL & review": "/sql", "Agent activity": "/activity", "Metric definition": "/definition"};
 let activeView = "home", returnPath = "/investigations", homeRendered = "", configured = false, refreshing = false;
 let workflows = [], selectedWorkflow = null, workflowRendered = "", cancelTarget = null;
@@ -92,6 +93,7 @@ function outcome(job) {
   };
 }
 function title(caseId) {
+  if (caseId === "dbt-payment-grain") return "Payment revenue · dbt project";
   return cases.find((item) => item.id === caseId)?.title || caseId;
 }
 function time(value) {
@@ -106,29 +108,30 @@ function dateTime(value) {
   });
 }
 function mode(job) {
-  if (job.request.kind === "verification") return "SQL revision";
+  if (["verification", "dbt_verification"].includes(job.request.kind)) return "SQL revision";
   if (job.request.investigator === "langgraph") return "Checkpointed AI";
   if (job.request.investigator === "anthropic") return "Hosted AI";
   return "Rule-based workflow";
 }
-const views = ["home", "investigations", "runs", "detail", "workflows", "new-investigation", "new-workflow", "metrics", "metric", "settings", "not-found"];
-const pageTitles = {home: "Workspace overview", investigations: "Investigations", runs: "Run history", detail: "Investigation", workflows: "Workflows", "new-investigation": "New investigation", "new-workflow": "New workflow", metrics: "Metrics", metric: "Metric definition", settings: "Workspace settings", "not-found": "Page not found"};
+const views = ["home", "investigations", "runs", "detail", "workflows", "new-investigation", "new-workflow", "metrics", "metric", "settings", "dbt", "new-dbt", "dbt-run", "not-found"];
+const pageTitles = {home: "Workspace overview", investigations: "Investigations", runs: "Run history", detail: "Investigation", workflows: "Workflows", "new-investigation": "New investigation", "new-workflow": "New workflow", metrics: "Metrics", metric: "Metric definition", settings: "Workspace settings", dbt: "dbt projects", "new-dbt": "New project investigation", "dbt-run": "Project investigation", "not-found": "Page not found"};
 function showView(view) {
   activeView = view;
   for (const name of views) $(name + "-view").hidden = name !== view;
-  const nested = ["detail", "metric", "new-investigation", "new-workflow"].includes(view) || view === "workflows" && selectedWorkflow;
+  const nested = ["detail", "metric", "new-investigation", "new-workflow", "new-dbt", "dbt-run"].includes(view) || view === "workflows" && selectedWorkflow;
   $("workspace-stats").hidden = view !== "home";
   $("page-navigation").hidden = !nested;
-  $("page-actions").hidden = ["new-investigation", "new-workflow", "not-found"].includes(view);
+  $("page-actions").hidden = ["new-investigation", "new-workflow", "new-dbt", "dbt-run", "dbt", "not-found"].includes(view);
   $("page-eyebrow").hidden = nested;
   $("page-title").textContent = view === "workflows" && selectedWorkflow ? "Workflow details" : pageTitles[view];
   document.title = "VDIR — " + $("page-title").textContent;
   $("breadcrumb-view").textContent = $("page-title").textContent;
-  const parent = view === "detail" || view === "new-investigation" ? ["Investigations", "/investigations"] : view === "metric" ? ["Metrics", "/metrics"] : view === "new-workflow" || selectedWorkflow ? ["Workflows", "/workflows"] : null;
+  const parent = ["new-dbt", "dbt-run"].includes(view) ? ["dbt projects", "/dbt"] : view === "detail" || view === "new-investigation" ? ["Investigations", "/investigations"] : view === "metric" ? ["Metrics", "/metrics"] : view === "new-workflow" || selectedWorkflow ? ["Workflows", "/workflows"] : null;
   $("breadcrumb-parent").hidden = !parent; $("breadcrumb-separator").hidden = !parent;
   if (parent) { $("breadcrumb-parent").textContent = parent[0]; $("breadcrumb-parent").href = parent[1]; }
   $("page-description").textContent = {home: "From metric discrepancy to a verified, reviewable repair.", investigations: "Find a run and open its complete evidence and review record.", runs: "Review recent investigation outcomes and their recorded versions.", detail: "Inspect evidence, verification and operator review.", workflows: selectedWorkflow ? "Review each metric outcome and manage remaining work." : "Named metric reviews, individual outcomes and visible exceptions.", "new-investigation": "Choose a metric, method and analytical engine for a new run.", "new-workflow": "Select the metrics to investigate in a single bounded review.", metrics: "Browse reporting definitions, source schemas and current SQL.", metric: "Understand the reporting contract before starting an investigation.", settings: "Actual workspace configuration, available methods and review behavior.", "not-found": "This workspace route is not available."}[view];
-  const navView = {detail: "investigations", "new-investigation": "investigations", "new-workflow": "workflows", metric: "metrics"}[view] || view;
+  if (["dbt", "new-dbt", "dbt-run"].includes(view)) $("page-description").textContent = "Reproduce a reporting incident, inspect its model patch and verify downstream outcomes.";
+  const navView = {detail: "investigations", "new-investigation": "investigations", "new-workflow": "workflows", metric: "metrics", "new-dbt": "dbt", "dbt-run": "dbt"}[view] || view;
   document.querySelectorAll("a[data-view]").forEach(link => {
     const active = link.dataset.view === navView;
     link.classList.toggle("active", active);
@@ -140,25 +143,29 @@ function showView(view) {
   if (view === "settings" && configuration) api("/spend").then(value => {spendStatus = value; renderSettings();}).catch(() => {spendStatus = null; renderSettings();});
 }
 function allowedReturn(path) {
-  return ["/", "/runs", "/investigations", "/workflows", "/metrics", "/settings"].includes(path) || /^\/(workflows\/[a-f0-9]{32}|metrics\/case-\d{3})$/.test(path || "");
+  return ["/", "/runs", "/investigations", "/workflows", "/metrics", "/settings", "/dbt"].includes(path) || /^\/(workflows\/[a-f0-9]{32}|metrics\/case-\d{3})$/.test(path || "");
 }
 function route(focus = false) {
   const legacy = new URLSearchParams(location.search).get("job");
   const match = location.pathname.match(/^\/investigations\/([a-f0-9]{32})(\/(evidence|sql|activity|definition))?$/);
+  const dbtMatch = location.pathname.match(/^\/dbt\/runs\/([a-f0-9]{32})$/);
   const workflowMatch = location.pathname.match(/^\/workflows\/([a-f0-9]{32})$/);
   const metricMatch = location.pathname.match(/^\/metrics\/(case-\d{3})$/);
   selectedWorkflow = workflowMatch?.[1] || null;
   if (selectedMetric !== (metricMatch?.[1] || null)) metricRendered = "";
   selectedMetric = metricMatch?.[1] || null;
-  const id = match?.[1] || (legacy && /^[a-f0-9]{32}$/.test(legacy) ? legacy : null);
+  const id = dbtMatch?.[1] || match?.[1] || (legacy && /^[a-f0-9]{32}$/.test(legacy) ? legacy : null);
   if (legacy && id) history.replaceState(history.state, "", "/investigations/" + id);
   const pages = {"/": "home", "/investigations": "investigations", "/investigations/new": "new-investigation", "/runs": "runs", "/workflows": "workflows", "/workflows/new": "new-workflow", "/metrics": "metrics", "/settings": "settings"};
-  let view = id ? "detail" : workflowMatch ? "workflows" : metricMatch ? "metric" : pages[location.pathname] || "not-found";
+  pages["/dbt"] = "dbt"; pages["/dbt/new"] = "new-dbt";
+  let view = id ? dbtMatch ? "dbt-run" : "detail" : workflowMatch ? "workflows" : metricMatch ? "metric" : pages[location.pathname] || "not-found";
   if (["#runs", "#investigations"].includes(location.hash)) { view = location.hash.slice(1); history.replaceState(history.state, "", "/" + view); }
   if (id !== selected) {
     selected = id; current = null; rendered = "";
     $("run-context").replaceChildren();
     $("detail").replaceChildren(node("div", {className: "empty-detail", role: "status"}, node("h2", {}, "Loading investigation…")));
+    dbtRendered = "";
+    $("dbt-detail").replaceChildren(node("p", {className: "notice"}, "Loading project investigation…"));
   }
   activeTab = Object.keys(tabPaths).find(tab => tabPaths[tab] === (match?.[2] || "")) || "Summary";
   if (view === "detail") {
@@ -176,6 +183,8 @@ function route(focus = false) {
     $("page-context").textContent = view === "metric" ? "REPORTING DEFINITION" : "WORKFLOW RECORD";
   }
   showView(view); renderHistory(); renderWorkflows();
+  if (["new-dbt", "dbt-run"].includes(view)) { $("back-button").textContent = "← Back to dbt projects"; $("page-context").textContent = "PROJECT INVESTIGATION"; }
+  if (view === "dbt" || view === "new-dbt") renderDbtProjects();
   if (view === "detail" && current) renderDetail(current);
   if (view === "metric") refreshMetric();
   if (focus) { $("page-title").focus({preventScroll: true}); window.scrollTo(0, 0); }
@@ -187,6 +196,7 @@ function navigate(path, state = {}) {
   refreshWorkflow().catch(error => notify(error.message, true));
 }
 function detailError(error) {
+  if (activeView === "dbt-run") { $("dbt-detail").replaceChildren(node("div", {className: "empty-detail", role: "alert"}, node("h2", {}, "Project investigation unavailable"), node("p", {}, error.message))); return; }
   if (activeView !== "detail") return;
   rendered = ""; current = null;
   $("detail").replaceChildren(node("div", {className: "empty-detail", role: "alert"}, node("h2", {}, "Unable to load investigation"), node("p", {}, error.message), node("button", {className: "secondary", onclick: () => refreshDetail().catch(detailError)}, "Try again")));
@@ -289,6 +299,123 @@ function renderMetrics() {
     node("h2", {}, item.title), node("p", {}, item.description), node("code", {}, item.metric), node("span", {className: "metric-card-footer"}, "View definition & sources →")))
     : [node("div", {className: "home-card page-empty"}, node("h2", {}, "No matching metrics"), node("p", {}, "Try a different name or clear your search."))]));
 }
+function renderDbtProjects() {
+  if (!configuration) return;
+  const projectRuns = jobs.filter(job => job.request.project_id);
+  const fingerprint = JSON.stringify([dbtProjects, projectRuns]);
+  if (dbtListRendered === fingerprint) return;
+  dbtListRendered = fingerprint;
+  $("dbt-projects").replaceChildren(...dbtProjects.map(project => node("article", {className: "home-card dbt-project-card"},
+    node("div", {className: "panel-heading"}, node("h2", {}, project.name), badge("Sample project")),
+    node("p", {className: "notice"}, project.description),
+    node("dl", {className: "dbt-facts"}, node("div", {}, node("dt", {}, "Models"), node("dd", {}, project.models)), node("div", {}, node("dt", {}, "Regression fixtures"), node("dd", {}, project.regression_fixtures))),
+    node("button", {className: "primary", disabled: !project.available, onclick: () => navigate("/dbt/new")}, "Investigate project"),
+    !project.available ? node("p", {className: "notice"}, "The service needs its dbt tooling environment before starting this project.") : null)));
+  $("dbt-project").replaceChildren(...dbtProjects.map(project => node("option", {value: project.id}, project.name + " · sample project")));
+  const available = dbtProjects.some(project => project.available);
+  $("dbt-start").disabled = !available;
+  for (const option of $("dbt-investigator").options) option.disabled = option.value !== "baseline" && !configuration.hosted_available;
+  $("dbt-availability").textContent = available ? "The rule-based diagnostic runs without an API key. Hosted AI uses the configured model and spending allowance." : "dbt tooling is unavailable on this service.";
+  $("dbt-run-count").textContent = projectRuns.length + " runs";
+  $("dbt-run-list").replaceChildren(...(projectRuns.length ? projectRuns.map(job => node("button", {className: "home-run", onclick: () => navigate("/dbt/runs/" + job.id)},
+    node("span", {}, node("strong", {}, title(job.request.case_id)), node("small", {}, job.id.slice(0, 8) + " · " + mode(job) + " · " + dateTime(job.created_at))), badge(outcome(job).text, outcome(job).tone)))
+    : [node("p", {className: "notice"}, "No project investigations yet. Choose a project to reproduce its reporting incident.")]));
+}
+
+function renderDbtRun(job) {
+  if (!job.request.project_id) { $("dbt-detail").replaceChildren(node("p", {role: "alert"}, "This run belongs to a metric investigation.")); return; }
+  const fingerprint = JSON.stringify([job.id, job.updated_at, job.review]);
+  if (dbtRendered === fingerprint) return;
+  dbtRendered = fingerprint; current = job;
+  const state = outcome(job), result = job.result, report = result?.dbt;
+  const progressEvents = job.events.filter(event => event.name === "dbt_progress");
+  const latest = progressEvents.at(-1)?.payload;
+  const stageNames = {original_build: "Reproducing the reporting incident", investigation: "Investigating source evidence", verification: "Checking the patch and downstream outputs"};
+  const wrapper = node("div", {className: "dbt-record"}, node("div", {className: "detail-head"},
+    node("div", {className: "detail-title-line"}, node("h2", {}, "Payment revenue"), badge(state.text, state.tone)),
+    node("div", {className: "detail-meta"}, node("code", {}, job.id.slice(0, 8)), node("span", {}, mode(job)), node("span", {}, dateTime(job.created_at))),
+    node("p", {className: "incident-context"}, "Sample dbt project · daily, monthly and customer reporting")));
+  const stage = node("section", {className: "dbt-section", "aria-label": "Execution progress"}, node("h3", {}, "Execution progress"),
+    node("p", {id: "dbt-progress-status", className: "diagnosis"}, latest ? stageNames[latest.stage] + " · " + latest.status : job.status === "queued" ? "Waiting for the worker" : job.status),
+    latest?.fixtures_total ? node("p", {}, latest.fixtures_completed + " of " + latest.fixtures_total + " fixtures checked") : null,
+    node("ol", {className: "dbt-progress-list"}, ...progressEvents.map(event => node("li", {},
+      node("span", {}, stageNames[event.payload.stage] + " · " + event.payload.status),
+      event.payload.fixture ? node("small", {}, event.payload.fixture.replaceAll("_", " ")) : null, node("time", {}, time(event.created_at))))));
+  if (!result) {
+    wrapper.append(stage, job.error ? node("p", {className: "notice", role: "alert"}, job.error) : node("p", {className: "notice"}, "This run is saved. Progress reflects completed worker stages."));
+  } else {
+    wrapper.append(node("section", {className: "dbt-section"}, node("h3", {}, "Investigation finding"),
+      node("p", {className: "diagnosis"}, result.response.decision.explanation),
+      node("p", {className: "notice"}, result.grading.passed ? "The patch passes the available independent checks. Review the exact artifact before recording approval." : "Verification did not pass. Approval and verified-patch download are blocked."),
+      node("div", {className: "content-actions"}, node("button", {className: "secondary", onclick: () => openInspector("evidence", job)}, "Inspect source evidence"), node("button", {className: "secondary", onclick: () => download(job)}, "Export project report"))));
+    if (report.before && report.verification?.length) {
+      const after = report.verification[0].models;
+      const impact = node("section", {className: "dbt-section"}, node("h3", {}, "Reporting impact"),
+        node("p", {className: "notice"}, "Original source snapshot before and after the proposed upstream repair."));
+      for (const [model, rows] of Object.entries(report.before)) {
+        const comparison = node("div", {className: "sql-comparison"},
+          node("div", {}, node("p", {className: "section-title"}, "BEFORE"), node("pre", {}, JSON.stringify(rows, null, 2))),
+          node("div", {}, node("p", {className: "section-title"}, "AFTER"), node("pre", {}, JSON.stringify(after[model]?.actual, null, 2))));
+        impact.append(node("details", {className: "dbt-model-output"}, node("summary", {}, model), comparison));
+      }
+      wrapper.append(impact);
+    }
+    const body = [];
+    for (const fixture of report.verification || []) for (const [model, check] of Object.entries(fixture.models)) {
+      body.push(node("tr", {}, node("td", {}, fixture.fixture.replaceAll("_", " ")), node("td", {}, model), node("td", {}, check.passed ? "Passed" : "Failed")));
+    }
+    wrapper.append(node("section", {className: "dbt-section", id: "dbt-verification"}, node("h3", {}, "Independent verification"),
+      body.length ? node("div", {className: "table-scroll"}, node("table", {className: "checks", id: "dbt-model-checks"},
+        node("thead", {}, node("tr", {}, node("th", {}, "Fixture"), node("th", {}, "Output model"), node("th", {}, "Result"))), node("tbody", {}, ...body))) : checks(result)));
+    const patchSection = node("section", {className: "dbt-section", id: "dbt-patch"}, node("h3", {}, "Model patch & review"),
+      node("p", {className: "notice"}, "Only models/int_payment_events.sql is eligible for this project repair."));
+    if (result.patch) patchSection.append(node("pre", {className: "dbt-diff", id: "dbt-patch-diff"}, result.patch));
+    if (result.response.decision.status === "candidate") {
+      const editor = node("textarea", {className: "sql-editor", rows: 8, "aria-label": "dbt candidate SQL", disabled: Boolean(job.review), spellcheck: "false", value: result.response.decision.candidate_sql});
+      const note = node("textarea", {rows: 2, "aria-label": "dbt review note", placeholder: "Review context", disabled: Boolean(job.review)});
+      const approve = node("button", {className: "primary", disabled: !result.grading.passed || Boolean(job.review)}, "Approve verified patch");
+      const reject = node("button", {className: "secondary danger", disabled: Boolean(job.review)}, "Reject patch");
+      const revise = node("button", {className: "secondary", disabled: Boolean(job.review)}, "Verify SQL revision");
+      const patchDownload = node("button", {className: "secondary", disabled: !result.grading.passed}, "Download verified patch");
+      approve.addEventListener("click", async () => {
+        approve.disabled = true;
+        try { await post("/jobs/" + job.id + "/review", {version: job.result_version, action: "approved", note: note.value}); dbtRendered = ""; await refreshDetail(); notify("Exact-version review recorded."); }
+        catch (error) { notify(error.message, true); approve.disabled = !result.grading.passed; }
+      });
+      reject.addEventListener("click", async () => {
+        reject.disabled = true;
+        try { await post("/jobs/" + job.id + "/review", {version: job.result_version, action: "rejected", note: note.value}); dbtRendered = ""; await refreshDetail(); }
+        catch (error) { notify(error.message, true); reject.disabled = false; }
+      });
+      revise.addEventListener("click", async () => {
+        revise.disabled = true;
+        try { const next = await post("/dbt/runs/" + job.id + "/revisions", {parent_version: job.result_version, candidate_sql: editor.value}, true); navigate("/dbt/runs/" + next.id); await refresh(); }
+        catch (error) { notify(error.message, true); revise.disabled = false; }
+      });
+      patchDownload.addEventListener("click", async () => {
+        try { const blob = await api("/dbt/runs/" + job.id + "/patch", {download: true}); const url = URL.createObjectURL(blob); node("a", {href: url, download: "repair-" + job.id.slice(0, 8) + ".patch"}).click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+        catch (error) { notify(error.message, true); }
+      });
+      editor.addEventListener("input", () => {approve.disabled = editor.value !== result.response.decision.candidate_sql || !result.grading.passed || Boolean(job.review);});
+      patchSection.append(node("label", {for: "dbt-sql-editor"}, "Proposed SQL"), editor, node("p", {className: "notice"}, "Edited SQL must run independent verification as a new revision before approval."), note,
+        node("div", {className: "content-actions"}, approve, reject, revise, patchDownload));
+      if (job.review) patchSection.append(node("p", {className: "review-status", id: "dbt-review-status"}, "Review " + job.review.action + " · " + job.review.actor));
+      patchSection.append(node("p", {className: "notice"}, "Approval records a review. Production code and warehouse execution are not connected."));
+      editor.id = "dbt-sql-editor";
+    }
+    wrapper.append(patchSection, node("details", {className: "dbt-section"}, node("summary", {}, "Execution progress & audit"), stage, events(job)));
+  }
+  const context = node("div", {className: "context-card"}, node("h3", {}, "Project context"),
+    node("p", {}, report?.patch_path || "models/int_payment_events.sql"),
+    node("p", {className: "notice"}, "Source version"), node("code", {className: "dbt-version"}, job.request.input_version));
+  if (job.result_version) context.append(node("p", {className: "notice"}, "Verified result version"), node("code", {className: "dbt-version"}, job.result_version));
+  if (report?.affected_models) context.append(node("h3", {}, "Affected reporting models"), node("ul", {}, ...report.affected_models.map(model => node("li", {}, model))));
+  if (["queued", "running", "cancelling"].includes(job.status)) context.append(node("button", {className: "secondary danger", disabled: job.status === "cancelling", onclick: () => openCancellation("jobs", job.id, "Payment revenue project")}, job.status === "cancelling" ? "Cancellation requested" : "Cancel project run"));
+  if (job.request.parent_id) context.append(node("a", {href: "/dbt/runs/" + job.request.parent_id, "data-route": ""}, "Open original investigation →"));
+  $("dbt-context").replaceChildren(context);
+  $("dbt-detail").replaceChildren(wrapper);
+}
+
 function renderSettings() {
   if (!configuration) return;
   const available = configuration.hosted_available;
@@ -429,7 +556,8 @@ function renderRunTable() {
 }
 async function select(id) {
   const origin = activeView === "detail" ? returnPath : activeView === "new-investigation" ? setupReturnPath : location.pathname;
-  history.pushState({returnPath: origin}, "", "/investigations/" + encodeURIComponent(id));
+  const projectRun = jobs.find(job => job.id === id)?.request.project_id;
+  history.pushState({returnPath: origin}, "", (projectRun ? "/dbt/runs/" : "/investigations/") + encodeURIComponent(id));
   route(true);
   await refreshDetail();
 }
@@ -1065,7 +1193,9 @@ async function refreshDetail() {
     const id = selected;
     const job = await api("/jobs/" + encodeURIComponent(id));
     if (id !== selected || (current?.id === id && current.updated_at > job.updated_at)) return;
-    renderDetail(job);
+    if (activeView === "dbt-run") renderDbtRun(job);
+    else if (job.request.project_id && activeView === "detail") navigate("/dbt/runs/" + job.id);
+    else renderDetail(job);
   }
 }
 async function refresh() {
@@ -1081,16 +1211,19 @@ async function refresh() {
   renderRunTable();
   renderHome();
   renderWorkflows();
+  renderDbtProjects();
   await refreshDetail();
   await refreshWorkflow();
   } finally { refreshing = false; }
 }
 async function initialize() {
-  const [settings, incidentList] = await Promise.all([
+  const [settings, incidentList, projects] = await Promise.all([
     api("/config"),
     api("/incidents"),
+    api("/dbt/projects"),
   ]);
   configuration = settings;
+  dbtProjects = projects;
   cases = incidentList;
   configured = configuration.hosted_available;
   $("operator-name").textContent = configuration.operator;
@@ -1195,7 +1328,14 @@ $("cancel-form").addEventListener("submit", async event => {
   } catch (error) { notify(error.message, true); }
   finally { $("cancel-confirm").disabled = false; }
 });
-$("back-button").addEventListener("click", () => navigate(activeView === "detail" ? returnPath : activeView === "metric" ? "/metrics" : activeView === "workflows" ? "/workflows" : setupReturnPath));
+$("back-button").addEventListener("click", () => navigate(["new-dbt", "dbt-run"].includes(activeView) ? "/dbt" : activeView === "detail" ? returnPath : activeView === "metric" ? "/metrics" : activeView === "workflows" ? "/workflows" : setupReturnPath));
+$("dbt-cancel-setup").addEventListener("click", () => navigate("/dbt"));
+$("dbt-form").addEventListener("submit", async event => {
+  event.preventDefault(); $("dbt-start").disabled = true;
+  try { const job = await post("/dbt/runs", {project_id: $("dbt-project").value, investigator: $("dbt-investigator").value}, true); navigate("/dbt/runs/" + job.id); await refresh(); }
+  catch (error) { notify(error.message, true); }
+  finally { $("dbt-start").disabled = false; }
+});
 $("inspector-close").addEventListener("click", () => $("inspector-dialog").close());
 $("command-button").addEventListener("click", openCommands);
 $("command-close").addEventListener("click", () => $("command-dialog").close());

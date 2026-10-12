@@ -5,7 +5,12 @@ COPY requirements-web.txt ./
 COPY pyproject.toml ./
 RUN pip install --no-cache-dir -r requirements-web.txt
 
-FROM dependencies AS test
+FROM dependencies AS dbt_tooling
+COPY requirements-dbt.txt ./
+RUN python -m venv /opt/dbt && /opt/dbt/bin/python -m pip install --no-cache-dir -r requirements-dbt.txt
+ENV VDIR_DBT_EXECUTABLE=/opt/dbt/bin/dbt
+
+FROM dbt_tooling AS test
 COPY requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
@@ -21,7 +26,7 @@ RUN mkdir -p artifacts/generated && chown -R 10001:10001 artifacts
 USER 10001:10001
 CMD ["sh", "scripts/container_checks.sh"]
 
-FROM dependencies AS runtime
+FROM dbt_tooling AS runtime
 COPY src ./src
 COPY investigator_runtime ./investigator_runtime
 COPY data ./data

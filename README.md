@@ -1,5 +1,7 @@
 # VerifyOps
 
+October12 browser integration: open **http://127.0.0.1:8000/dbt** to investigate the original payment project, follow real worker progress, inspect20 model checks/file diff, independently verify SQL revisions and record exact-version review. dbt tooling is isolated and included in the container. [Flow, routes and boundaries](docs/16-DBT-BROWSER-WORKFLOW.md). Fixed diagnostics run without an API key; live AI evaluation/cloud remain pending. Later browser integration supersedes the earlier CLI-only limitation below.
+
 October12: **shared API spend admission** defaults to $1/workspace and $5 cumulative estimated allowance, retains unknown reservations and disables automatic generation retries. Settings exposes actual amounts. An original five-model **dbt payment-revenue incident** generates a restricted model-file patch, verifies canonical/daily/monthly/customer outputs on five fixtures and supports exact-version local review. [Design and reproduction](docs/15-SPENDING-AND-DBT.md). Local fixed-diagnostic repair is verified; live AI, browser dbt connector and cloud deployment remain pending.
 
 Evidence-driven data incident investigation with independent SQL verification and a checkpointed LangGraph workflow.

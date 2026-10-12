@@ -34,6 +34,9 @@ def case_version(case, engine=None):
 
 def execute_one(store, job, telemetry=None):
     request = job["request"]
+    if request.get("project_id"):
+        from .dbt_service import execute
+        return execute(store, job)
     engine = request.get("engine", os.environ.get("VDIR_SQL_ENGINE", "duckdb"))
     case = find_case(request["case_id"])
     if case_version(case, engine) != request["input_version"]:

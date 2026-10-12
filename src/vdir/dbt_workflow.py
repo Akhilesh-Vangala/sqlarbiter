@@ -79,7 +79,18 @@ def run_dbt(project, database, phase, commands, executable):
             process = subprocess.Popen([str(executable), *command, "--project-dir", str(project), "--profiles-dir", str(project),
                 "--no-partial-parse"], cwd=project, env=environment, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
             try:
-                process.wait(timeout=90)
+                from .evaluation import EXECUTION_CONTROL
+                started = time.monotonic()
+                while process.poll() is None:
+                    control = EXECUTION_CONTROL.get()
+                    if control:
+                        control()
+                    if time.monotonic() - started > 90 or log.stat().st_size > 2000000:
+                        raise ValueError("dbt execution time or log allowance exhausted")
+                    try:
+                        process.wait(timeout=0.2)
+                    except subprocess.TimeoutExpired:
+                        pass
             except BaseException:
                 from .evaluation import _stop_process
                 _stop_process(process)
@@ -161,19 +172,24 @@ def patch_sql(candidate):
     return tree.sql(dialect="duckdb", pretty=True).replace("VDIR_STAGING_REF", "{{ ref('stg_payment_deliveries') }}") + "\n"
 
 
-def run(output, investigator="baseline", executable=None, candidate=None):
+def run(output, investigator="baseline", executable=None, candidate=None, progress=None, spend_root=None):
     load_local_configuration()
     output = Path(output).resolve()
     executable = executable or os.getenv("VDIR_DBT_EXECUTABLE", ROOT / ".venv-dbt/bin/dbt")
     if investigator in ("anthropic", "langgraph") and not os.getenv("ANTHROPIC_API_KEY"):
         raise ValueError("Configure the private provider key before a live investigation")
     output.mkdir(parents=True, exist_ok=False)
+    def update(stage, status, **details):
+        if progress:
+            progress(stage, status, details)
+    update("original_build", "running")
     original = output / "original"
     copy_project(TEMPLATE, original)
     database = original / "warehouse.duckdb"
     commands = run_dbt(original, database, "before", [["seed"], ["run"], ["test"]], executable)
     if any(row["exit_code"] != 0 for row in commands[:2]) or commands[2]["exit_code"] == 0:
         raise ValueError("Expected a successful original build and a failing grain test; inspect saved logs")
+    update("original_build", "completed", test_failed=True)
     sources = fixtures(original)
     context = dependency_context(original)
     before = relations(database)
@@ -188,14 +204,17 @@ def run(output, investigator="baseline", executable=None, candidate=None):
     manifest = json.loads(manifest_path.read_text())
     manifest["project"] = context
     manifest_path.write_text(json.dumps(manifest, indent=2))
-    response = run_worker(evidence, mode=investigator)
+    update("investigation", "running")
+    response = run_worker(evidence, mode=investigator, spend_root=spend_root)
     if candidate is not None:
         # Explicit operator revision retains source evidence, then is independently regraded.
         response["decision"].update(status="candidate", candidate_sql=candidate, explanation="Operator-supplied SQL revision")
     proposal = response.get("decision", {})
     (output / "trace.json").write_text(json.dumps(response, indent=2))
+    update("investigation", "completed", outcome=proposal.get("status"))
     check = grade(case, response, output / "grading", "duckdb")
     if proposal.get("status") != "candidate" or not check["passed"]:
+        update("verification", "failed", reason=check["reason"])
         report = {"passed": False, "grading": check, "decision": proposal, "scope": "Known original dbt development incident"}
         (output / "report.json").write_text(json.dumps(report, indent=2))
         return report
@@ -204,6 +223,7 @@ def run(output, investigator="baseline", executable=None, candidate=None):
     (output / "repair.patch").write_text(diff)
     checks = []
     for name, rows in sources.items():
+        update("verification", "running", fixture=name, fixtures_completed=len(checks), fixtures_total=len(sources))
         project = output / "verification" / name
         copy_project(original, project)
         (project / TARGET).write_text(patched)
@@ -214,6 +234,7 @@ def run(output, investigator="baseline", executable=None, candidate=None):
         expected = independent_outputs(rows)
         checks.append({"fixture": name, "passed": actual == expected, "dbt": executions,
                        "models": {model: {"passed": bool(actual is not None and actual[model] == expected[model]), "expected": expected[model], "actual": actual[model] if actual is not None else None} for model in expected}})
+        update("verification", "running", fixture=name, fixture_passed=actual == expected, fixtures_completed=len(checks), fixtures_total=len(sources))
     report = {"passed": all(check["passed"] for check in checks), "investigator": investigator,
               "grading": check, "before": before, "before_dbt": commands, "decision": proposal,
               "patch_path": TARGET, "patch_sha256": hashlib.sha256(diff.encode()).hexdigest(), "model_sha256": hashlib.sha256(patched.encode()).hexdigest(),
@@ -225,6 +246,7 @@ def run(output, investigator="baseline", executable=None, candidate=None):
               "created_at": datetime.now(timezone.utc).isoformat()}
     report["version"] = digest(report)
     (output / "report.json").write_text(json.dumps(report, indent=2))
+    update("verification", "completed" if report["passed"] else "failed", fixtures_completed=len(checks), fixtures_total=len(sources))
     return report
 
 

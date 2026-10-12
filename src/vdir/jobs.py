@@ -151,6 +151,19 @@ class JobStore:
             if cursor.rowcount != 1:
                 raise Conflict("Worker no longer owns this investigation")
 
+    def progress(self, job, stage, status, details=None):
+        self.ensure_active(job)
+        with self.connection(write=True) as connection:
+            row = connection.execute("SELECT status,owner,lease_until FROM jobs WHERE id=?", (job["id"],)).fetchone()
+            if not row:
+                raise Conflict("Worker no longer owns this investigation")
+            if row["status"] == "cancelling":
+                raise JobCancelled("Operator requested cancellation")
+            if row["status"] != "running" or row["owner"] != job["owner"] or row["lease_until"] < time.time():
+                raise Conflict("Worker no longer owns this investigation")
+            connection.execute("UPDATE jobs SET updated_at=? WHERE id=?", (time.time(), job["id"]))
+            self._event(connection, job["id"], "dbt_progress", "worker", {"stage": stage, "status": status, **(details or {})})
+
     def finish(self, job, result=None, error=None):
         with self.connection(write=True) as connection:
             row = connection.execute("SELECT * FROM jobs WHERE id=?", (job["id"],)).fetchone()
@@ -343,6 +356,9 @@ class JobStore:
             if row["status"] != "completed" or row["result_version"] != version:
                 raise Conflict("Review version is stale or the investigation is incomplete")
             result = json.loads(row["result_json"])
+            if result.get("dbt"):
+                from .dbt_service import validate_result
+                validate_result(result, require_passed=action == "approved")
             if result["response"]["decision"].get("status") != "candidate":
                 raise Conflict("There is no repair candidate to review")
             if action == "approved" and not result["grading"]["passed"]:

@@ -1,5 +1,9 @@
 # Progress
 
+## October12 — Queued browser dbt investigations
+
+Original sample dbt catalog/setup/detail pages, actual worker progress, twenty independent output checks, file diff/revisions, integrity-checked download and exact-version immutable review implemented. Existing queue/ownership/cancellation and monochrome pages retained. Actual local browser journey passes24checks; API eight boundary checks and real-process cancellation test pass. General suite and remote container/CI evidence recorded when complete. [Details](docs/16-DBT-BROWSER-WORKFLOW.md). No live model call, production application, user feedback, PostgreSQL migration or cloud deployment inferred.
+
 ## October12 — Spend control and original dbt incident
 
 Shared spend admission, retained unknown reservations, zero automatic generation retries and Settings/API visibility implemented. Actual dbt builds generate a restricted upstream diff, check five fixtures against independent canonical/daily/monthly/customer references and support exact-version local review. Local report003 passes; real integration rejects equal-value collapse. [Design](docs/15-SPENDING-AND-DBT.md). No live call/cloud/PostgreSQL/actual operator approval; final CI/evidence recorded separately. Upstream VerifyOps rename preserved.

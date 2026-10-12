@@ -2,6 +2,8 @@
 
 October 12, 2026. Implemented and verified locally. Live model quality/cloud operation remain unverified.
 
+Later October12: the trusted sample is now available as a queued browser project with progress, revisions, protected patch downloads and exact-version review. [Browser workflow](16-DBT-BROWSER-WORKFLOW.md). The CLI-only/pending browser statements below describe the earlier milestone. Arbitrary repository/warehouse connectors remain pending.
+
 ## Spend admission
 
 Real Anthropic/LangGraph execution requires a trusted pricing profile and shared ledger. Defaults: **$1 per investigation workspace and $5 cumulative estimated allowance** for the ledger. These are application allowances, not a subscription, purchased credit balance, monthly reset or provider invoice ceiling. Baselines consume no model tokens.

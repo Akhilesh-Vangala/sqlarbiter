@@ -67,6 +67,12 @@ class NewWorkflow(BaseModel):
     engine: Literal["duckdb", "sqlite"] = "duckdb"
 
 
+class NewDbtRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    project_id: Literal["payment-revenue"]
+    investigator: Literal["baseline", "anthropic", "langgraph"] = "baseline"
+
+
 def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     if state_dir is None:
         from .config import load_local_configuration
@@ -177,6 +183,49 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     def list_jobs():
         return store.list()
 
+    @app.get("/api/dbt/projects")
+    def dbt_projects():
+        from .dbt_service import project
+        return [project()]
+
+    @app.post("/api/dbt/runs")
+    def dbt_new(body: NewDbtRun, idempotency_key: Optional[str] = Header(None)):
+        from .dbt_service import project, CASE_ID
+        definition = project()
+        if not definition["available"]:
+            return JSONResponse({"detail": "dbt tooling is unavailable on the worker host"}, status_code=503)
+        if body.investigator in ("anthropic", "langgraph") and not config()["hosted_available"]:
+            return JSONResponse({"detail": "Hosted investigator is not configured"}, status_code=503)
+        request = {"kind": "dbt_investigation", "case_id": CASE_ID, "project_id": body.project_id,
+                   "investigator": body.investigator, "engine": "duckdb", "input_version": definition["input_version"]}
+        identity, created = store.enqueue(request, key(idempotency_key), operator)
+        return JSONResponse(store.get(identity), status_code=202 if created else 200)
+
+    @app.post("/api/dbt/runs/{job_id}/revisions")
+    def dbt_revision(job_id: str, body: CandidateRevision, idempotency_key: Optional[str] = Header(None)):
+        from .dbt_service import is_dbt, project_version
+        parent = store.get(job_id)
+        if not is_dbt(parent):
+            raise Conflict("This is not a dbt project investigation")
+        if project_version() != parent["request"]["input_version"]:
+            raise Conflict("The dbt project changed; start a new investigation")
+        request = {**parent["request"], "kind": "dbt_verification", "investigator": "baseline",
+                   "parent_id": job_id, "parent_version": body.parent_version, "candidate_sql": body.candidate_sql}
+        if not body.candidate_sql.strip():
+            raise Conflict("Candidate SQL cannot be empty")
+        identity, created = store.enqueue(request, key(idempotency_key), operator)
+        return JSONResponse(store.get(identity), status_code=202 if created else 200)
+
+    @app.get("/api/dbt/runs/{job_id}/patch")
+    def dbt_patch(job_id: str):
+        from .dbt_service import is_dbt, validate_result
+        job = store.get(job_id)
+        if not is_dbt(job) or job["status"] != "completed" or not job.get("result"):
+            raise Conflict("A completed dbt investigation is required")
+        validate_result(job["result"], require_passed=True)
+        return Response(job["result"]["patch"], media_type="text/plain",
+                        headers={"Content-Disposition": 'attachment; filename="repair-%s.patch"' % job["id"]})
+
     @app.get("/api/stats")
     def statistics():
         return store.stats()
@@ -234,6 +283,8 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.post("/api/jobs/{job_id}/candidates")
     def revise(job_id: str, body: CandidateRevision, idempotency_key: Optional[str] = Header(None)):
         parent = store.get(job_id)
+        if parent["request"].get("project_id"):
+            raise Conflict("Use the dbt project revision endpoint")
         request = {"kind": "verification", "case_id": parent["request"]["case_id"],
                    "input_version": parent["request"]["input_version"],
                    "engine": parent["request"].get("engine", "duckdb"),
@@ -251,6 +302,8 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.post("/api/jobs/{job_id}/resume")
     def resume_graph(job_id: str, body: GraphContinuation, idempotency_key: Optional[str] = Header(None)):
         parent = store.get(job_id)
+        if parent["request"].get("project_id"):
+            raise Conflict("dbt clarification continuation is not available; start a new controlled investigation")
         if not body.guidance.strip():
             raise Conflict("Investigation guidance cannot be empty")
         if not config()["hosted_available"]:
@@ -279,6 +332,9 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.get("/metrics", include_in_schema=False)
     @app.get("/metrics/{case_id}", include_in_schema=False)
     @app.get("/settings", include_in_schema=False)
+    @app.get("/dbt", include_in_schema=False)
+    @app.get("/dbt/new", include_in_schema=False)
+    @app.get("/dbt/runs/{job_id}", include_in_schema=False)
     def index():
         return FileResponse(STATIC / "index.html")
 

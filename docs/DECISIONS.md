@@ -1,5 +1,9 @@
 # Decisions
 
+## October12 — Browser dbt jobs and immutable stored artifacts — Implemented
+
+Reuse the existing persistent queue/worker, access boundaries and exact-version review for the trusted sample; do not accept arbitrary project code uploads. Progress is owner-fenced and tied to real execution stages. Supervise dbt subprocess groups under cancellation/shutdown/deadlines. Store the verified report/diff/model text in the immutable job result, checking their hashes again at review/download, so mutable local files cannot change a downloaded artifact. Keep app/dbt dependencies in separate environments and include dbt in runtime/test containers. [Flow](16-DBT-BROWSER-WORKFLOW.md). PostgreSQL/distributed recovery, general repository connectors and live AI quality remain pending.
+
 ## October12 — Spend admission and original dbt patch boundary — Implemented locally
 
 Use a trusted, shared single-host SQLite ledger outside model-visible evidence. Bind policy at creation, atomically reserve before paid generation, reconcile complete usage and retain unresolved allowances. Disable automatic real generation retries rather than hide extra billed attempts. Existing graph receipts still prevent uncertain replay. This is estimated admission control, not an invoice guarantee; PostgreSQL/distributed coordination remains release work.

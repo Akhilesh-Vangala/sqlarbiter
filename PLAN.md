@@ -1,5 +1,7 @@
 # Implementation plan
 
+October12: integrate the original dbt CLI as browser catalog/setup/detail with queued execution/progress, protected patch download, independently checked revisions and exact-version review. [Implemented flow](docs/16-DBT-BROWSER-WORKFLOW.md). The trusted sample browser connector is implemented; arbitrary repositories/warehouses, PostgreSQL migration, live model evaluation and cloud remain pending.
+
 October12: estimated shared spend admission and original five-model dbt repair/review CLI implemented. [Scope](docs/15-SPENDING-AND-DBT.md). Live diagnosis, browser project connector, PostgreSQL recovery/access/isolation and cloud remain pending. Older unchecked dbt/cost proposals are refined by this local foundation.
 
 Advanced destination: incident environment, learned investigation policy and delivered cloud product.
