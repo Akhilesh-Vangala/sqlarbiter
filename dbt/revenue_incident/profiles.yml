@@ -1,0 +1,11 @@
+verifyops_revenue:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('VDIR_DBT_DATABASE') }}"
+      schema: main
+      threads: 1
+      settings:
+        memory_limit: 256MB
+        threads: 1

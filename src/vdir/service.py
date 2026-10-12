@@ -24,7 +24,7 @@ def find_case(case_id):
 
 def case_version(case, engine=None):
     engine = engine or os.environ.get("VDIR_SQL_ENGINE", "duckdb")
-    files = [evaluation.__file__] + [evaluation.RUNTIME / name for name in evaluation.RUNTIME_FILES]
+    files = [evaluation.__file__] + [evaluation.runtime_source(name) for name in evaluation.RUNTIME_FILES]
     files += [evaluation.RUNTIME.parent / name for name in ("pyproject.toml", "requirements-web.txt")]
     code_hash = hashlib.sha256()
     for file in files:
@@ -65,10 +65,10 @@ def execute_one(store, job, telemetry=None):
             with sqlite3.connect("file:%s?mode=ro" % source, uri=True) as src:
                 with sqlite3.connect(workspace / name) as dst:
                     src.backup(dst)
-        response = evaluation.run_worker(workspace, mode="langgraph", continuation={"guidance": request["guidance"]})
+        response = evaluation.run_worker(workspace, mode="langgraph", continuation={"guidance": request["guidance"]}, spend_root=store.root)
     else:
         workspace = evaluation.export_workspace(case, root / "evidence", engine)
-        response = evaluation.run_worker(workspace, mode=request["investigator"])
+        response = evaluation.run_worker(workspace, mode=request["investigator"], spend_root=store.root)
     with telemetry.span("verification", **{"vdir.engine": engine}) if telemetry else nullcontext():
         grading = evaluation.grade(case, response, root / "grading", engine)
     return {"case_id": case.case_id, "engine": engine, "input_version": request["input_version"],

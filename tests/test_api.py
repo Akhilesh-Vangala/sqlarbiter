@@ -59,6 +59,16 @@ class WorkbenchAPITests(unittest.TestCase):
             self.assertIn("script-src 'self'", response.headers["Content-Security-Policy"])
         self.assertEqual(self.client.get("/investigations/" + "1" * 32 + "/unknown").status_code, 404)
 
+    def test_spend_status_is_authenticated_and_hides_ledger_paths(self):
+        response = self.client.get("/api/spend")
+        self.assertEqual(response.status_code, 200)
+        value = response.json()
+        self.assertEqual((value["run_limit_usd"], value["total_limit_usd"], value["accounted_usd"]), (1, 5, 0))
+        self.assertNotIn(str(self.root), response.text)
+        token = "test-access-" + "x" * 32
+        with TestClient(create_app(self.root, token=token), base_url="http://localhost") as client:
+            self.assertEqual(client.get("/api/spend").status_code, 401)
+
     def completed(self, case_id="case-001"):
         response = self.enqueue(case_id)
         self.assertEqual(response.status_code, 202)
@@ -205,7 +215,7 @@ class WorkbenchAPITests(unittest.TestCase):
         from test_model import ScriptedClient, completion, call
         from vdir import evaluation
         original_worker = evaluation.run_worker
-        def provider(workspace, *, mode="baseline", requests=None, continuation=None):
+        def provider(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
             if mode != "langgraph":
                 return original_worker(workspace, mode=mode, requests=requests)
             def clarify(messages):

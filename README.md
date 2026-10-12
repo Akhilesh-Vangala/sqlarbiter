@@ -1,5 +1,7 @@
 # VerifyOps
 
+October12: **shared API spend admission** defaults to $1/workspace and $5 cumulative estimated allowance, retains unknown reservations and disables automatic generation retries. Settings exposes actual amounts. An original five-model **dbt payment-revenue incident** generates a restricted model-file patch, verifies canonical/daily/monthly/customer outputs on five fixtures and supports exact-version local review. [Design and reproduction](docs/15-SPENDING-AND-DBT.md). Local fixed-diagnostic repair is verified; live AI, browser dbt connector and cloud deployment remain pending.
+
 Evidence-driven data incident investigation with independent SQL verification and a checkpointed LangGraph workflow.
 
 > Formerly *Verified Data Incident Resolution*.

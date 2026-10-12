@@ -1,0 +1,9 @@
+{
+  "model": "claude-sonnet-5-5",
+  "verified_at": "2026-10-12",
+  "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "input_per_million": 2,
+  "output_per_million": 10,
+  "cache_write_per_million": 4,
+  "cache_read_per_million": 0.1
+}

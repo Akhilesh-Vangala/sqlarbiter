@@ -4,10 +4,13 @@ import hashlib
 import json
 import os
 import time
+import uuid
+from pathlib import Path
 from collections import Counter
 from datetime import datetime, timezone
 
 from tools import ToolRejected
+from spending import SpendLedger, SpendRejected
 
 
 class InvestigationFailed(ValueError):
@@ -15,14 +18,21 @@ class InvestigationFailed(ValueError):
 
 
 class AnthropicClient:
-    def __init__(self, sdk=None, telemetry=None, event_path=None):
+    def __init__(self, sdk=None, telemetry=None, event_path=None, spend=None):
         from anthropic import AsyncAnthropic
         self.api_key = os.environ.get("ANTHROPIC_API_KEY", "")
         self.model = os.environ.get("VDIR_ANTHROPIC_MODEL", "")
         if not self.api_key or not self.model:
             raise InvestigationFailed("Set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL locally")
+        # Injected mock transports may opt into accounting; real clients require it.
+        try:
+            self.spend = spend if spend is not None else (SpendLedger.from_environment() if sdk is None else None)
+        except SpendRejected as error:
+            raise InvestigationFailed(str(error)) from None
         self.sdk = sdk or AsyncAnthropic(api_key=self.api_key, base_url="https://api.anthropic.com",
-                                        timeout=20, max_retries=1, _strict_response_validation=True)
+                                        timeout=20, max_retries=0, _strict_response_validation=True)
+        self.run_id = hashlib.sha256(str(Path(event_path).resolve().parent).encode()).hexdigest() if event_path else uuid.uuid4().hex
+        self.sdk_max_retries = 0 if self.spend else getattr(self.sdk, "max_retries", 0)
         self.telemetry = telemetry
         self.event_path = event_path
         self.resolved_model = None
@@ -39,6 +49,7 @@ class AnthropicClient:
                 "system": system, "messages": messages, "tools": definitions}
         if len(json.dumps(body).encode()) > 250000:
             raise InvestigationFailed("Provider request exceeds context byte budget")
+        reservation = None
         try:
             if self.resolved_model is None:
                 info = await self.sdk.models.retrieve(self.model)
@@ -51,8 +62,11 @@ class AnthropicClient:
             if counted.input_tokens > 16000 or self.context_tokens_requested + counted.input_tokens > 64000:
                 raise InvestigationFailed("Provider input-token budget exceeded before generation")
             self.context_tokens_requested += counted.input_tokens
+            if self.spend:
+                reservation = await asyncio.to_thread(self.spend.reserve, self.run_id, self.resolved_model, counted.input_tokens, max_tokens)
             self.latest_partial_usage = {}
-            async with self.sdk.messages.stream(**body) as stream:
+            generation = self.sdk.with_options(max_retries=0) if self.spend else self.sdk
+            async with generation.messages.stream(**body) as stream:
                 async for event in stream:
                     if event.type == "message_start":
                         self.latest_partial_usage.update(event.message.usage.model_dump())
@@ -63,13 +77,29 @@ class AnthropicClient:
                             output.write(json.dumps({"event": event.type, "time_ns": time.time_ns()}) + "\n")
                 message = await stream.get_final_message()
             result = message.model_dump(mode="json", exclude_none=True)
+            if self.spend:
+                if result.get("model") != self.resolved_model:
+                    raise SpendRejected("Provider response model differs from the verified pricing profile")
+                await asyncio.to_thread(self.spend.settle, reservation, result["usage"])
             self.input_tokens += result["usage"]["input_tokens"]
             self.output_tokens += result["usage"]["output_tokens"]
             return result
         except APIError as error:
-            self.failure_billing_unknown = True
+            self.failure_billing_unknown = reservation is not None or self.spend is None
+            if reservation:
+                await asyncio.to_thread(self.spend.uncertain, reservation)
             code = getattr(error, "status_code", None)
             raise InvestigationFailed("Provider request failed" + (" (HTTP %s)" % code if code else "")) from None
+        except SpendRejected as error:
+            if reservation:
+                self.failure_billing_unknown = True
+                await asyncio.to_thread(self.spend.uncertain, reservation)
+            raise InvestigationFailed(str(error)) from None
+        except BaseException:
+            if reservation:
+                self.failure_billing_unknown = True
+                await asyncio.to_thread(self.spend.uncertain, reservation)
+            raise
 
     async def close(self):
         await self.sdk.close()
@@ -95,6 +125,7 @@ def definitions():
 
                  ("lineage", "Read the current transformation dependency graph"),
                  ("changes", "Read the available change history"),
+                 ("project", "Read bounded dbt model files and dependency metadata when available; otherwise unsupported"),
                  ("current_sql", "Read the deployed transformation SQL"))]
     tools.extend([
         {"name": "describe", "description": "Read paginated source schema (50 columns) and SQL engine",
@@ -168,7 +199,7 @@ async def investigate(tools, client):
     metadata = {"requested_model": getattr(client, "model", None),
                 "started_at_utc": datetime.now(timezone.utc).isoformat(), "rounds": 0,
                 "usage": usage, "prompt_version": hashlib.sha256(SYSTEM.encode()).hexdigest(),
-                "sdk_max_retries": 1, "status": "running"}
+                "sdk_max_retries": getattr(client, "sdk_max_retries", 0), "status": "running"}
 
     def save(status):
         metadata.update(status=status, latency_seconds=time.monotonic() - started,

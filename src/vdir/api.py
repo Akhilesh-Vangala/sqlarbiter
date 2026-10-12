@@ -1,5 +1,6 @@
 """Local operational API; investigate, inspect and record version-bound review."""
 import os
+import json
 import re
 import secrets
 from pathlib import Path
@@ -147,6 +148,17 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
         return [{"id": case.case_id, "title": LABELS[case.case_id][0],
                  "description": LABELS[case.case_id][1], "metric": case.contract["metric"],
                  "input_version": case_version(case)} for case in incidents()]
+
+    @app.get("/api/spend")
+    def spend_summary():
+        from .spending import SpendLedger, configuration, SpendRejected
+        settings = configuration(store.root)
+        try:
+            ledger = SpendLedger(settings["VDIR_SPEND_LEDGER"], json.loads(Path(settings["VDIR_PRICE_PROFILE"]).read_text()),
+                                 settings["VDIR_RUN_BUDGET_USD"], settings["VDIR_TOTAL_BUDGET_USD"])
+            return ledger.summary()
+        except (ValueError, OSError):
+            return JSONResponse({"detail": "Spend policy unavailable; live calls require a valid policy"}, status_code=503)
 
     @app.get("/api/incidents/{case_id}")
     def case_detail(case_id: str):

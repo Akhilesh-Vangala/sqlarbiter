@@ -1,5 +1,7 @@
 # Implementation plan
 
+October12: estimated shared spend admission and original five-model dbt repair/review CLI implemented. [Scope](docs/15-SPENDING-AND-DBT.md). Live diagnosis, browser project connector, PostgreSQL recovery/access/isolation and cloud remain pending. Older unchecked dbt/cost proposals are refined by this local foundation.
+
 Advanced destination: incident environment, learned investigation policy and delivered cloud product.
 
 ## Environment — In progress

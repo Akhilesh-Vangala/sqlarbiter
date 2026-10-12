@@ -90,7 +90,7 @@ class IncidentEnvironmentTests(unittest.TestCase):
         self.assertEqual({path.name for path in workspace.iterdir()},
                          {"incident.json", "schema.json", "source.sqlite", "runtime"})
         self.assertEqual({path.name for path in (workspace / "runtime").iterdir()},
-                             {"tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py"})
+                             {"tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py", "spending.py"})
         text = (workspace / "incident.json").read_text()
         for hidden in ("expected_revenue", "reference_outcome", "regression-equal-amounts",
                        "regression-category-change", "candidate_sql", "fault_label"):

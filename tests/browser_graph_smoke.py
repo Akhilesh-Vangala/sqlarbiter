@@ -35,7 +35,7 @@ def main():
         # Playwright's sync driver runs an event loop on this thread; isolate the async worker.
         with ThreadPoolExecutor(max_workers=1) as workers:
             return workers.submit(process_next, store).result()
-    def provider(workspace, *, mode="baseline", requests=None, continuation=None):
+    def provider(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
         if mode != "langgraph":
             return original_worker(workspace, mode=mode, requests=requests)
         tools = EvidenceTools(workspace)

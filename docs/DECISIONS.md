@@ -1,5 +1,11 @@
 # Decisions
 
+## October12 — Spend admission and original dbt patch boundary — Implemented locally
+
+Use a trusted, shared single-host SQLite ledger outside model-visible evidence. Bind policy at creation, atomically reserve before paid generation, reconcile complete usage and retain unresolved allowances. Disable automatic real generation retries rather than hide extra billed attempts. Existing graph receipts still prevent uncertain replay. This is estimated admission control, not an invoice guarantee; PostgreSQL/distributed coordination remains release work.
+
+Use a separate pinned dbt environment because its Click dependency differs from the app. Keep the original payment-delivery incident in dbt/revenue_incident; use actual manifest lineage/public files with the existing investigator. Restrict repairs to one upstream model and plain allowlisted SELECT SQL, render only our declared ref, and independently build/check five regressions before generating the verified diff. Baseline knows the contract; no live model quality claim. Local exact-version review does not apply production code. [Implementation/commands](15-SPENDING-AND-DBT.md). CLI connector is implemented; browser dbt project admission, auth/isolation/recovery and cloud remain pending.
+
 ## October 8 — Distinct task pages and URL-addressed sections — Implemented
 
 Follow the user's “have proper opages” direction with full creation forms and separate collection/detail views, public metric definitions and actual read-only settings. Use native links for URL-addressed sections and preserve keyboard/history/reload/contextual return behavior. Retain existing HTML/CSS/JavaScript dependencies and useful evidence/cancellation dialogs; the personal portfolio remains empty. Current metadata endpoint has the existing access controls and exposes no private regression sources. [Page map and tested behavior](13-APPLICATION-PAGES.md).

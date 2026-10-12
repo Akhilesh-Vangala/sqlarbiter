@@ -1,5 +1,9 @@
 # Progress
 
+## October12 — Spend control and original dbt incident
+
+Shared spend admission, retained unknown reservations, zero automatic generation retries and Settings/API visibility implemented. Actual dbt builds generate a restricted upstream diff, check five fixtures against independent canonical/daily/monthly/customer references and support exact-version local review. Local report003 passes; real integration rejects equal-value collapse. [Design](docs/15-SPENDING-AND-DBT.md). No live call/cloud/PostgreSQL/actual operator approval; final CI/evidence recorded separately. Upstream VerifyOps rename preserved.
+
 Earlier dated entries preserve historical milestones; the most recent entry defines current status.
 
 ## October 8, 2026 — Public GitHub publication

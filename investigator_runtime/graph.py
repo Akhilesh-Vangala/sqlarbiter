@@ -389,7 +389,7 @@ async def investigate(tools, client, *, guidance=None, recover=False):
                 "metadata": {"requested_model": getattr(client, "model", None),
                     "started_at_utc": datetime.now(timezone.utc).isoformat(),
                     "prompt_version": hashlib.sha256(GRAPH_SYSTEM.encode()).hexdigest(),
-                    "sdk_max_retries": 1, "active_seconds": 0},
+                    "sdk_max_retries": getattr(client, "sdk_max_retries", 0), "active_seconds": 0},
                 "calls": [], "cursor": 0, "replies": [], "decision": {},
                 "plans": [], "corrections": 0, "issues": [], "assessment": {}, "journal": [], "findings": []}
         def report(state, status):

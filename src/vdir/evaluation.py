@@ -18,7 +18,11 @@ from pathlib import Path
 from .cases import incidents
 
 RUNTIME = Path(__file__).resolve().parents[2] / "investigator_runtime"
-RUNTIME_FILES = ("tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py")
+RUNTIME_FILES = ("tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py", "spending.py")
+
+
+def runtime_source(name):
+    return Path(__file__).with_name(name) if name == "spending.py" else RUNTIME / name
 
 
 def materialize(source, path, engine="sqlite"):
@@ -57,12 +61,14 @@ def export_workspace(case, destination, engine="sqlite"):
     manifest = {"engine": engine, "snapshot_id": source.snapshot_id, "contract": case.contract,
                 "current_sql": case.current_sql, "lineage": case.lineage,
                 "changes": case.changes}
+    if "project_context" in case.contract:
+        manifest["project"] = case.contract["project_context"]
     (destination / "incident.json").write_text(json.dumps(manifest, indent=2))
     (destination / "schema.json").write_text(json.dumps(schema, indent=2))
     runtime = destination / "runtime"
     runtime.mkdir()
     for name in RUNTIME_FILES:
-        shutil.copyfile(RUNTIME / name, runtime / name)
+        shutil.copyfile(runtime_source(name), runtime / name)
     return destination
 
 
@@ -107,7 +113,7 @@ def _stop_process(process):
         process.wait(timeout=3)
 
 
-def run_worker(workspace, *, mode="baseline", requests=None, continuation=None):
+def run_worker(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
     workspace = Path(workspace).resolve()
     environment = {"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"}
     for name in ("VDIR_OTLP_ENDPOINT", "VDIR_TRACEPARENT"):
@@ -120,6 +126,8 @@ def run_worker(workspace, *, mode="baseline", requests=None, continuation=None):
     if continuation is not None and (mode != "langgraph" or requests is not None):
         raise ValueError("Only a graph investigator supports continuation")
     if mode in ("anthropic", "langgraph"):
+        from .spending import configuration
+        environment.update(configuration(spend_root))
         for name in ("ANTHROPIC_API_KEY", "VDIR_ANTHROPIC_MODEL"):
             if not os.environ.get(name):
                 raise ValueError("Set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL locally")
@@ -174,6 +182,16 @@ def reference_outcome(case, source):
     """Independent source-level computation. Never included in exported runtime."""
     metric = case.contract["metric"]
     totals = defaultdict(int)
+    if metric == "canonical_payment_events":
+        events, conflicts = {}, set()
+        for delivery, event, customer, occurred, received, status, amount in source.tables["stg_payment_deliveries"][1]:
+            payload = (customer, occurred, status, amount)
+            if event in events and events[event] != payload:
+                conflicts.add(event)
+            events[event] = payload
+        if conflicts:
+            return {"status": "needs_information", "affected_ids": sorted(conflicts), "required_fields": ["authoritative_event_payload"]}
+        return {"status": "repairable", "rows": {(event, *payload[:-1]): payload[-1] for event, payload in events.items()}}
     if metric == "completed_item_revenue":
         orders = {row[0]: row[1:] for row in source.tables["orders"][1]}
         if len(orders) != len(source.tables["orders"][1]):

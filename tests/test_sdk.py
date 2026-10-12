@@ -32,13 +32,76 @@ def sse(name="contract", params=None):
 
 
 class SDKTests(unittest.IsolatedAsyncioTestCase):
-    async def make_client(self, handler, event_path=None):
+    async def make_client(self, handler, event_path=None, spend=None):
         sdk = AsyncAnthropic(api_key="test-only-secret", max_retries=1,
                              http_client=httpx2.AsyncClient(transport=httpx2.MockTransport(handler)),
                              _strict_response_validation=True)
         with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-only-secret",
                                     "VDIR_ANTHROPIC_MODEL": "configured-model"}):
-            return AnthropicClient(sdk=sdk, event_path=event_path)
+            return AnthropicClient(sdk=sdk, event_path=event_path, spend=spend)
+
+    async def test_spend_rejection_prevents_messages_request(self):
+        from vdir.spending import SpendLedger
+        from test_spending import PRICE
+        paths = []
+        async def handler(request):
+            paths.append(request.url.path)
+            if "/models/" in request.url.path:
+                return httpx2.Response(200, json={"type": "model", "id": "configured-model", "created_at": "2026-01-01T00:00:00Z", "display_name": "Test", "lifecycle": "active"})
+            return httpx2.Response(200, json={"input_tokens": 20})
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = SpendLedger(Path(directory) / "spend.sqlite", PRICE, ".001", ".001")
+            client = await self.make_client(handler, spend=ledger)
+            try:
+                with self.assertRaisesRegex(InvestigationFailed, "allowance exhausted"):
+                    await client.complete([], [])
+            finally:
+                await client.close()
+            self.assertNotIn("/v1/messages", paths)
+            self.assertEqual(ledger.summary()["accounted_usd"], 0)
+
+    async def test_spend_stream_timeout_retains_reservation_without_automatic_retry(self):
+        from vdir.spending import SpendLedger
+        from test_spending import PRICE
+        generations = []
+        async def handler(request):
+            if "/models/" in request.url.path:
+                return httpx2.Response(200, json={"type": "model", "id": "configured-model", "created_at": "2026-01-01T00:00:00Z", "display_name": "Test", "lifecycle": "active"})
+            if request.url.path.endswith("count_tokens"):
+                return httpx2.Response(200, json={"input_tokens": 20})
+            generations.append(request)
+            raise httpx2.ReadTimeout("secret-provider-message", request=request)
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = SpendLedger(Path(directory) / "spend.sqlite", PRICE)
+            client = await self.make_client(handler, spend=ledger)
+            try:
+                with self.assertRaises(InvestigationFailed) as caught:
+                    await client.complete([], [])
+                self.assertNotIn("secret-provider-message", str(caught.exception))
+            finally:
+                await client.close()
+            self.assertEqual(len(generations), 1)
+            self.assertEqual(ledger.summary()["states"]["unknown"]["requests"], 1)
+            self.assertAlmostEqual(ledger.summary()["accounted_usd"], .02056)
+
+    async def test_spend_success_reconciles_complete_stream_usage(self):
+        from vdir.spending import SpendLedger
+        from test_spending import PRICE
+        async def handler(request):
+            if "/models/" in request.url.path:
+                return httpx2.Response(200, json={"type": "model", "id": "configured-model", "created_at": "2026-01-01T00:00:00Z", "display_name": "Test", "lifecycle": "active"})
+            if request.url.path.endswith("count_tokens"):
+                return httpx2.Response(200, json={"input_tokens": 20})
+            return httpx2.Response(200, headers={"content-type": "text/event-stream"}, content=sse())
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = SpendLedger(Path(directory) / "spend.sqlite", PRICE)
+            client = await self.make_client(handler, spend=ledger)
+            try:
+                await client.complete([], [])
+            finally:
+                await client.close()
+            self.assertEqual(ledger.summary()["states"]["settled"]["requests"], 1)
+            self.assertAlmostEqual(ledger.summary()["accounted_usd"], .00014)
 
     async def test_real_sdk_assembles_stream_and_retries_rate_limit(self):
         requests = []

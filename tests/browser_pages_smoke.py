@@ -93,6 +93,8 @@ def main():
                 page.goto(base + '/settings')
                 expect(page.locator('#settings-configuration')).to_contain_text('page-test-operator')
                 expect(page.locator('#settings-configuration')).to_contain_text('Not configured')
+                expect(page.locator('#settings-configuration')).to_contain_text('Shared AI allowance')
+                expect(page.locator('#settings-configuration')).to_contain_text('$5.00')
                 expect(page.locator('#settings-access')).to_contain_text('Local loopback access')
                 page.screenshot(path=str(output / 'desktop-settings.png'), full_page=True)
                 checks.append('settings shows actual configuration without secrets')

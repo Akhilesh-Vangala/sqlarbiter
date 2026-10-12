@@ -67,6 +67,14 @@ def investigate(tools):
                      "INTERVAL '1 minute' AS DATE)::VARCHAR AS business_date, "
                      "COUNT(*) AS event_count FROM events GROUP BY business_date") if tools.engine == "duckdb" else TIME_SQL
         explanation = "Convert local timestamps using their explicit source offset."
+    elif metric == "canonical_payment_events":
+        conflicts = call("query", {"sql": "SELECT event_id FROM stg_payment_deliveries GROUP BY event_id HAVING COUNT(DISTINCT customer_id)>1 OR COUNT(DISTINCT occurred_at)>1 OR COUNT(DISTINCT status)>1 OR COUNT(DISTINCT amount_cents)>1"})
+        if conflicts["rows"]:
+            return decision("needs_information", "Conflicting immutable payment event payloads.", affected_ids=sorted(row[0] for row in conflicts["rows"]), required_fields=["authoritative_event_payload"])
+        call("project")
+        call("profile", {"table": "stg_payment_deliveries", "columns": ["event_id", "delivery_id"]})
+        candidate = "SELECT DISTINCT event_id, customer_id, occurred_at, status, amount_cents FROM stg_payment_deliveries"
+        explanation = "Delivery grain violates the declared event identity. Deduplicate complete immutable payloads by event identity before all dependent revenue aggregations."
     elif metric == "tagged_item_revenue":
         call("profile", {"table": "item_tags", "columns": ["item_id"]})
         candidate = ("SELECT p.business_date, SUM(p.amount_cents) AS revenue_cents FROM purchases p "

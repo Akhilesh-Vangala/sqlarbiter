@@ -15,6 +15,7 @@ COPY src ./src
 COPY investigator_runtime ./investigator_runtime
 COPY tests ./tests
 COPY data ./data
+COPY dbt ./dbt
 COPY scripts ./scripts
 RUN mkdir -p artifacts/generated && chown -R 10001:10001 artifacts
 USER 10001:10001
@@ -24,6 +25,7 @@ FROM dependencies AS runtime
 COPY src ./src
 COPY investigator_runtime ./investigator_runtime
 COPY data ./data
+COPY dbt ./dbt
 RUN mkdir -p /state && chown 10001:10001 /state
 USER 10001:10001
 ENV VDIR_STATE_DIR=/state VDIR_SQL_ENGINE=duckdb

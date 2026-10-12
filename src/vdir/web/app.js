@@ -6,6 +6,7 @@ let accessCode = "",
   selected = null,
   current = null;
 let configuration = null, selectedMetric = null, metricRequest = 0, metricRendered = "", setupReturnPath = "/", workflowReturnPath = "/workflows";
+let spendStatus = null;
 const tabPaths = {"Summary": "", "Evidence": "/evidence", "SQL & review": "/sql", "Agent activity": "/activity", "Metric definition": "/definition"};
 let activeView = "home", returnPath = "/investigations", homeRendered = "", configured = false, refreshing = false;
 let workflows = [], selectedWorkflow = null, workflowRendered = "", cancelTarget = null;
@@ -136,6 +137,7 @@ function showView(view) {
   $("workflow-list-panel").hidden = Boolean(selectedWorkflow);
   $("workflow-detail").hidden = !selectedWorkflow;
   $("workflows-view").classList.toggle("workflow-detail-page", Boolean(selectedWorkflow));
+  if (view === "settings" && configuration) api("/spend").then(value => {spendStatus = value; renderSettings();}).catch(() => {spendStatus = null; renderSettings();});
 }
 function allowedReturn(path) {
   return ["/", "/runs", "/investigations", "/workflows", "/metrics", "/settings"].includes(path) || /^\/(workflows\/[a-f0-9]{32}|metrics\/case-\d{3})$/.test(path || "");
@@ -291,7 +293,11 @@ function renderSettings() {
   if (!configuration) return;
   const available = configuration.hosted_available;
   const rows = [["Environment", "Development workspace"], ["Operator", configuration.operator], ["Default analytical engine", configuration.default_engine === "duckdb" ? "DuckDB" : "SQLite"], ["Rule-based investigation", "Available"], ["Hosted AI investigation", available ? "Configured; live evaluation pending" : "Not configured"], ["Checkpointed AI investigation", available ? "Configured; live evaluation pending" : "Not configured"], ["Metric scenarios", String(cases.length)]];
-  $("settings-configuration").replaceChildren(node("dl", {className: "settings-rows"}, rows.map(([label, value]) => node("div", {}, node("dt", {}, label), node("dd", {}, value)))), node("div", {className: "settings-note"}, "Configuration is read from the running service. Model quality and cloud deployment are separate release checks."));
+  if (spendStatus) {
+    const money = value => "$" + Number(value).toFixed(2);
+    rows.push(["AI allowance per run", money(spendStatus.run_limit_usd)], ["Shared AI allowance", money(spendStatus.total_limit_usd)], ["Accounted and reserved", money(spendStatus.accounted_usd)], ["Remaining allowance", money(spendStatus.remaining_usd)], ["Unresolved requests", String((spendStatus.states.unknown?.requests || 0) + (spendStatus.states.reserved?.requests || 0))]);
+  }
+  $("settings-configuration").replaceChildren(node("dl", {className: "settings-rows"}, rows.map(([label, value]) => node("div", {}, node("dt", {}, label), node("dd", {}, value)))), node("div", {className: "settings-note"}, "Configuration is read from the running service. Allowances cover this workspace's API requests; unresolved requests stay reserved and provider billing can differ. Model quality and cloud deployment are separate release checks."));
   $("settings-access").textContent = configuration.access_mode === "shared_operator" ? "A shared operator access code protects this service. Individual user accounts are not connected." : "Local loopback access on this machine. Individual user accounts are not connected.";
 }
 async function refreshMetric() {

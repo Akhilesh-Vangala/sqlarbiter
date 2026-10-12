@@ -57,6 +57,8 @@ class EvidenceTools:
                 result = self.inspect_sql(params["sql"])
             elif method in ("contract", "lineage", "changes", "current_sql") and not params:
                 result = self.manifest[method]
+            elif method == "project" and not params and "project" in self.manifest:
+                result = self.manifest["project"]
             else:
                 raise ToolRejected("Unknown tool or invalid parameters")
             record.update(ok=True, result=result)

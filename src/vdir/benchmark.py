@@ -112,8 +112,8 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
             raise ValueError("Configure the private model credentials before creating a live run")
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
-    from .evaluation import RUNTIME, RUNTIME_FILES
-    runtime_hash = hashlib.sha256(b"".join((RUNTIME / name).read_bytes() for name in RUNTIME_FILES)).hexdigest()
+    from .evaluation import runtime_source, RUNTIME_FILES
+    runtime_hash = hashlib.sha256(b"".join(runtime_source(name).read_bytes() for name in RUNTIME_FILES)).hexdigest()
     from . import evaluation
     report = {"corpus": current, "investigator": investigator, "engine": engine,
               "python": platform.python_version(), "runtime_sha256": runtime_hash,
