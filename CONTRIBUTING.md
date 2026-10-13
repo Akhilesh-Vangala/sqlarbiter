@@ -1,5 +1,7 @@
 # Contributing
 
+Use the [branch and release workflow](BRANCHING.md): short-lived work branch → pull request → required CI → squash merge into protected `main`.
+
 Follow the [README quick start](README.md#run-locally). Python 3.11, Chromium and the separately locked dbt environment reproduce the application and integration checks.
 
 ## Verify a change

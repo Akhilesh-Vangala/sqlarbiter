@@ -277,3 +277,5 @@ verifyops/
 | [README history](README-HISTORY.md) | Preserved dated milestones from the previous README. |
 
 The Python package and some UI labels retain the earlier **Verified Data Incident Resolution / VDIR** name. The public project is **VerifyOps**.
+
+[Branch and release workflow](BRANCHING.md) · [Contributing](CONTRIBUTING.md)
