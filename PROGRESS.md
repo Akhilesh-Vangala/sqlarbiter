@@ -1,5 +1,7 @@
 # Progress
 
+October 13 presentation update: matching monochrome hero and authority-layer system map, featured actual dbt workbench screenshot, expandable detailed flows, repository map, technical documentation index and contribution/review templates. Source implementation and recorded benchmark claims are unchanged. Local previews render all 10 VerifyOps Mermaid diagrams on desktop/mobile; original SVG bounds and owned documentation links pass. Current branch CI status is linked from the README; no live generation or cloud action.
+
 October 12 documentation presentation: README reorganized around business problem, agent workflow, actual dbt demo, operational boundaries, reproducible setup and recorded CI evidence. Monochrome SVG banner and original synthetic-demo screenshots are included; [full system flowcharts](docs/17-SYSTEM-FLOWCHARTS.md) document current authority boundaries. Earlier README milestones are preserved in [README history](README-HISTORY.md). Documentation-only change; no new live-model, cloud or user-validation claim. Publication/render checks are recorded in workspace logs.
 
 ## October12 — Queued browser dbt investigations
