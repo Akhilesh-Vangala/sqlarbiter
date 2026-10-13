@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
+*.egg-info/
 .venv/
 .venv*
 .tools/
@@ -8,3 +9,4 @@ __pycache__/
 !.env.example
 artifacts/generated/
 .DS_Store
+.vercel/

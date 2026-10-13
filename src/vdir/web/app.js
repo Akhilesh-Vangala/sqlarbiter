@@ -451,10 +451,12 @@ async function refreshMetric() {
 }
 
 function openInvestigation(metric = null) {
+  if (configuration?.public_showcase) { notify("This public showcase is read only. Open the recorded demo to inspect an executed workflow."); return; }
   const origin = ["new-investigation", "new-workflow"].includes(activeView) ? setupReturnPath : activeView === "detail" ? returnPath : location.pathname;
   navigate("/investigations/new" + (typeof metric === "string" ? "?metric=" + encodeURIComponent(metric) : ""), {returnPath: origin});
 }
 function openWorkflow() {
+  if (configuration?.public_showcase) { notify("This public showcase is read only. Open the recorded demo to inspect an executed workflow."); return; }
   const origin = ["new-investigation", "new-workflow"].includes(activeView) ? setupReturnPath : activeView === "detail" ? returnPath : location.pathname;
   navigate("/workflows/new", {returnPath: origin});
 }
@@ -1226,6 +1228,15 @@ async function initialize() {
   dbtProjects = projects;
   cases = incidentList;
   configured = configuration.hosted_available;
+  if (configuration.public_showcase) {
+    $("public-showcase-notice").hidden = false;
+    document.querySelector(".environment-tag").textContent = "Vercel · Read only";
+    document.querySelector(".workspace-status > span:last-child").firstChild.textContent = "Public showcase";
+    for (const id of ["new-investigation", "workflow-launch", "run-button", "workflow-submit", "dbt-start"]) {
+      $(id).disabled = true;
+      $(id).title = "State-changing actions are disabled in the public showcase";
+    }
+  }
   $("operator-name").textContent = configuration.operator;
   $("home-provider").textContent = configured ? "Configured. Live quality evaluation is pending." : "Not configured. Rule-based investigations are available.";
   $("scenario-count").textContent = cases.length;
@@ -1256,6 +1267,7 @@ async function initialize() {
 }
 $("investigation-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (configuration?.public_showcase) { notify("This public showcase is read only."); return; }
   if (busy) return;
   busy = true;
   $("run-button").disabled = true;
@@ -1305,6 +1317,7 @@ $("workflow-launch").addEventListener("click", openWorkflow);
 $("workflow-dismiss").addEventListener("click", () => navigate(setupReturnPath));
 $("workflow-form").addEventListener("submit", async event => {
   event.preventDefault();
+  if (configuration?.public_showcase) { notify("This public showcase is read only."); return; }
   const caseIds = [...$("workflow-scenarios").querySelectorAll("input:checked")].map(input => input.value);
   if (!caseIds.length) { notify("Select at least one metric scenario.", true); return; }
   $("workflow-submit").disabled = true;
@@ -1331,7 +1344,9 @@ $("cancel-form").addEventListener("submit", async event => {
 $("back-button").addEventListener("click", () => navigate(["new-dbt", "dbt-run"].includes(activeView) ? "/dbt" : activeView === "detail" ? returnPath : activeView === "metric" ? "/metrics" : activeView === "workflows" ? "/workflows" : setupReturnPath));
 $("dbt-cancel-setup").addEventListener("click", () => navigate("/dbt"));
 $("dbt-form").addEventListener("submit", async event => {
-  event.preventDefault(); $("dbt-start").disabled = true;
+  event.preventDefault();
+  if (configuration?.public_showcase) { notify("This public showcase is read only."); return; }
+  $("dbt-start").disabled = true;
   try { const job = await post("/dbt/runs", {project_id: $("dbt-project").value, investigator: $("dbt-investigator").value}, true); navigate("/dbt/runs/" + job.id); await refresh(); }
   catch (error) { notify(error.message, true); }
   finally { $("dbt-start").disabled = false; }

@@ -187,6 +187,19 @@ class WorkbenchAPITests(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_app(self.root, token="", public_origin="https://workbench.example")
 
+    def test_public_showcase_allows_remote_reads_and_blocks_changes(self):
+        with patch.dict(os.environ, {"VDIR_PUBLIC_SHOWCASE": "1"}):
+            public_app = create_app(self.root / "public", token="", operator="public-showcase")
+        with TestClient(public_app, base_url="https://verifyops.example", client=("203.0.113.10", 1)) as public:
+            self.assertEqual(public.get("/").status_code, 200)
+            config = public.get("/api/config")
+            self.assertEqual(config.status_code, 200)
+            self.assertTrue(config.json()["public_showcase"])
+            self.assertEqual(config.json()["access_mode"], "public_read_only")
+            blocked = public.post("/api/jobs", json={"case_id": "case-001"})
+            self.assertEqual(blocked.status_code, 405)
+            self.assertEqual(blocked.json()["detail"], "Public showcase is read-only")
+
     def test_page_routes_reload_without_exposing_protected_job_data(self):
         token = "private-operator-" + "x" * 32
         with TestClient(create_app(self.root, token=token), base_url="http://localhost") as client:
