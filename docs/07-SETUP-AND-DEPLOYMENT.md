@@ -1,5 +1,7 @@
 # Setup and deployment
 
+October 13: [verifyops.vercel.app](https://verifyops.vercel.app) now serves the real interface as a public read-only engineering showcase on Vercel Python 3.12. The API exposes current synthetic incident and dbt project metadata while rejecting every state-changing method. See the [deployment record and boundary](18-VERCEL-SHOWCASE.md). The persistent API/worker/Phoenix Compose system remains the local integration target; durable state-changing cloud execution is still pending.
+
 ## Python and dependencies
 
 Use **Python 3.11.17** locally and in Docker. The project requires >=3.11,<3.12; .python-version records the patch. Runtime pins include web, SDK, analytical and OTel dependencies. requirements-dev adds HTTP test and browser dependencies. No dependency-free core claim remains.

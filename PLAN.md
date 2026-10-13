@@ -55,7 +55,8 @@ Advanced destination: incident environment, learned investigation policy and del
 - [x] Prepare Docker/Compose and GitHub CI definitions.
 - [x] Build/run test/runtime containers and real Compose API/worker/Phoenix workflows.
 - [x] Publish new public repository and execute remote CI; [actual runs/evidence](docs/14-GITHUB-PUBLICATION.md). Release completion additionally requires independently confirmed successful checks.
-- [ ] Cloud account/provider configuration, staging deployment, TLS and operational monitoring.
+- [x] Public read-only Vercel engineering showcase with cloud build and external smoke checks.
+- [ ] Durable API/worker state, individual identity, staging promotion, monitoring and rollback.
 - [ ] Individual authentication, durable distributed state and detailed failure accounting.
 - [ ] Isolated execution, promotion/rollback and reproducible release experiments.
 
