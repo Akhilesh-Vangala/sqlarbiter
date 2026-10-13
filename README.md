@@ -8,7 +8,8 @@
 </p>
 
 <p align="center">
-  <a href="#the-business-problem">Problem</a> ·
+  <a href="docs/CASE-STUDY.md">Case study</a> ·
+  <a href="docs/DEMO.md">Recorded demo</a> ·
   <a href="#the-agentic-workflow">Agent workflow</a> ·
   <a href="#a-real-dbt-repair-workflow">dbt demo</a> ·
   <a href="#run-locally">Quick start</a> ·
@@ -20,17 +21,31 @@
 
 **Investigate a broken business metric. Propose an evidence-backed SQL repair. Independently verify it before human review.**
 
-VerifyOps is an applied and agentic AI engineering project with a browser workbench, a checkpointed LangGraph investigator, bounded analytical tools, a real dbt repair pipeline, and a separate correctness verifier. Every candidate carries executed evidence; edits create new verification runs; reviews bind to the exact checked version.
+VerifyOps combines a checkpointed LangGraph investigator, bounded analytical tools and a real dbt repair pipeline. Independent checks accompany every proposal; edits trigger new verification, and reviews bind to the exact checked version.
 
-> **Development release.** The model integration is implemented and protocol-tested with scripted providers. Live model quality, unseen generalization, public cloud deployment, and actual user feedback are still pending. The default fixed diagnostic runs without an API key. Approval records a review; production warehouse writes and repository merges are not connected.
+> **Development release.** The default fixed diagnostic needs no API key. Live AI quality, unseen generalization, cloud operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Scope and tradeoffs →](docs/CASE-STUDY.md#what-the-evidence-establishes)
+
+| Run the product | Inspect the engineering | Challenge the evidence |
+| --- | --- | --- |
+| [Quick start](#run-locally) · [Recorded walkthrough](docs/DEMO.md) | [Design case study](docs/CASE-STUDY.md) · [System map](docs/README.md) | [Reproducible checks](CONTRIBUTING.md) · [Limits and tradeoffs](docs/CASE-STUDY.md#what-the-evidence-establishes) |
 
 ## See the workbench
 
-![Actual VerifyOps dbt workbench showing the trusted original project and tooling readiness](docs/assets/dbt-projects.png)
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/verifyops-demo-poster.png">
+  <img src="docs/assets/verifyops-demo.gif" alt="Six recorded stages: start the dbt investigation, inspect the finding, verify twenty outputs, review the SQL patch, reject a false fix and record exact-version sandbox review" width="100%">
+</picture>
+
+**17-second recorded walkthrough.** Actual dbt builds and application execution on original synthetic data with the fixed diagnostic. Reviews are automated sandbox demonstrations. No live model inference, production warehouse write or repository merge. [Static frames and recording provenance →](docs/DEMO.md)
 
 The operator journey connects a queued investigation to source evidence, a SQL diff, independent regression checks and an immutable review. The native web app uses monochrome styling throughout. The sample shown uses original synthetic data and the fixed diagnostic.
 
 ## The business problem
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/verifyops-case-dark.svg">
+  <img src="docs/assets/verifyops-case-light.svg" alt="Original payment event e1 arrives as deliveries d1 and d2: delivery-grain revenue is 2400 cents; event-identity repair restores 1200 cents" width="100%">
+</picture>
 
 A dashboard can return plausible numbers while its transformations are semantically wrong: a join multiplies revenue, retries duplicate payment events, or timestamp handling shifts transactions into the wrong reporting day. Successful SQL execution alone cannot establish that the metric is correct.
 
@@ -44,6 +59,10 @@ VerifyOps makes this investigation reviewable: collect source evidence, test hyp
 | Conflicting event payloads | Identify the information gap and request authoritative source data. |
 | Healthy transformation | Return a verified no-change decision. |
 | dbt payment-revenue incident | Repair one upstream model and check canonical, daily, monthly, and customer outputs. |
+
+## Engineering contribution
+
+The owned work connects **bounded agent investigation**, **executed and cited evidence**, **independent correctness checks**, and **exact-version review**. The SDK handles model transport; application code owns job leases, call receipts, estimated spend admission, SQL/tool limits, dbt patch restrictions and result integrity. [Design decisions, failure cases and implementation entry points →](docs/CASE-STUDY.md)
 
 ## System architecture
 
@@ -199,6 +218,11 @@ Compose runs the API, worker, and Phoenix with loopback ports and shared local v
 </details>
 
 ## Verified evidence
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/verifyops-evidence-dark.svg">
+  <img src="docs/assets/verifyops-evidence-light.svg" alt="Recorded engineering evidence: 133 unit passes plus one optional skip, 120 container browser checks, and twenty outputs per dbt verification; live AI quality pending" width="100%">
+</picture>
 
 The implementation baseline at [`14f0bce`](https://github.com/Akhilesh-Vangala/verifyops/commit/14f0bce060eec328e46e95ace58c153559015a91) passed all three jobs in [GitHub Actions run 38315249531](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38315249531). The badge above tracks the current branch; the following counts belong to that recorded baseline.
 

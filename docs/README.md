@@ -4,6 +4,8 @@ Start with the [project README](../README.md) for the business problem, original
 
 ## Review paths
 
+Start with the [engineering case study](CASE-STUDY.md) and [recorded demo](DEMO.md) for a concise review of the business problem, owned contribution, failure behavior and evidence.
+
 | Question | Read |
 | --- | --- |
 | What is the complete system flow? | [Full system flowcharts](17-SYSTEM-FLOWCHARTS.md), [system map](assets/verifyops-architecture.svg) |
