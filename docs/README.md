@@ -30,3 +30,5 @@ Start with the [project README](../README.md) for the business problem, original
 The original monochrome SVGs are architecture illustrations. [Catalog](assets/dbt-projects.png) and [repair](assets/dbt-investigation.png) screenshots show actual application/dbt execution on original synthetic data with the fixed diagnostic. They are not live AI evaluation results.
 
 Current checks are linked to a recorded commit and Actions run in the README. Native, container and dedicated dbt jobs publish downloadable evidence. Live model comparisons, held-out evaluation, actual user feedback and monitored cloud delivery remain pending. Earlier milestones remain available in [README history](../README-HISTORY.md).
+
+For repository development, use the [branch, PR and release policy](../BRANCHING.md).
