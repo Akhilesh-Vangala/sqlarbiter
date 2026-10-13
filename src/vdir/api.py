@@ -74,6 +74,7 @@ class NewDbtRun(BaseModel):
 
 
 def create_app(state_dir=None, token=None, public_origin=None, operator=None):
+    public_showcase = os.environ.get("VDIR_PUBLIC_SHOWCASE") == "1"
     if state_dir is None:
         from .config import load_local_configuration
         load_local_configuration()
@@ -85,9 +86,9 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     if public_origin and (not token or urlsplit(public_origin).scheme != "https"):
         raise ValueError("Public origin requires HTTPS and VDIR_ACCESS_TOKEN")
     store = JobStore(state_dir or os.environ.get("VDIR_STATE_DIR", "artifacts/generated/app"))
-    app = FastAPI(title="Verified Data Incident Resolution", version="0.2.0")
+    app = FastAPI(title="VerifyOps public showcase" if public_showcase else "Verified Data Incident Resolution", version="0.2.0")
     app.state.store = store
-    hosts = ["localhost", "127.0.0.1", "::1"]
+    hosts = ["*"] if public_showcase else ["localhost", "127.0.0.1", "::1"]
     if public_origin:
         hosts.append(urlsplit(public_origin).hostname)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=hosts)
@@ -103,7 +104,11 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.middleware("http")
     async def boundaries(request: Request, call_next):
         if request.url.path.startswith("/api/"):
-            if token:
+            if public_showcase and request.method != "GET":
+                return JSONResponse({"detail": "Public showcase is read-only"}, status_code=405)
+            if public_showcase:
+                pass
+            elif token:
                 provided = request.headers.get("authorization", "")
                 if not secrets.compare_digest(provided, "Bearer " + token):
                     return JSONResponse({"detail": "Operator access code required"}, status_code=401)
@@ -144,10 +149,13 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
 
     @app.get("/api/config")
     def config():
-        return {"hosted_available": bool(os.environ.get("ANTHROPIC_API_KEY")
+        return {"hosted_available": False if public_showcase else bool(os.environ.get("ANTHROPIC_API_KEY")
                                          and os.environ.get("VDIR_ANTHROPIC_MODEL")),
-                "operator": operator, "scope": "development", "default_engine": "duckdb",
-                "access_mode": "shared_operator" if token else "local_loopback"}
+                "operator": "Public showcase" if public_showcase else operator,
+                "scope": "public_showcase" if public_showcase else "development",
+                "default_engine": "duckdb",
+                "access_mode": "public_read_only" if public_showcase else ("shared_operator" if token else "local_loopback"),
+                "public_showcase": public_showcase}
 
     @app.get("/api/incidents")
     def case_list():

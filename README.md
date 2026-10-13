@@ -9,6 +9,7 @@
 
 <p align="center">
   <a href="docs/CASE-STUDY.md">Case study</a> ·
+  <a href="https://verifyops.vercel.app">Live showcase</a> ·
   <a href="docs/DEMO.md">Recorded demo</a> ·
   <a href="#the-agentic-workflow">Agent workflow</a> ·
   <a href="#a-real-dbt-repair-workflow">dbt demo</a> ·
@@ -23,11 +24,11 @@
 
 VerifyOps combines a checkpointed LangGraph investigator, bounded analytical tools and a real dbt repair pipeline. Independent checks accompany every proposal; edits trigger new verification, and reviews bind to the exact checked version.
 
-> **Development release.** The default fixed diagnostic needs no API key. Live AI quality, unseen generalization, cloud operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Scope and tradeoffs →](docs/CASE-STUDY.md#what-the-evidence-establishes)
+> **Development release.** The [public Vercel showcase](https://verifyops.vercel.app) is read only. The default fixed diagnostic needs no API key. Live AI quality, unseen generalization, durable cloud worker operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Deployment boundary →](docs/18-VERCEL-SHOWCASE.md)
 
 | Run the product | Inspect the engineering | Challenge the evidence |
 | --- | --- | --- |
-| [Quick start](#run-locally) · [Recorded walkthrough](docs/DEMO.md) | [Design case study](docs/CASE-STUDY.md) · [System map](docs/README.md) | [Reproducible checks](CONTRIBUTING.md) · [Limits and tradeoffs](docs/CASE-STUDY.md#what-the-evidence-establishes) |
+| [Live read-only showcase](https://verifyops.vercel.app) · [Quick start](#run-locally) · [Recorded walkthrough](docs/DEMO.md) | [Design case study](docs/CASE-STUDY.md) · [System map](docs/README.md) | [Reproducible checks](CONTRIBUTING.md) · [Limits and tradeoffs](docs/CASE-STUDY.md#what-the-evidence-establishes) |
 
 ## See the workbench
 
