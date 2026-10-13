@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: verifyops-config
+data:
+  VDIR_STATE_DIR: /state
+  VDIR_OPERATOR_NAME: authenticated-operator
+  VDIR_PUBLIC_ORIGIN: https://verifyops.example.com
+  VDIR_DATABASE_POOL_SIZE: "5"
+  VDIR_SQL_ENGINE: duckdb
+  VDIR_RUN_BUDGET_USD: "1"
+  VDIR_TOTAL_BUDGET_USD: "5"
+  VDIR_LOAD_DOTENV: "0"
+  VDIR_DATABASE_WAIT_SECONDS: "120"

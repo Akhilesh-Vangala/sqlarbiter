@@ -5,7 +5,7 @@ import signal
 import threading
 from pathlib import Path
 
-from .jobs import JobStore
+from .postgres_jobs import create_job_store
 from .service import process_next
 
 
@@ -17,16 +17,21 @@ def main():
         "VDIR_STATE_DIR", "artifacts/generated/app")))
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args()
-    store = JobStore(args.state_dir)
-    if args.once:
-        process_next(store)
-        return
-    stopped = threading.Event()
-    for number in (signal.SIGINT, signal.SIGTERM):
-        signal.signal(number, lambda *_: stopped.set())
-    while not stopped.is_set():
-        if not process_next(store, stopped):
-            stopped.wait(0.5)
+    store = create_job_store(args.state_dir)
+    try:
+        if args.once:
+            process_next(store)
+            return
+        stopped = threading.Event()
+        for number in (signal.SIGINT, signal.SIGTERM):
+            signal.signal(number, lambda *_: stopped.set())
+        while not stopped.is_set():
+            if not process_next(store, stopped):
+                stopped.wait(0.5)
+    finally:
+        close = getattr(store, "close", None)
+        if close:
+            close()
 
 
 if __name__ == "__main__":

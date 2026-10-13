@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Verify workbench CI status"></a>
-  &nbsp; Python 3.11 · LangGraph · DuckDB · dbt · OpenTelemetry
+  &nbsp; Python 3.12 · LangGraph · PostgreSQL · Kubernetes · dbt
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
 
 VerifyOps combines a checkpointed LangGraph investigator, bounded analytical tools and a real dbt repair pipeline. Independent checks accompany every proposal; edits trigger new verification, and reviews bind to the exact checked version.
 
-> **Development release.** The [public Vercel showcase](https://verifyops.vercel.app) is read only. The default fixed diagnostic needs no API key. Live AI quality, unseen generalization, durable cloud worker operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Deployment boundary →](docs/18-VERCEL-SHOWCASE.md)
+> **Development release.** The [public Vercel showcase](https://verifyops.vercel.app) is read only. PostgreSQL coordination, Docker Compose, Kubernetes/Kind and unapplied AWS Terraform now form the production foundation. Live AI quality, individual identity, isolated customer execution, monitored AWS operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Production foundation →](docs/19-PRODUCTION-FOUNDATION.md)
 
 | Run the product | Inspect the engineering | Challenge the evidence |
 | --- | --- | --- |
@@ -184,18 +184,18 @@ Use `/dbt` to browse the trusted project, `/dbt/new` to start a run, and `/dbt/r
 | Review integrity | Exact result versions; immutable review records; dbt report/model/patch hashes checked before approval and download. |
 | Observability | OpenTelemetry spans across jobs, graph stages, model calls, tools, and verification; local JSONL and optional OTLP/Phoenix. Prompt and row contents are not exported to Phoenix. |
 
-SQLite state and checkpoints are **single-host infrastructure**. Individual identity, distributed recovery/load testing, per-investigation OS isolation, arbitrary repository/warehouse connectors, and monitored cloud hosting remain release work.
+SQLite remains the default offline adapter. PostgreSQL coordination/checkpoints and Kubernetes packaging are implemented for the production foundation; individual identity, object-store workspace synchronization, per-investigation OS isolation, realistic connectors and monitored AWS operation remain release work.
 
 ## Run locally
 
-Requires Python **3.11**; CI and the container use **3.11.17**. From a fresh checkout:
+Requires Python **3.11 or 3.12**; CI and the container use **3.12**. From a fresh checkout:
 
 ```sh
 git clone https://github.com/Akhilesh-Vangala/verifyops.git
 cd verifyops
-python3.11 -m venv .venv
+python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
-python3.11 -m venv .venv-dbt
+python3.12 -m venv .venv-dbt
 .venv-dbt/bin/python -m pip install -r requirements-dbt.txt
 PYTHONPATH=src .venv/bin/python -m vdir.serve
 ```
@@ -263,16 +263,16 @@ PYTHONPATH=src .venv/bin/python -m vdir --investigate artifacts/generated/live-g
 
 | Layer | Technology and source |
 | --- | --- |
-| Agent orchestration | LangGraph + SQLite checkpointer · [`investigator_runtime/graph.py`](investigator_runtime/graph.py) |
+| Agent orchestration | LangGraph + PostgreSQL/SQLite checkpointers · [`investigator_runtime/graph.py`](investigator_runtime/graph.py) |
 | Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](investigator_runtime/model.py) |
 | Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](investigator_runtime/agent_policy.py) |
 | Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](investigator_runtime/tools.py), [`engines.py`](investigator_runtime/engines.py) |
 | Independent verification | Python references and evidence replay · [`src/vdir/evaluation.py`](src/vdir/evaluation.py), [`reference.py`](src/vdir/reference.py) |
-| API, worker, state | FastAPI + Uvicorn + SQLite · [`src/vdir/api.py`](src/vdir/api.py), [`jobs.py`](src/vdir/jobs.py), [`service.py`](src/vdir/service.py) |
+| API, worker, state | FastAPI + Uvicorn + PostgreSQL/SQLite adapters · [`src/vdir/api.py`](src/vdir/api.py), [`postgres_jobs.py`](src/vdir/postgres_jobs.py), [`jobs.py`](src/vdir/jobs.py) |
 | dbt repair | dbt-core + dbt-duckdb · [`src/vdir/dbt_workflow.py`](src/vdir/dbt_workflow.py), [`original project`](dbt/revenue_incident) |
 | Spend accounting | SQLite ledger · [`src/vdir/spending.py`](src/vdir/spending.py) |
 | Web application | Native HTML / CSS / JavaScript · [`src/vdir/web`](src/vdir/web) |
-| Tracing and delivery | OpenTelemetry / Phoenix, Docker, GitHub Actions, Playwright |
+| Tracing and delivery | OpenTelemetry/Phoenix, Docker, Kubernetes/Kind, Terraform/AWS, GitHub Actions, Playwright |
 
 ## Repository map
 
@@ -282,6 +282,7 @@ verifyops/
 ├── src/vdir/              API, job worker, verification, dbt workflow and web app
 ├── dbt/                   Original payment-revenue incident and regression fixtures
 ├── tests/                 Protocol, queue, integrity and browser suites
+├── deploy/                Kustomize bases/overlays and unapplied AWS Terraform
 ├── docs/                  Design, evaluation, delivery and original visual assets
 ├── .github/               Native, container and dbt checks; review templates
 └── CONTRIBUTING.md        Reproduction and evidence conventions
@@ -298,6 +299,7 @@ verifyops/
 | [dbt browser workflow](docs/16-DBT-BROWSER-WORKFLOW.md) · [Spending and dbt](docs/15-SPENDING-AND-DBT.md) | Routes, patch restrictions, regressions, and cost admission. |
 | [Evaluation](docs/06-EVALUATION.md) · [Benchmark](docs/10-REMEDIATION-AND-BENCHMARK.md) | Known-case evidence, metrics, and evaluation limitations. |
 | [Setup/deployment](docs/07-SETUP-AND-DEPLOYMENT.md) · [Application pages](docs/13-APPLICATION-PAGES.md) | Reproduction, configuration, and product navigation. |
+| [Production foundation](docs/19-PRODUCTION-FOUNDATION.md) | PostgreSQL fencing, Docker Compose, Kubernetes/Kind and AWS Terraform boundaries. |
 | [Decisions](docs/DECISIONS.md) · [Plan](PLAN.md) · [Progress](PROGRESS.md) | Tradeoffs, completed work, and remaining release gates. |
 | [README history](README-HISTORY.md) | Preserved dated milestones from the previous README. |
 

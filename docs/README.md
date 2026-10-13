@@ -15,6 +15,7 @@ Start with the [engineering case study](CASE-STUDY.md) and [recorded demo](DEMO.
 | What is the observed evidence? | [Recorded evidence](../README.md#verified-evidence), [benchmark scope](10-REMEDIATION-AND-BENCHMARK.md), [progress](../PROGRESS.md) |
 | How do jobs, recovery and costs work? | [Web and jobs](09-WEB-AND-JOBS.md), [graph recovery](11-AGENT-ORCHESTRATION.md), [spending](15-SPENDING-AND-DBT.md) |
 | How do I run or inspect it? | [Public read-only showcase](https://verifyops.vercel.app), [Vercel boundary](18-VERCEL-SHOWCASE.md), [quick start](../README.md#run-locally), [setup](07-SETUP-AND-DEPLOYMENT.md) |
+| How is the production foundation deployed? | [PostgreSQL, Docker, Kubernetes and AWS foundation](19-PRODUCTION-FOUNDATION.md) |
 | What remains before release? | [Plan](../PLAN.md), [handoff](../HANDOFF.md), [decisions](DECISIONS.md) |
 
 ## Engineering tradeoffs
@@ -23,7 +24,7 @@ Start with the [engineering case study](CASE-STUDY.md) and [recorded demo](DEMO.
 | --- | --- | --- |
 | Investigation separate from verification | Plausible SQL and persuasive explanations cannot approve their own correctness. | Private regressions cover designed fixtures; they do not prove general warehouse correctness. |
 | Restricted patch surface | Bind review to an exact source/model/patch/report version. | One trusted original dbt project, not arbitrary customer repository editing. |
-| Single-host queue and checkpointer | Exercise persistent ownership, cancellation, receipts and explicit recovery. | SQLite leases do not establish distributed scalability or OS-level investigation isolation. |
+| SQLite plus PostgreSQL queue adapters | Keep offline reproducibility while adding fenced multi-worker claims and production checkpoints. | Cloud execution still uses a shared filesystem until S3 synchronization and isolated tasks are implemented. |
 | SDK receipts and estimated spend reservations | Retain unknown generation commitments and avoid paid blind replay. | Trusted estimates are not provider invoice caps. |
 | Separate dbt environment | Resolve incompatible dependency constraints while retaining actual dbt CLI execution. | Additional packaging and supervision complexity; validated in the dedicated CI job and container. |
 

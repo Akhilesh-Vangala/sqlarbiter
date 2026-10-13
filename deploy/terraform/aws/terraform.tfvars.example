@@ -1,0 +1,8 @@
+aws_region                         = "us-east-1"
+vpc_id                            = "vpc-replace-me"
+private_subnet_ids                = ["subnet-private-a", "subnet-private-b"]
+cluster_endpoint_public_access_cidrs = ["203.0.113.10/32"]
+budget_alert_email                = "replace-me@example.com"
+
+# Staging defaults intentionally use two on-demand nodes and single-AZ RDS.
+# Set postgres_multi_az=true before a production availability claim.

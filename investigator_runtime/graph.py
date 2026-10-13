@@ -2,8 +2,10 @@
 import asyncio
 import hashlib
 import json
+import os
 import sqlite3
 import time
+from contextlib import asynccontextmanager
 from importlib.metadata import version as package_version
 from contextlib import nullcontext
 from datetime import datetime, timezone
@@ -48,7 +50,10 @@ def activity(state, stage, status, **fields):
 
 def evidence_version(workspace):
     digest = hashlib.sha256(GRAPH_VERSION.encode())
-    for package in ("langgraph", "langgraph-checkpoint", "langgraph-checkpoint-sqlite", "anthropic"):
+    packages = ["langgraph", "langgraph-checkpoint", "langgraph-checkpoint-sqlite", "anthropic"]
+    if os.getenv("VDIR_CHECKPOINT_DATABASE_URL"):
+        packages.append("langgraph-checkpoint-postgres")
+    for package in packages:
         digest.update((package + package_version(package)).encode())
     files = [workspace / "incident.json", workspace / "schema.json"]
     files += list(workspace.glob("source.*")) + list((workspace / "runtime").glob("*.py"))
@@ -58,6 +63,33 @@ def evidence_version(workspace):
             for chunk in iter(lambda: source.read(65536), b""):
                 digest.update(chunk)
     return digest.hexdigest()
+
+
+def graph_config(workspace):
+    if not os.getenv("VDIR_CHECKPOINT_DATABASE_URL"):
+        thread_id = "investigation"
+    else:
+        thread_id = os.getenv("VDIR_CHECKPOINT_THREAD_ID")
+    if not thread_id:
+        thread_id = hashlib.sha256(str(workspace.resolve()).encode()).hexdigest()
+    if len(thread_id) > 128:
+        raise ValueError("Checkpoint thread identity is too long")
+    return {"configurable": {"thread_id": thread_id}, "recursion_limit": 160}
+
+
+@asynccontextmanager
+async def checkpoint_saver(workspace):
+    database_url = os.getenv("VDIR_CHECKPOINT_DATABASE_URL")
+    if database_url:
+        from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+
+        async with AsyncPostgresSaver.from_conn_string(database_url) as saver:
+            yield saver
+    else:
+        async with AsyncSqliteSaver.from_conn_string(
+            str(workspace / "graph-checkpoints.sqlite")
+        ) as saver:
+            yield saver
 
 
 class Receipts:
@@ -356,9 +388,10 @@ async def investigate(tools, client, *, guidance=None, recover=False):
     client.system = GRAPH_SYSTEM
     receipts = Receipts(tools.workspace)
     started = time.monotonic()
-    async with AsyncSqliteSaver.from_conn_string(str(tools.workspace / "graph-checkpoints.sqlite")) as saver:
+    config = graph_config(tools.workspace)
+    async with checkpoint_saver(tools.workspace) as saver:
         graph = build_graph(tools, client, saver, receipts)
-        saved = await graph.aget_state(CONFIG)
+        saved = await graph.aget_state(config)
         if saved.values:
             state = saved.values
             if state["version"] != version:
@@ -407,7 +440,7 @@ async def investigate(tools, client, *, guidance=None, recover=False):
             (tools.workspace / "model-run.json").write_text(json.dumps(metadata, indent=2))
             return metadata
         try:
-            result = await graph.ainvoke(graph_input, CONFIG, durability="sync")
+            result = await graph.ainvoke(graph_input, config, durability="sync")
             paused = bool(result.get("__interrupt__"))
             metadata = report(result, "paused" if paused else "completed")
             tools.trace = list(result["trace"])
@@ -417,7 +450,7 @@ async def investigate(tools, client, *, guidance=None, recover=False):
                         "corrections": result["corrections"], "public_precheck": result["assessment"]},
                     "graph_run": {"status": "paused" if paused else "completed", "version": GRAPH_VERSION}}
         except BaseException:
-            saved = await graph.aget_state(CONFIG)
+            saved = await graph.aget_state(config)
             if saved.values:
                 report(saved.values, "failed")
             raise

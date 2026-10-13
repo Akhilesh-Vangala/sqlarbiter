@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
@@ -64,6 +65,40 @@ class GraphInvestigatorTests(unittest.TestCase):
         self.assertTrue((self.workspace / "graph-checkpoints.sqlite").is_file())
         with self.assertRaisesRegex(InvestigationFailed, "completed"):
             self.run_graph([], recover=True)
+
+    @unittest.skipUnless(
+        os.getenv("VDIR_TEST_DATABASE_URL"),
+        "Set VDIR_TEST_DATABASE_URL for PostgreSQL checkpoint integration",
+    )
+    def test_postgres_checkpointer_runs_the_real_graph_without_local_checkpoint_state(self):
+        from vdir.migrations import setup_checkpoints
+
+        database_url = os.environ["VDIR_TEST_DATABASE_URL"]
+        asyncio.run(setup_checkpoints(database_url))
+        thread_id = "integration-" + uuid.uuid4().hex
+        with patch.dict(
+            os.environ,
+            {
+                "VDIR_CHECKPOINT_DATABASE_URL": database_url,
+                "VDIR_CHECKPOINT_THREAD_ID": thread_id,
+            },
+        ):
+            response, _ = self.run_graph(
+                [
+                    completion([call("contract", {})]),
+                    completion([call("query", {"sql": self.case.current_sql})]),
+                    finish,
+                ]
+            )
+        self.assertTrue(grade(self.case, response, self.root / "postgres-grading")["passed"])
+        self.assertFalse((self.workspace / "graph-checkpoints.sqlite").exists())
+        import psycopg
+
+        with psycopg.connect(database_url) as connection:
+            count = connection.execute(
+                "SELECT COUNT(*) FROM checkpoints WHERE thread_id=%s", (thread_id,)
+            ).fetchone()[0]
+        self.assertGreater(count, 0)
 
     def test_six_scripted_scenarios_use_same_tools_and_verifier_in_both_engines(self):
         for engine in ("sqlite", "duckdb"):

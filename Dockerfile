@@ -1,4 +1,4 @@
-FROM python:3.11.17-slim AS dependencies
+FROM python:3.12-slim AS dependencies
 WORKDIR /app
 ENV PYTHONPATH=/app/src PYTHONDONTWRITEBYTECODE=1 VDIR_LOAD_DOTENV=0
 COPY requirements-web.txt ./
@@ -35,5 +35,6 @@ RUN mkdir -p /state && chown 10001:10001 /state
 USER 10001:10001
 ENV VDIR_STATE_DIR=/state VDIR_SQL_ENGINE=duckdb
 EXPOSE 8000
+STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
 CMD ["python", "-m", "uvicorn", "vdir.api:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
