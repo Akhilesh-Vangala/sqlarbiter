@@ -13,7 +13,7 @@
   <a href="#a-real-dbt-repair-workflow">dbt demo</a> ·
   <a href="#run-locally">Quick start</a> ·
   <a href="#verified-evidence">Evidence</a> ·
-  <a href="docs/17-SYSTEM-FLOWCHARTS.md">Full architecture</a>
+  <a href="docs/README.md">Technical documentation</a>
 </p>
 
 # VerifyOps
@@ -23,6 +23,12 @@
 VerifyOps is an applied and agentic AI engineering project with a browser workbench, a checkpointed LangGraph investigator, bounded analytical tools, a real dbt repair pipeline, and a separate correctness verifier. Every candidate carries executed evidence; edits create new verification runs; reviews bind to the exact checked version.
 
 > **Development release.** The model integration is implemented and protocol-tested with scripted providers. Live model quality, unseen generalization, public cloud deployment, and actual user feedback are still pending. The default fixed diagnostic runs without an API key. Approval records a review; production warehouse writes and repository merges are not connected.
+
+## See the workbench
+
+![Actual VerifyOps dbt workbench showing the trusted original project and tooling readiness](docs/assets/dbt-projects.png)
+
+The operator journey connects a queued investigation to source evidence, a SQL diff, independent regression checks and an immutable review. The native web app uses monochrome styling throughout. The sample shown uses original synthetic data and the fixed diagnostic.
 
 ## The business problem
 
@@ -40,6 +46,11 @@ VerifyOps makes this investigation reviewable: collect source evidence, test hyp
 | dbt payment-revenue incident | Repair one upstream model and check canonical, daily, monthly, and customer outputs. |
 
 ## System architecture
+
+![VerifyOps system map showing job ownership, a bounded LangGraph investigator, independent verification and exact-version review](docs/assets/verifyops-architecture.svg)
+
+<details>
+<summary><strong>Expand application orchestration and ownership</strong></summary>
 
 ```mermaid
 %%{init: {"theme": "neutral"}}%%
@@ -61,11 +72,16 @@ flowchart TD
     Revision --> Worker
 ```
 
+</details>
+
 The worker owns job execution. LangGraph owns investigation transitions. The verifier owns correctness checks. The operator owns review. [Full flowcharts and authority boundaries →](docs/17-SYSTEM-FLOWCHARTS.md)
 
 ## The agentic workflow
 
 The `langgraph` investigator uses an owned **vdir-graph-3** StateGraph. It separates model calls, source evidence, structured plans, findings, public prechecks, and clarification into checkpointed transitions.
+
+<details>
+<summary><strong>Expand the checkpointed agent flow</strong></summary>
 
 ```mermaid
 %%{init: {"theme": "neutral"}}%%
@@ -89,6 +105,8 @@ flowchart TD
     Precheck -->|Candidate or no change| Verify["Independent private verifier"]
     Precheck -->|Needs information| Pause["Checkpoint clarification<br/>Explicit continuation for metric runs"]
 ```
+
+</details>
 
 | Agent capability | Implemented behavior |
 | --- | --- |
@@ -120,8 +138,6 @@ flowchart LR
 ```
 
 The worker runs actual `dbt seed`, `run`, and `test`; exports staging evidence and manifest/model context; invokes the selected investigator; then validates a restricted single-model patch. Fresh dbt builds across **five designed fixtures** independently check **four output relations**, producing **20 model checks**. The fixed diagnostic repair restores daily revenue to **1,200 cents**. An equal-value false fix passes the original incident but fails regression.
-
-![Actual monochrome dbt project catalog showing the trusted sample and tooling readiness](docs/assets/dbt-projects.png)
 
 <details>
 <summary><strong>View the actual verified repair, regression checks, SQL diff, and review screen</strong></summary>
@@ -233,10 +249,24 @@ PYTHONPATH=src .venv/bin/python -m vdir --investigate artifacts/generated/live-g
 | Web application | Native HTML / CSS / JavaScript · [`src/vdir/web`](src/vdir/web) |
 | Tracing and delivery | OpenTelemetry / Phoenix, Docker, GitHub Actions, Playwright |
 
+## Repository map
+
+```text
+verifyops/
+├── investigator_runtime/  Owned agent graph, SDK transport and analytical tools
+├── src/vdir/              API, job worker, verification, dbt workflow and web app
+├── dbt/                   Original payment-revenue incident and regression fixtures
+├── tests/                 Protocol, queue, integrity and browser suites
+├── docs/                  Design, evaluation, delivery and original visual assets
+├── .github/               Native, container and dbt checks; review templates
+└── CONTRIBUTING.md        Reproduction and evidence conventions
+```
+
 ## Explore the design
 
 | Read | Purpose |
 | --- | --- |
+| [Documentation index](docs/README.md) | Routes through implementation, evidence, tradeoffs and release gates. |
 | [Full system flowcharts](docs/17-SYSTEM-FLOWCHARTS.md) | Application, AI layers, evidence tools, dbt repair, and operational boundaries. |
 | [Architecture](docs/02-ARCHITECTURE.md) · [AI design](docs/05-AI-DESIGN.md) | Separation of investigation, verification, and review. |
 | [Agent orchestration](docs/11-AGENT-ORCHESTRATION.md) · [Workflows](docs/12-WORKFLOWS-AND-CANCELLATION.md) | Checkpoints, findings, clarification, ownership, and cancellation. |

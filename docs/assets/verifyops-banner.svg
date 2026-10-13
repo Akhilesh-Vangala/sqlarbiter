@@ -1,27 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="title desc">
-  <title id="title">VerifyOps — evidence before approval</title>
-  <desc id="desc">Agentic data incident investigation: investigate with bounded tools, verify against independent references, and review the exact patch.</desc>
-  <rect width="1280" height="380" rx="18" fill="#090909"/>
-  <rect x="1" y="1" width="1278" height="378" rx="17" fill="none" stroke="#303030"/>
-  <g font-family="Arial, Helvetica, sans-serif">
-    <rect x="52" y="44" width="36" height="36" rx="8" fill="#fafafa"/>
-    <path d="M61 61l6 8 13-17" fill="none" stroke="#090909" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="104" y="68" font-size="17" font-weight="700" fill="#fafafa" letter-spacing="2">VERIFYOPS</text>
-    <text x="52" y="146" font-size="54" font-weight="700" fill="#fafafa">Evidence before approval.</text>
-    <text x="54" y="187" font-size="21" fill="#bdbdbd">Agentic data investigation. Independently verified SQL repairs.</text>
-    <text x="54" y="222" font-size="14" fill="#999999" letter-spacing="1">LANGGRAPH  /  BOUNDED ANALYTICS  /  REAL DBT EXECUTION  /  EXACT-VERSION REVIEW</text>
-    <g transform="translate(52 268)">
-      <rect width="342" height="66" rx="8" fill="#151515" stroke="#404040"/>
-      <text x="20" y="26" font-size="12" fill="#a8a8a8">01  INVESTIGATE</text>
-      <text x="20" y="49" font-size="17" fill="#fafafa">Hypotheses + executed evidence</text>
-      <path d="M353 33h25m-7-7 7 7-7 7" fill="none" stroke="#a8a8a8" stroke-width="2"/>
-      <rect x="392" width="342" height="66" rx="8" fill="#151515" stroke="#404040"/>
-      <text x="412" y="26" font-size="12" fill="#a8a8a8">02  VERIFY</text>
-      <text x="412" y="49" font-size="17" fill="#fafafa">Independent references + regressions</text>
-      <path d="M745 33h25m-7-7 7 7-7 7" fill="none" stroke="#a8a8a8" stroke-width="2"/>
-      <rect x="784" width="392" height="66" rx="8" fill="#fafafa"/>
-      <text x="804" y="26" font-size="12" fill="#555555">03  REVIEW</text>
-      <text x="804" y="49" font-size="17" fill="#090909">Inspect and approve the exact artifact</text>
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+<title id="title">VerifyOps — Evidence before approval.</title><desc id="desc">Investigate SQL incidents. Verify repairs. Review exact versions.. Original monochrome architecture illustration.</desc>
+<defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#222" stroke-width="0.6"/></pattern></defs>
+<rect width="1280" height="420" rx="16" fill="#101010"/>
+<rect x="728" width="552" height="420" rx="16" fill="url(#grid)"/>
+<path d="M728 32V388" stroke="#333"/>
+<text x="48" y="59" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#a8a8a8" font-weight="600" letter-spacing="2">AGENTIC SYSTEMS / ENGINEERING WORKBENCH</text>
+<text x="46" y="153" font-family="Arial,Helvetica,sans-serif" font-size="80" fill="#fff" font-weight="700" letter-spacing="-3">VerifyOps</text>
+<text x="48" y="207" font-family="Arial,Helvetica,sans-serif" font-size="29" fill="#f0f0f0" font-weight="500" >Evidence before approval.</text>
+<text x="48" y="251" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#bdbdbd" font-weight="400" >Investigate SQL incidents. Verify repairs. Review exact versions.</text>
+<rect x="48" y="301" width="159" height="35" rx="17" fill="#fff"/>
+<text x="66" y="324" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#161616" font-weight="600" >LangGraph / Python</text>
+<text x="224" y="324" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#c8c8c8" font-weight="400" >Original code. Explicit boundaries.</text>
+<text x="48" y="385" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#909090" font-weight="500" letter-spacing="1.2">EVIDENCE → PROPOSAL → VERIFICATION → REVIEW</text>
+<path d="M972 136H1006M1103 177V228M1006 270H972" fill="none" stroke="#b3b3b3" stroke-width="1.5"/>
+<path d="m998 132 8 4-8 4M1099 220l4 8 4-8m-127 46-8 4 8 4" fill="none" stroke="#b3b3b3" stroke-width="1.5"/>
+<rect x="778" y="94" width="194" height="83" rx="8" fill="#191919" stroke="#555"/>
+<text x="794" y="118" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#909090" font-weight="500" letter-spacing="1">01</text>
+<text x="794" y="142" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#fff" font-weight="600" >Investigate</text>
+<text x="794" y="163" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#bdbdbd" font-weight="400" >Bounded evidence tools</text>
+<rect x="1006" y="94" width="194" height="83" rx="8" fill="#191919" stroke="#555"/>
+<text x="1022" y="118" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#909090" font-weight="500" letter-spacing="1">02</text>
+<text x="1022" y="142" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#fff" font-weight="600" >Propose</text>
+<text x="1022" y="163" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#bdbdbd" font-weight="400" >Cited SQL hypothesis</text>
+<rect x="1006" y="228" width="194" height="83" rx="8" fill="#191919" stroke="#555"/>
+<text x="1022" y="252" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#909090" font-weight="500" letter-spacing="1">03</text>
+<text x="1022" y="276" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#fff" font-weight="600" >Verify</text>
+<text x="1022" y="297" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#bdbdbd" font-weight="400" >Independent regressions</text>
+<rect x="778" y="228" width="194" height="83" rx="8" fill="#191919" stroke="#555"/>
+<text x="794" y="252" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#909090" font-weight="500" letter-spacing="1">04</text>
+<text x="794" y="276" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#fff" font-weight="600" >Review</text>
+<text x="794" y="297" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#bdbdbd" font-weight="400" >Exact checked version</text>
+<text x="778" y="355" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#a8a8a8" font-weight="500" letter-spacing="1">MODEL PROPOSES. AUTHORITY STAYS EXPLICIT.</text>
 </svg>
