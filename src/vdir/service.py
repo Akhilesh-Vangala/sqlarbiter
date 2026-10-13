@@ -61,17 +61,30 @@ def execute_one(store, job, telemetry=None):
         workspace = root / "evidence"
         shutil.copytree(original, workspace, ignore=shutil.ignore_patterns("graph-*.sqlite*"))
         # SQLite backup includes committed WAL pages; the immutable parent is never resumed in place.
-        for name in ("graph-checkpoints.sqlite", "graph-receipts.sqlite"):
+        checkpoint_files = ["graph-receipts.sqlite"]
+        if not os.environ.get("VDIR_CHECKPOINT_DATABASE_URL"):
+            checkpoint_files.insert(0, "graph-checkpoints.sqlite")
+        for name in checkpoint_files:
             source = original / name
             if not source.is_file() or source.is_symlink():
                 raise ValueError("Missing graph checkpoint")
             with sqlite3.connect("file:%s?mode=ro" % source, uri=True) as src:
                 with sqlite3.connect(workspace / name) as dst:
                     src.backup(dst)
-        response = evaluation.run_worker(workspace, mode="langgraph", continuation={"guidance": request["guidance"]}, spend_root=store.root)
+        options = {
+            "mode": "langgraph",
+            "continuation": {"guidance": request["guidance"]},
+            "spend_root": store.root,
+        }
+        if os.environ.get("VDIR_CHECKPOINT_DATABASE_URL"):
+            options["checkpoint_thread_id"] = parent["id"]
+        response = evaluation.run_worker(workspace, **options)
     else:
         workspace = evaluation.export_workspace(case, root / "evidence", engine)
-        response = evaluation.run_worker(workspace, mode=request["investigator"], spend_root=store.root)
+        options = {"mode": request["investigator"], "spend_root": store.root}
+        if os.environ.get("VDIR_CHECKPOINT_DATABASE_URL"):
+            options["checkpoint_thread_id"] = job["id"]
+        response = evaluation.run_worker(workspace, **options)
     with telemetry.span("verification", **{"vdir.engine": engine}) if telemetry else nullcontext():
         grading = evaluation.grade(case, response, root / "grading", engine)
     return {"case_id": case.case_id, "engine": engine, "input_version": request["input_version"],

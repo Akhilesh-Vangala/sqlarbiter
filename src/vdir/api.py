@@ -14,7 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .cases import incidents
-from .jobs import Conflict, JobStore, NotFound, encoded
+from .jobs import Conflict, NotFound, encoded
+from .postgres_jobs import create_job_store
 from .service import case_version, find_case
 
 STATIC = Path(__file__).parent / "web"
@@ -85,9 +86,11 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
         raise ValueError("VDIR_ACCESS_TOKEN must contain at least 32 characters")
     if public_origin and (not token or urlsplit(public_origin).scheme != "https"):
         raise ValueError("Public origin requires HTTPS and VDIR_ACCESS_TOKEN")
-    store = JobStore(state_dir or os.environ.get("VDIR_STATE_DIR", "artifacts/generated/app"))
+    store = create_job_store(state_dir or os.environ.get("VDIR_STATE_DIR", "artifacts/generated/app"))
     app = FastAPI(title="VerifyOps public showcase" if public_showcase else "Verified Data Incident Resolution", version="0.2.0")
     app.state.store = store
+    if hasattr(store, "close"):
+        app.add_event_handler("shutdown", store.close)
     hosts = ["*"] if public_showcase else ["localhost", "127.0.0.1", "::1"]
     if public_origin:
         hosts.append(urlsplit(public_origin).hostname)
@@ -146,6 +149,15 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.get("/healthz")
     def health():
         return {"status": "ok"}
+
+    @app.get("/readyz")
+    def ready():
+        try:
+            with store.connection() as connection:
+                connection.execute("SELECT 1").fetchone()
+        except Exception:
+            return JSONResponse({"status": "unavailable"}, status_code=503)
+        return {"status": "ready"}
 
     @app.get("/api/config")
     def config():

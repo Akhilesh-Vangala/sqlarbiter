@@ -113,12 +113,15 @@ def _stop_process(process):
         process.wait(timeout=3)
 
 
-def run_worker(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
+def run_worker(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None,
+               checkpoint_thread_id=None):
     workspace = Path(workspace).resolve()
     environment = {"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"}
-    for name in ("VDIR_OTLP_ENDPOINT", "VDIR_TRACEPARENT"):
+    for name in ("VDIR_OTLP_ENDPOINT", "VDIR_TRACEPARENT", "VDIR_CHECKPOINT_DATABASE_URL"):
         if os.environ.get(name):
             environment[name] = os.environ[name]
+    if checkpoint_thread_id:
+        environment["VDIR_CHECKPOINT_THREAD_ID"] = checkpoint_thread_id
     from opentelemetry import trace
     context = trace.get_current_span().get_span_context()
     if context.is_valid:

@@ -34,6 +34,10 @@ class WorkbenchAPITests(unittest.TestCase):
     def enqueue(self, case_id="case-001", key="request-001"):
         return self.client.post("/api/jobs", json={"case_id": case_id}, headers={"Idempotency-Key": key})
 
+    def test_liveness_and_database_readiness_are_separate(self):
+        self.assertEqual(self.client.get("/healthz").json(), {"status": "ok"})
+        self.assertEqual(self.client.get("/readyz").json(), {"status": "ready"})
+
     def test_metric_definition_exposes_only_current_public_metadata_and_requires_access(self):
         from vdir.cases import incidents
         case = incidents()[0]

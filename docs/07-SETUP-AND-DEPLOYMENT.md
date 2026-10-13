@@ -1,13 +1,13 @@
 # Setup and deployment
 
-October 13: [verifyops.vercel.app](https://verifyops.vercel.app) now serves the real interface as a public read-only engineering showcase on Vercel Python 3.12. The API exposes current synthetic incident and dbt project metadata while rejecting every state-changing method. See the [deployment record and boundary](18-VERCEL-SHOWCASE.md). The persistent API/worker/Phoenix Compose system remains the local integration target; durable state-changing cloud execution is still pending.
+October 13: [verifyops.vercel.app](https://verifyops.vercel.app) serves the real interface as a public read-only engineering showcase on Vercel Python 3.12. The API exposes current synthetic incident and dbt project metadata while rejecting every state-changing method. See the [deployment record and boundary](18-VERCEL-SHOWCASE.md). The persistent API/worker/PostgreSQL/Phoenix Compose system is the local production-topology target. Kubernetes and Terraform foundations are documented in [19-PRODUCTION-FOUNDATION.md](19-PRODUCTION-FOUNDATION.md); no AWS resource has been applied.
 
 ## Python and dependencies
 
-Use **Python 3.11.17** locally and in Docker. The project requires >=3.11,<3.12; .python-version records the patch. Runtime pins include web, SDK, analytical and OTel dependencies. requirements-dev adds HTTP test and browser dependencies. No dependency-free core claim remains.
+Use **Python 3.12** locally and in Docker. The project supports >=3.11,<3.13; `.python-version` records 3.12. Runtime pins include web, SDK, PostgreSQL/checkpoint, analytical and OTel dependencies. `requirements-dev.txt` adds HTTP test and browser dependencies.
 
 ```sh
-python3.11 -m venv .venv
+python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 .venv/bin/python -m playwright install chromium
 PYTHONPATH=src .venv/bin/python -m vdir.serve
@@ -16,12 +16,12 @@ PYTHONPATH=src .venv/bin/python -m vdir.serve
 If needed, [uv-managed Python](https://docs.astral.sh/uv/guides/install-python/) can supply the interpreter:
 
 ```sh
-uv python install 3.11.17
-uv venv --python 3.11.17 .venv
+uv python install 3.12
+uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python -r requirements-dev.txt
 ```
 
-On this Mac uv is project-local at .tools/uv-aarch64-apple-darwin/uv. .venv points to the installed .venv311; .venv39-legacy preserves the older environment. Apple system Python was not modified. The active local launcher at http://127.0.0.1:8000 uses Python 3.11.17. Check process liveness when resuming.
+On this Mac uv is project-local at `.tools/uv-aarch64-apple-darwin/uv`; `.venv312` is the isolated production-foundation verification environment. Older environments are preserved and ignored. Apple system Python was not modified.
 
 ## Private configuration
 
@@ -29,6 +29,9 @@ A private .env is automatically loaded with override=False by the CLI/launcher/w
 
 - ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL enable explicit billable hosted runs. Current key is absent; no live generation occurred.
 - VDIR_ACCESS_TOKEN must contain at least 32 characters before exposing a shared service. This is shared operator access, not individual authentication.
+- VDIR_DATABASE_URL selects the PostgreSQL queue/review/event adapter; unset keeps the local SQLite adapter.
+- VDIR_CHECKPOINT_DATABASE_URL selects the official PostgreSQL LangGraph checkpointer; unset keeps per-workspace SQLite checkpoints.
+- VDIR_POSTGRES_PASSWORD is consumed by local Compose interpolation and is never checked in.
 - VDIR_PUBLIC_ORIGIN declares the canonical HTTPS origin behind a TLS proxy.
 - VDIR_SQL_ENGINE selects duckdb or sqlite for worker fallback; app jobs explicitly record their selected engine, default duckdb.
 - VDIR_OTLP_ENDPOINT is an optional OTLP/HTTP URL including /v1/traces; empty disables remote export. Local span JSONL is always retained for investigator/job runs.
@@ -37,7 +40,7 @@ Each model run writes model-run.json and stream-events.jsonl in its evidence wor
 
 ## Executed Docker setup
 
-Dockerfile has runtime and test stages pinned to python:3.11.17-slim. Test stage includes Chromium system dependencies/browser in a readable shared directory and runs unittest, browser workflow and all 38 benchmark cases as UID 10001. Runtime runs as UID 10001. Debian sources use HTTPS after a checked download mismatch during the initial build; package checksums remain enabled.
+Dockerfile has runtime and test stages on Python 3.12 slim. Test stage includes Chromium system dependencies/browser in a readable shared directory and runs unittest, browser workflow and all 38 benchmark cases as UID 10001. Runtime runs as UID 10001.
 
 ```sh
 docker build --target test -t vdir:test .
@@ -58,4 +61,4 @@ Compose defaults VDIR_OTLP_ENDPOINT to http://phoenix:6006/v1/traces. For a stan
 
 GitHub Actions runs pinned-Python unit tests, all four browser suites and the fixed benchmark, builds/runs the full test container, builds runtime, and uploads evidence. The project is [published on GitHub](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution), and real remote runs/results are available in [Actions](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution/actions/workflows/checks.yml). [Publication evidence](14-GITHUB-PUBLICATION.md) distinguishes local checks, triggered remote execution and verified conclusions. No live provider credential is needed for CI. Publication does not deploy the app to the cloud.
 
-Cloud deployment remains required and pending provider/account configuration. AWS remains proposed. Before release: individual authentication/authorization, durable distributed state/object artifacts, isolated per-investigation execution, TLS, monitoring, interrupted-job recovery, load and failure testing, promotion/rollback, and realistic external data. No cloud resource or public deployment has been created.
+AWS infrastructure remains prepared and unapplied. PostgreSQL coordination and Kubernetes topology are implemented; individual OIDC authorization, S3 workspace synchronization, isolated per-investigation execution, TLS/domain wiring, monitored staging, load/failure evidence and realistic external data remain release gates. No AWS resource has been created.

@@ -10,3 +10,7 @@ __pycache__/
 artifacts/generated/
 .DS_Store
 .vercel/
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log

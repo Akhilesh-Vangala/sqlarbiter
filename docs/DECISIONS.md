@@ -1,5 +1,11 @@
 # Decisions
 
+## October13 — PostgreSQL coordination and Kubernetes staging boundary — Implemented foundation
+
+Keep SQLite for offline development and preserved histories; select PostgreSQL through explicit environment configuration for replicated API/worker operation. Use advisory transaction locks for idempotent admission, `FOR UPDATE SKIP LOCKED` for competing claims, and ownership/lease checks for every result publication. Use the official PostgreSQL LangGraph checkpointer with one stable thread per job; retain separate call receipts and fail closed on uncertain provider results.
+
+Use Docker Compose as the reproducible local topology and Kustomize as the single Kubernetes packaging mechanism. The base separates migration, API and worker roles, drops privileges, declares probes/resources/disruption/network controls and expects an external Secret plus RWX storage. Kind supplies an executable CI overlay. AWS Terraform prepares EKS/RDS/EFS/S3/ECR/KMS without applying resources. EFS is an acknowledged staging bridge for current path-based workspaces; S3 synchronization and one isolated task per untrusted run remain required before a production isolation claim. [Implementation](19-PRODUCTION-FOUNDATION.md).
+
 ## October12 — Browser dbt jobs and immutable stored artifacts — Implemented
 
 Reuse the existing persistent queue/worker, access boundaries and exact-version review for the trusted sample; do not accept arbitrary project code uploads. Progress is owner-fenced and tied to real execution stages. Supervise dbt subprocess groups under cancellation/shutdown/deadlines. Store the verified report/diff/model text in the immutable job result, checking their hashes again at review/download, so mutable local files cannot change a downloaded artifact. Keep app/dbt dependencies in separate environments and include dbt in runtime/test containers. [Flow](16-DBT-BROWSER-WORKFLOW.md). PostgreSQL/distributed recovery, general repository connectors and live AI quality remain pending.

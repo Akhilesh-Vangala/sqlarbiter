@@ -1,5 +1,7 @@
 # Implementation plan
 
+October13 production foundation in progress: PostgreSQL queue/review/event adapter with fenced multi-worker claims, official PostgreSQL LangGraph checkpoints, Python 3.12 Docker Compose, Kubernetes/Kustomize with Kind smoke, and unapplied AWS EKS/RDS/EFS/S3/ECR/KMS Terraform. [Implementation and limits](docs/19-PRODUCTION-FOUNDATION.md). Individual OIDC/tenancy, S3 workspace synchronization, isolated untrusted execution, actual AWS apply/monitoring and live evaluation remain open.
+
 October12: integrate the original dbt CLI as browser catalog/setup/detail with queued execution/progress, protected patch download, independently checked revisions and exact-version review. [Implemented flow](docs/16-DBT-BROWSER-WORKFLOW.md). The trusted sample browser connector is implemented; arbitrary repositories/warehouses, PostgreSQL migration, live model evaluation and cloud remain pending.
 
 October12: estimated shared spend admission and original five-model dbt repair/review CLI implemented. [Scope](docs/15-SPENDING-AND-DBT.md). Live diagnosis, browser project connector, PostgreSQL recovery/access/isolation and cloud remain pending. Older unchecked dbt/cost proposals are refined by this local foundation.
@@ -16,7 +18,7 @@ Advanced destination: incident environment, learned investigation policy and del
 - [x] Add UTC boundary and healthy-transformation controls.
 - [x] Export source schemas, neutral change history, simple lineage and bounded diagnostic tools.
 - [x] Keep evaluator references/regressions out of exported evidence and replay cited evidence.
-- [ ] Enforce OS/container, filesystem and credential isolation; subprocess exports alone do not provide it.
+- [ ] Enforce per-investigation OS/container, filesystem and credential isolation; hardened shared workers alone do not provide it.
 - [ ] Add richer lineage/distractors and validate diagnostically difficult cases.
 - [x] Add 38 synthetic cases and frozen SQL-shape group/split manifest.
 - [ ] Validate realistic fault/topology diversity and untouched release splits.
@@ -32,6 +34,7 @@ Advanced destination: incident environment, learned investigation policy and del
 - [ ] Supervised policy adaptation, frozen/adapted comparisons and ablations.
 - [x] Review agent frameworks and document a scoped LangGraph migration with recovery/evaluation gates.
 - [x] Implement LangGraph/SQLite checkpoints, explicit clarification continuation, recovery/budget/version tests per [implementation](docs/11-AGENT-ORCHESTRATION.md).
+- [x] Add official PostgreSQL checkpoints with stable per-job thread identity and exact-parent continuation for distributed workers.
 - [x] Strengthen graph with strict hypothesis plans, tested/cited repair gating, public SQL precheck receipts, bounded correction feedback and visible activity; validate recovery and independent-verifier separation.
 - [ ] Live matched graph/controller evaluation before switching the default.
 - [ ] Consider RL only after valid rewards and adequate data.
