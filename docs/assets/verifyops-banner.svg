@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="title desc">
+  <title id="title">VerifyOps — evidence before approval</title>
+  <desc id="desc">Agentic data incident investigation: investigate with bounded tools, verify against independent references, and review the exact patch.</desc>
+  <rect width="1280" height="380" rx="18" fill="#090909"/>
+  <rect x="1" y="1" width="1278" height="378" rx="17" fill="none" stroke="#303030"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="52" y="44" width="36" height="36" rx="8" fill="#fafafa"/>
+    <path d="M61 61l6 8 13-17" fill="none" stroke="#090909" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="104" y="68" font-size="17" font-weight="700" fill="#fafafa" letter-spacing="2">VERIFYOPS</text>
+    <text x="52" y="146" font-size="54" font-weight="700" fill="#fafafa">Evidence before approval.</text>
+    <text x="54" y="187" font-size="21" fill="#bdbdbd">Agentic data investigation. Independently verified SQL repairs.</text>
+    <text x="54" y="222" font-size="14" fill="#999999" letter-spacing="1">LANGGRAPH  /  BOUNDED ANALYTICS  /  REAL DBT EXECUTION  /  EXACT-VERSION REVIEW</text>
+    <g transform="translate(52 268)">
+      <rect width="342" height="66" rx="8" fill="#151515" stroke="#404040"/>
+      <text x="20" y="26" font-size="12" fill="#a8a8a8">01  INVESTIGATE</text>
+      <text x="20" y="49" font-size="17" fill="#fafafa">Hypotheses + executed evidence</text>
+      <path d="M353 33h25m-7-7 7 7-7 7" fill="none" stroke="#a8a8a8" stroke-width="2"/>
+      <rect x="392" width="342" height="66" rx="8" fill="#151515" stroke="#404040"/>
+      <text x="412" y="26" font-size="12" fill="#a8a8a8">02  VERIFY</text>
+      <text x="412" y="49" font-size="17" fill="#fafafa">Independent references + regressions</text>
+      <path d="M745 33h25m-7-7 7 7-7 7" fill="none" stroke="#a8a8a8" stroke-width="2"/>
+      <rect x="784" width="392" height="66" rx="8" fill="#fafafa"/>
+      <text x="804" y="26" font-size="12" fill="#555555">03  REVIEW</text>
+      <text x="804" y="49" font-size="17" fill="#090909">Inspect and approve the exact artifact</text>
+    </g>
+  </g>
+</svg>

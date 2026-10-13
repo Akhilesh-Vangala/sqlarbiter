@@ -59,7 +59,7 @@ Advanced destination: incident environment, learned investigation policy and del
 - [ ] Individual authentication, durable distributed state and detailed failure accounting.
 - [ ] Isolated execution, promotion/rollback and reproducible release experiments.
 
-GitHub: [Akhilesh-Vangala/verified-data-incident-resolution](https://github.com/Akhilesh-Vangala/verified-data-incident-resolution). Model/GPU and cloud configuration remain pending. Container definitions are not evidence of cloud deployment.
+GitHub: [Akhilesh-Vangala/verified-data-incident-resolution](https://github.com/Akhilesh-Vangala/verifyops). Model/GPU and cloud configuration remain pending. Container definitions are not evidence of cloud deployment.
 
 No paid resources provisioned.
 

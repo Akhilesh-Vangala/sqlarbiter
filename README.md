@@ -1,109 +1,249 @@
+<p align="center">
+  <img src="docs/assets/verifyops-banner.svg" alt="VerifyOps: agentic investigation, independent verification, exact-version review" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Verify workbench CI status"></a>
+  &nbsp; Python 3.11 · LangGraph · DuckDB · dbt · OpenTelemetry
+</p>
+
+<p align="center">
+  <a href="#the-business-problem">Problem</a> ·
+  <a href="#the-agentic-workflow">Agent workflow</a> ·
+  <a href="#a-real-dbt-repair-workflow">dbt demo</a> ·
+  <a href="#run-locally">Quick start</a> ·
+  <a href="#verified-evidence">Evidence</a> ·
+  <a href="docs/17-SYSTEM-FLOWCHARTS.md">Full architecture</a>
+</p>
+
 # VerifyOps
 
-October12 browser integration: open **http://127.0.0.1:8000/dbt** to investigate the original payment project, follow real worker progress, inspect20 model checks/file diff, independently verify SQL revisions and record exact-version review. dbt tooling is isolated and included in the container. [Flow, routes and boundaries](docs/16-DBT-BROWSER-WORKFLOW.md). Fixed diagnostics run without an API key; live AI evaluation/cloud remain pending. Later browser integration supersedes the earlier CLI-only limitation below.
+**Investigate a broken business metric. Propose an evidence-backed SQL repair. Independently verify it before human review.**
 
-October12: **shared API spend admission** defaults to $1/workspace and $5 cumulative estimated allowance, retains unknown reservations and disables automatic generation retries. Settings exposes actual amounts. An original five-model **dbt payment-revenue incident** generates a restricted model-file patch, verifies canonical/daily/monthly/customer outputs on five fixtures and supports exact-version local review. [Design and reproduction](docs/15-SPENDING-AND-DBT.md). Local fixed-diagnostic repair is verified; live AI, browser dbt connector and cloud deployment remain pending.
+VerifyOps is an applied and agentic AI engineering project with a browser workbench, a checkpointed LangGraph investigator, bounded analytical tools, a real dbt repair pipeline, and a separate correctness verifier. Every candidate carries executed evidence; edits create new verification runs; reviews bind to the exact checked version.
 
-Evidence-driven data incident investigation with independent SQL verification and a checkpointed LangGraph workflow.
+> **Development release.** The model integration is implemented and protocol-tested with scripted providers. Live model quality, unseen generalization, public cloud deployment, and actual user feedback are still pending. The default fixed diagnostic runs without an API key. Approval records a review; production warehouse writes and repository merges are not connected.
 
-> Formerly *Verified Data Incident Resolution*.
+## The business problem
 
-Current development release: a monochrome investigation application with bounded analytical tools, a checkpointed LangGraph workflow, independent repair verification and exact-version operator review. Live model quality and cloud operation remain unverified. [GitHub publication status and CI scope](docs/14-GITHUB-PUBLICATION.md). The dated entries below preserve implementation history; the latest page milestone defines current coverage.
+A dashboard can return plausible numbers while its transformations are semantically wrong: a join multiplies revenue, retries duplicate payment events, or timestamp handling shifts transactions into the wrong reporting day. Successful SQL execution alone cannot establish that the metric is correct.
 
-[Repository](https://github.com/Akhilesh-Vangala/verifyops) · [GitHub Actions](https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml)
+VerifyOps makes this investigation reviewable: collect source evidence, test hypotheses, propose a restricted repair, compare outputs against independent source calculations and regression fixtures, then present the SQL diff and verification record to an operator.
 
-![Verify workbench](https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg)
+| Investigation | Evidence and expected behavior |
+| --- | --- |
+| Versioned-product join inflation | Inspect join multiplicity and propose a repair that preserves the reporting contract. |
+| Repeated payment deliveries | Restore event identity while retaining separate events with equal amounts. |
+| UTC reporting boundaries | Test explicit offsets; request missing authoritative offsets instead of inventing them. |
+| Conflicting event payloads | Identify the information gap and request authoritative source data. |
+| Healthy transformation | Return a verified no-change decision. |
+| dbt payment-revenue incident | Repair one upstream model and check canonical, daily, monthly, and customer outputs. |
 
-October 8 proper-page milestone: full investigation/workflow setup, separate workflow collection/detail, searchable metric catalog/current public definitions and read-only settings. Evidence/SQL/activity/contract sections have native links and URLs with reload/history. Monochrome styling and existing review/cancellation remain. **111 unit / 96 browser checks pass locally and in Linux ARM64 Docker** (31existing/20scriptedgraph/23automation/22pages); host45views/92,049neutralcolors, no mutations/errors/overflow, one existing run/version preserved. [Page map and implementation](docs/13-APPLICATION-PAGES.md). Current evidence: artifacts/generated/proper-pages-001/summary.json. Earlier page/dialog and test counts below are historical.
+## System architecture
 
-October 8 deeper internal milestone: owned **vdir-graph-3** adds strict source-cited findings and bounded public working memory, static SQL/join-cardinality diagnostics, atomic one-off multi-metric workflows and supervised cancellation with publication fencing. New monochrome `/workflows` list/detail pages, setup/cancellation overlays, contextual member navigation and audit reasons expose actual state. **109 unit / 31 existing browser / 20 scripted graph browser / 23 automation browser checks pass locally and in Linux ARM64 Docker** (74 browser checks per platform), exit 0; unchanged fixed synthetic benchmark 38/38. Read-only host passes 25 views / 52,049 neutral color values, no mutations/errors/overflow. [Full implementation and limits](docs/12-WORKFLOWS-AND-CANCELLATION.md). Evidence: artifacts/generated/deep-workflows-001/summary.json. Old graph-2 checkpoints require new runs; saved results remain readable. Live model generation remains unmeasured. Earlier milestones below are preserved history.
+```mermaid
+%%{init: {"theme": "neutral"}}%%
+flowchart TD
+    UI["Monochrome web workbench"] --> API["FastAPI<br/>Access and admission checks"]
+    API --> Jobs[("Persistent job store")]
+    Jobs --> Worker["Separate worker<br/>Leases and cancellation"]
+    Worker --> Evidence["Versioned public<br/>evidence workspace"]
+    Evidence --> Mode{"Investigator"}
+    Mode --> Fixed["Fixed diagnostic"]
+    Mode --> Hosted["Async hosted controller"]
+    Mode --> Graph["LangGraph investigator"]
+    Fixed --> Verify
+    Hosted --> Verify
+    Graph --> Verify
+    Verify["Independent verifier<br/>Replay and private regressions"] --> Result["Versioned result<br/>Checks and evidence"]
+    Result --> Review["Exact-version review<br/>Report and verified patch"]
+    Review --> Revision["Edited SQL creates a new run"]
+    Revision --> Worker
+```
 
-Advanced applied/agentic AI project for investigating business-metric discrepancies, proposing evidence-backed SQL repairs, and independently checking them before operator review.
+The worker owns job execution. LangGraph owns investigation transitions. The verifier owns correctness checks. The operator owns review. [Full flowcharts and authority boundaries →](docs/17-SYSTEM-FLOWCHARTS.md)
 
-**Implemented and tested:** web workbench, persistent worker, async Anthropic SDK, selectable LangGraph investigator with persistent checkpoints/clarification continuation, DuckDB/SQLite tools, OpenTelemetry/Phoenix and a frozen 38-case synthetic corpus. **Live model quality is unmeasured:** no live generation has run. Training/cloud deployment remain planned. The project is public on GitHub; actual CI results and archived test reports are available through the Actions link above. Earlier dated publication/test statements below describe their own historical milestones.
+## The agentic workflow
 
-## Run the app
+The `langgraph` investigator uses an owned **vdir-graph-3** StateGraph. It separates model calls, source evidence, structured plans, findings, public prechecks, and clarification into checkpointed transitions.
 
-Python **3.11.17**, matching the container. From this project directory:
+```mermaid
+%%{init: {"theme": "neutral"}}%%
+flowchart TD
+    Prepare["Prepare round<br/>Version checks and working memory"] --> Budget["Token and time checks<br/>Reserve estimated spend"]
+    Budget --> Model["Claude via AsyncAnthropic<br/>Typed streaming tool calls"]
+    Model --> Route{"Requested action"}
+    Route -->|Evidence| Tools["Read-only tool execution<br/>Durable receipt and evidence ID"]
+    Tools --> Prepare
+    Route -->|record_plan| Plan["Pydantic hypothesis plan<br/>Declared SQL tests and citations"]
+    Plan -->|Valid| Prepare
+    Route -->|record_findings| Findings["Validate findings against<br/>executed hypothesis tests"]
+    Findings -->|Valid| Prepare
+    Route -->|finish| Decision["Decision validation<br/>Executed repair test required"]
+    Decision --> Precheck["Public SQL precheck<br/>Execution, columns, completeness"]
+    Plan -->|Invalid| Feedback
+    Findings -->|Invalid| Feedback
+    Decision -->|Invalid| Feedback
+    Precheck -->|Rejected| Feedback["Public correction feedback<br/>At most two iterations"]
+    Feedback --> Prepare
+    Precheck -->|Candidate or no change| Verify["Independent private verifier"]
+    Precheck -->|Needs information| Pause["Checkpoint clarification<br/>Explicit continuation for metric runs"]
+```
+
+| Agent capability | Implemented behavior |
+| --- | --- |
+| **Structured planning** | Strict Pydantic schemas; up to three hypotheses per plan and three plan revisions. Repairs require a cited successful execution of a test from the latest plan. |
+| **Evidence-cited findings** | Supports, contradicts, or inconclusive assessments must reference complete query results matching the hypothesis test. Interpretations remain unverified. |
+| **Public working memory** | Latest plan, current findings, and the latest 12 evidence identifiers. Original transcripts remain retained; this is not context compaction. |
+| **Bounded correction** | At most two public-feedback corrections within the original round, tool, token, and time budgets. |
+| **Durable investigation state** | SQLite graph checkpoints plus per-call receipts. Completed receipts support explicit recovery; unresolved calls block automatic replay. |
+| **Human clarification** | Version-checked metric continuation creates a child run while preserving the parent and consumed budgets. dbt clarification currently requires a fresh controlled run. |
+
+**Evidence tools:** `contract`, `describe`, `profile`, `lineage`, `changes`, `current_sql`, `query`, `inspect_sql`, `check_join`, and `project` when dbt context is available. `record_plan`, `record_findings`, and `finish` are workflow controls rather than source evidence.
+
+DuckDB is the default analytical engine; SQLite is also supported. SQLGlot restricts queries to the permitted read-only surface. Tools enforce row, column, cell, byte, execution-time, and memory bounds. A public SQL precheck establishes execution and output shape; separate references and private regressions check business outputs.
+
+[Agent orchestration](docs/11-AGENT-ORCHESTRATION.md) · [Findings and working memory](docs/12-WORKFLOWS-AND-CANCELLATION.md) · [AI design](docs/05-AI-DESIGN.md)
+
+## A real dbt repair workflow
+
+The original payment-revenue project contains five models. An intentionally defective intermediate emits delivery-grain rows: retries inflate September 30 revenue from **1,200 to 2,400 cents**. The models build, but the event-grain test fails.
+
+```mermaid
+%%{init: {"theme": "neutral"}}%%
+flowchart LR
+    Seed["payment_deliveries<br/>Original seed"] --> Stage["stg_payment_deliveries"]
+    Stage --> Events["int_payment_events<br/>Repair target"]
+    Events --> Daily["fct_daily_revenue"]
+    Daily --> Monthly["mart_monthly_revenue"]
+    Events --> Customer["fct_customer_revenue"]
+```
+
+The worker runs actual `dbt seed`, `run`, and `test`; exports staging evidence and manifest/model context; invokes the selected investigator; then validates a restricted single-model patch. Fresh dbt builds across **five designed fixtures** independently check **four output relations**, producing **20 model checks**. The fixed diagnostic repair restores daily revenue to **1,200 cents**. An equal-value false fix passes the original incident but fails regression.
+
+![Actual monochrome dbt project catalog showing the trusted sample and tooling readiness](docs/assets/dbt-projects.png)
+
+<details>
+<summary><strong>View the actual verified repair, regression checks, SQL diff, and review screen</strong></summary>
+
+![Actual dbt investigation showing twenty independent model checks, SQL patch and review controls](docs/assets/dbt-investigation.png)
+
+These screenshots use original synthetic development data and the fixed diagnostic. They show real application/dbt execution, not a live model result. The UI currently retains the earlier VDIR name.
+
+</details>
+
+Use `/dbt` to browse the trusted project, `/dbt/new` to start a run, and `/dbt/runs/{id}` to inspect progress, evidence, impact, checks, and the diff. Editing SQL creates a new verification job. Failed or tampered results cannot be approved or downloaded as verified patches.
+
+[Browser workflow and API](docs/16-DBT-BROWSER-WORKFLOW.md) · [Patch restrictions and spend accounting](docs/15-SPENDING-AND-DBT.md)
+
+## Operational controls
+
+| Boundary | Current controls |
+| --- | --- |
+| Model execution | 8 rounds; 24 evidence calls; at most 3 identical calls; 2,048 requested output tokens per round and 12,000 total. |
+| Context | 16,000 counted input tokens per request; 64,000 cumulative counted input tokens; 250 KB serialized provider request. |
+| SQL tools | Up to 100 rows, 50 columns, 256 characters per cell, and 32 KB per result; bounded 3-second queries and DuckDB memory. |
+| Spending | Atomic estimated reservations; defaults of $1 per investigation workspace and $5 cumulative ledger allowance. Unknown usage retains reservations; real generation retries are disabled. These are not provider invoice caps. |
+| Queue and ownership | At most 16 active jobs; idempotent admission, atomic claims, renewable leases, heartbeat checks, and cancellation-aware publication. |
+| Review integrity | Exact result versions; immutable review records; dbt report/model/patch hashes checked before approval and download. |
+| Observability | OpenTelemetry spans across jobs, graph stages, model calls, tools, and verification; local JSONL and optional OTLP/Phoenix. Prompt and row contents are not exported to Phoenix. |
+
+SQLite state and checkpoints are **single-host infrastructure**. Individual identity, distributed recovery/load testing, per-investigation OS isolation, arbitrary repository/warehouse connectors, and monitored cloud hosting remain release work.
+
+## Run locally
+
+Requires Python **3.11**; CI and the container use **3.11.17**. From a fresh checkout:
 
 ```sh
+git clone https://github.com/Akhilesh-Vangala/verifyops.git
+cd verifyops
 python3.11 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
+python3.11 -m venv .venv-dbt
+.venv-dbt/bin/python -m pip install -r requirements-dbt.txt
 PYTHONPATH=src .venv/bin/python -m vdir.serve
 ```
 
-On this Mac, the project environment is already installed: `.venv` points to `.venv311`; the old Python 3.9 environment is preserved as `.venv39-legacy`. Apple system Python is unchanged. If Python 3.11 is unavailable, install it with uv as described in [setup](docs/07-SETUP-AND-DEPLOYMENT.md).
+Open **http://127.0.0.1:8000** or **http://127.0.0.1:8000/dbt**. The launcher starts the API and a separate worker; local runs and reviews persist under `artifacts/generated/app`. dbt dependencies use their own environment because their dependency constraints differ from the app. Fixed investigations need no provider credentials.
 
-Open **http://127.0.0.1:8000**. The launcher starts a separate worker and preserves runs/reviews in artifacts/generated/app. The app defaults to DuckDB analytics; SQLite retains local job state. The initial investigator is a fixed diagnostic baseline. A private `.env` is loaded automatically without overriding process environment variables. Copy .env.example on a fresh checkout; enter credentials locally, never in chat or Git.
+For hosted or LangGraph investigations, create a private `.env` from `.env.example` **on a fresh checkout**, then configure `ANTHROPIC_API_KEY` and `VDIR_ANTHROPIC_MODEL` locally. The app loads it without overriding existing process variables. Explicit AI selections make billable calls and require a matching trusted pricing profile. Never commit the key or overwrite an existing private configuration.
 
-The monochrome interface has a **Home** overview with actual recent runs and selectable metric scenarios, an **Investigations** queue, **Run history**, dedicated investigation pages and **Workflows** for grouped metric checks. Use **New investigation** to open its full setup page and select a sample metric, investigator and DuckDB/SQLite engine. **Run workflow** opens its own multi-metric setup page. **Metrics** contains public reporting definitions/SQL/source schemas, and **Settings** shows actual read-only configuration. Open a run to inspect evidence, compare current/candidate SQL and record an exact-version review. Evidence and audit drawers, contextual back navigation and workspace search (⌘/Ctrl K) support investigation work. History shows the latest 50 runs; totals cover all stored completed runs. Sample data and development scope remain explicit.
-
-Current coverage: **92 unit / 31 workflow browser / 18 scripted-provider graph browser checks locally and inside Linux ARM64 Docker**, exit 0. Page reload, browser Back/Forward, overlays, home data and 320–1440-pixel home layout/palette checks pass. Queue/totals queries avoid complete-result hydration in Python. [Product flow and evidence](docs/09-WEB-AND-JOBS.md). Evidence: artifacts/generated/workspace-pages-001/summary.json. Fixed container benchmark also passed 38/38; no live AI-quality claim.
-
-The `Checkpointed AI · LangGraph` option is implemented and enables with private provider/model configuration. Clarifications pause the graph; Resume investigation creates a version-checked child from saved evidence/checkpoints, retaining budgets and the original result. [Graph flow, recovery and limits](docs/11-AGENT-ORCHESTRATION.md). The rule-based baseline stays the default pending live evaluation.
-
-The strengthened workflow adds strict hypothesis plans, executed/cited plan tests before repairs, public SQL prechecks and at most two corrective feedback iterations under the original budgets. **Agent activity** shows actual plans, tool steps and public assessments. Public prechecks do not certify semantic correctness; the independent verifier remains authoritative. Old graph-1 checkpoints need fresh investigations, with historical results preserved.
-
-## Verified evidence — October 7, 2026
-
-October 8 update: the page-based UI and query projection pass **92 unit / 31 workflow browser / 18 graph browser checks locally**. Current screenshots/reports: artifacts/generated/browser-smoke-77173933 and browser-graph-6385015a. The following October 7 results are historical to that milestone.
-
-Current source: **89 unit tests / 21 workflow browser checks / 18 graph browser checks pass locally and inside Linux ARM64 Docker**. Tests include correction/citation/SQL/partial-output handling, retained plans and budgets, precheck crash recovery, independent semantic rejection and stale-assessment removal from operator revisions. Container fixed benchmark **38/38** with current runtime hash; rebuilt Compose passed six baseline investigations/reviews/exports. Evidence: artifacts/generated/agent-framework-001/summary.json; [details](docs/11-AGENT-ORCHESTRATION.md). Live AI quality remains unmeasured. The following preserves earlier integration evidence:
-
-- **79 unittest tests**, **13 existing Chromium workflows** and **11 LangGraph browser checks** pass locally on Python 3.11.17 and inside the rebuilt Linux ARM64 test container. Graph recovery/continuation and real SDK mocked-HTTP streaming are tested; no live quality claim.
-- The fixed baseline passed **38/38 synthetic cases** in both analytical engines. Three local DuckDB attempts per case passed **114/114**; this deterministic baseline does not measure model variance or AI accuracy.
-- Real Docker Compose API/worker resolved all six app scenarios and retained completed jobs after restart. Phoenix received **63 spans across six job traces**.
-- Live model runs, remote GitHub Actions, load/scalability tests and cloud deployment remain unverified.
-
-Previous graph-1 evidence: artifacts/generated/langgraph-integration-001/summary.json (ignored, local). That Compose build passed six baseline workflows/reviews/exports; its fixed container benchmark passed 38/38 with the investigator hash from that milestone. Current source evidence is recorded above/in graph documentation.
-
-[Remediation evidence and limits](docs/10-REMEDIATION-AND-BENCHMARK.md). Generated artifacts are ignored and must be regenerated on another machine.
-
-## Tests and evaluation
+<details>
+<summary><strong>Containers and optional Phoenix tracing</strong></summary>
 
 ```sh
-.venv/bin/python -m playwright install chromium
-PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
-PYTHONPATH=src .venv/bin/python tests/browser_smoke.py
-PYTHONPATH=src .venv/bin/python tests/browser_graph_smoke.py
-PYTHONPATH=src .venv/bin/python tests/browser_automation_smoke.py
-PYTHONPATH=src .venv/bin/python tests/browser_pages_smoke.py
-PYTHONPATH=src .venv/bin/python -m vdir --investigate artifacts/generated/six-case-run --engine duckdb
-PYTHONPATH=src .venv/bin/python -m vdir.benchmark --output artifacts/generated/benchmark-run --engine duckdb --samples 3
-```
-
-Choose a fresh output directory for every run. Benchmark reports include Pass@1/Pass@3, SQL execution accuracy on private regression sources, rounds/tool calls, investigation/verification latency, reported tokens, failures and configurable cost estimates. Missing live costs/insufficient attempts produce null, never an invented zero.
-
-For live evaluation, privately set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL in .env, then run:
-
-```sh
-PYTHONPATH=src .venv/bin/python -m vdir --investigate artifacts/generated/live-six-run --investigator anthropic --engine duckdb
-```
-
-This makes billable API calls. The example model is validated against the account's Models API before generation. Claude 3.5 Sonnet is retired; see [model configuration](docs/05-AI-DESIGN.md). Scripted SDK/controller tests are separate from live model evaluation.
-
-Use `--investigator langgraph` instead of `anthropic` for the graph investigator in either CLI/evaluation command. Six scripted graph scenarios pass independent verification in both engines; this is integration evidence, not a live quality score.
-
-## Containers
-
-```sh
-docker build --target test -t vdir:test .
-docker run --name vdir-check vdir:test
+docker build --target test -t verifyops:test .
+docker run --name verifyops-check verifyops:test
+# Configure VDIR_ACCESS_TOKEN privately: at least 32 characters.
 docker compose up --build -d
 ```
 
-Compose requires a private operator access token of at least 32 characters. It runs API, worker and Phoenix with local volumes and loopback ports. See [setup/deployment](docs/07-SETUP-AND-DEPLOYMENT.md) for the validated Lima setup on this Mac and collector configuration. A local container demonstration does not establish cloud or production readiness.
+Compose runs the API, worker, and Phoenix with loopback ports and shared local volumes. The runtime includes isolated dbt tooling. Container execution is verified through CI; public cloud deployment is pending. See [setup and deployment](docs/07-SETUP-AND-DEPLOYMENT.md).
 
-## Documentation
+</details>
 
-- [Brief](docs/01-PROJECT-BRIEF.md), [architecture](docs/02-ARCHITECTURE.md), [flow](docs/03-PROJECT-FLOW.md)
-- [Data](docs/04-DATA-AND-INTEGRATIONS.md), [AI design](docs/05-AI-DESIGN.md), [evaluation](docs/06-EVALUATION.md)
-- [Setup/deployment](docs/07-SETUP-AND-DEPLOYMENT.md), [demo](docs/08-PORTFOLIO-AND-DEMO.md)
-- [Web/API/jobs](docs/09-WEB-AND-JOBS.md), [remediation and benchmark](docs/10-REMEDIATION-AND-BENCHMARK.md)
-- [Implemented LangGraph orchestration, checkpoints and continuation](docs/11-AGENT-ORCHESTRATION.md)
-- [Findings, bounded workflow automation and cancellation](docs/12-WORKFLOWS-AND-CANCELLATION.md)
-- [Application page map, setup flows and section links](docs/13-APPLICATION-PAGES.md)
-- [Decisions](docs/DECISIONS.md), [references](docs/REFERENCES.md)
-- [Plan](PLAN.md), [progress](PROGRESS.md), [handoff](HANDOFF.md)
+## Verified evidence
 
-Evaluator/reference code is in src/vdir; exported investigators are in investigator_runtime. Only the current source/contract/schema/lineage/changes are exported. Private regression sources and Python references stay with the evaluator. Tool allowlists and isolated Python imports are **not an OS sandbox**. SQLite job leases are single-host infrastructure; distributed state, per-investigation OS isolation, individual identity, realistic external incidents and cloud delivery remain release work.
+The implementation baseline at [`14f0bce`](https://github.com/Akhilesh-Vangala/verifyops/commit/14f0bce060eec328e46e95ace58c153559015a91) passed all three jobs in [GitHub Actions run 38315249531](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38315249531). The badge above tracks the current branch; the following counts belong to that recorded baseline.
+
+| Evidence | Recorded result | Meaning |
+| --- | --- | --- |
+| Unit suite | 133 passed; 1 optional dbt integration skipped in each workbench job | Protocol, ownership, bounds, review, spending, and verification behavior. |
+| Browser suites | 96 native checks; 120 container checks including 24 dbt checks | Actual application journeys, responsive pages, revisions, cancellation, and review. |
+| Dedicated dbt job | Real integration test, CLI repair, and 24 browser checks passed | Actual dbt execution and five-fixture/four-relation verification. |
+| Fixed synthetic benchmark | 38/38 known development cases | Contract-specific diagnostic and evaluation plumbing; not live AI accuracy or unseen generalization. |
+| Container packaging | Test image execution and runtime build passed | Reproducible packaging; not cloud operation or production readiness. |
+
+Actions publishes downloadable browser, container, and dbt evidence. Generated runtime state and reports stay out of Git. Live model comparisons, held-out/safety evaluation, actual operator/customer feedback, and cloud monitoring remain pending.
+
+## Reproduce checks and evaluation
+
+```sh
+.venv/bin/python -m playwright install chromium
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python tests/browser_smoke.py
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python tests/browser_graph_smoke.py
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python tests/browser_automation_smoke.py
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python tests/browser_pages_smoke.py
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python tests/browser_dbt_smoke.py
+VDIR_RUN_DBT_TESTS=1 VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -p test_dbt_integration.py -v
+VDIR_LOAD_DOTENV=0 PYTHONPATH=src .venv/bin/python -m vdir.benchmark --output artifacts/generated/benchmark-run --samples 3
+```
+
+Use a fresh benchmark output directory. Reports expose Pass@1/Pass@3, SQL execution accuracy, tool calls, rounds, tokens, latency, failures, and configured cost estimates. Insufficient attempts or unknown live costs yield `null`.
+
+A separately configured, billable LangGraph smoke run:
+
+```sh
+PYTHONPATH=src .venv/bin/python -m vdir --investigate artifacts/generated/live-graph-six --investigator langgraph --engine duckdb
+```
+
+## Technology and repository map
+
+| Layer | Technology and source |
+| --- | --- |
+| Agent orchestration | LangGraph + SQLite checkpointer · [`investigator_runtime/graph.py`](investigator_runtime/graph.py) |
+| Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](investigator_runtime/model.py) |
+| Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](investigator_runtime/agent_policy.py) |
+| Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](investigator_runtime/tools.py), [`engines.py`](investigator_runtime/engines.py) |
+| Independent verification | Python references and evidence replay · [`src/vdir/evaluation.py`](src/vdir/evaluation.py), [`reference.py`](src/vdir/reference.py) |
+| API, worker, state | FastAPI + Uvicorn + SQLite · [`src/vdir/api.py`](src/vdir/api.py), [`jobs.py`](src/vdir/jobs.py), [`service.py`](src/vdir/service.py) |
+| dbt repair | dbt-core + dbt-duckdb · [`src/vdir/dbt_workflow.py`](src/vdir/dbt_workflow.py), [`original project`](dbt/revenue_incident) |
+| Spend accounting | SQLite ledger · [`src/vdir/spending.py`](src/vdir/spending.py) |
+| Web application | Native HTML / CSS / JavaScript · [`src/vdir/web`](src/vdir/web) |
+| Tracing and delivery | OpenTelemetry / Phoenix, Docker, GitHub Actions, Playwright |
+
+## Explore the design
+
+| Read | Purpose |
+| --- | --- |
+| [Full system flowcharts](docs/17-SYSTEM-FLOWCHARTS.md) | Application, AI layers, evidence tools, dbt repair, and operational boundaries. |
+| [Architecture](docs/02-ARCHITECTURE.md) · [AI design](docs/05-AI-DESIGN.md) | Separation of investigation, verification, and review. |
+| [Agent orchestration](docs/11-AGENT-ORCHESTRATION.md) · [Workflows](docs/12-WORKFLOWS-AND-CANCELLATION.md) | Checkpoints, findings, clarification, ownership, and cancellation. |
+| [dbt browser workflow](docs/16-DBT-BROWSER-WORKFLOW.md) · [Spending and dbt](docs/15-SPENDING-AND-DBT.md) | Routes, patch restrictions, regressions, and cost admission. |
+| [Evaluation](docs/06-EVALUATION.md) · [Benchmark](docs/10-REMEDIATION-AND-BENCHMARK.md) | Known-case evidence, metrics, and evaluation limitations. |
+| [Setup/deployment](docs/07-SETUP-AND-DEPLOYMENT.md) · [Application pages](docs/13-APPLICATION-PAGES.md) | Reproduction, configuration, and product navigation. |
+| [Decisions](docs/DECISIONS.md) · [Plan](PLAN.md) · [Progress](PROGRESS.md) | Tradeoffs, completed work, and remaining release gates. |
+| [README history](README-HISTORY.md) | Preserved dated milestones from the previous README. |
+
+The Python package and some UI labels retain the earlier **Verified Data Incident Resolution / VDIR** name. The public project is **VerifyOps**.

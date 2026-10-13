@@ -1,5 +1,7 @@
 # GitHub publication
 
+October 12 current repository: [Akhilesh-Vangala/verifyops](https://github.com/Akhilesh-Vangala/verifyops). Implementation baseline14f0bce passed [native/container/dbt CI38315249531](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38315249531); counts and reproduction are in the current [README](../README.md#verified-evidence). The initial publication details below remain historical. Visual documentation improvements do not establish live AI or cloud readiness.
+
 October 8, 2026. User instruction: “lets first push this into the github”. Publish this project only as a new repository. Existing personal repositories are excluded from inspiration, reuse and modification.
 
 ## Current publication status
