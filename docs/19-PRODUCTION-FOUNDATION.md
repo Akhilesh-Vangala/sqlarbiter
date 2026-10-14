@@ -1,6 +1,6 @@
 # PostgreSQL, Docker, Kubernetes and AWS foundation
 
-October 13, 2026. This document describes the production-foundation implementation on `feat/production-foundation`. It is infrastructure and durability work, not a claim that the application has completed monitored cloud or live-model milestones.
+October 14, 2026 verification update. The production foundation is merged through [protected PR #4](https://github.com/Akhilesh-Vangala/verifyops/pull/4) and [current-main CI 38484384448](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38484384448) at main `0f71effb690e5c3b24c5fe97a1636b1c59f18f45`. It is infrastructure and durability work, not a claim that the application has completed monitored cloud or live-model milestones.
 
 ## Resulting topology
 
@@ -105,7 +105,9 @@ The required `tests` job starts PostgreSQL and runs the adapter's real concurren
 
 An isolated PostgreSQL 17.11 installation was initialized under the ignored project tool directory. Schema and official LangGraph checkpoint migrations ran against a disposable database. Concurrent idempotent admission, competing `SKIP LOCKED` claims, workflow admission, expired-lease interruption, immutable review, an authenticated API-to-worker baseline run and a real scripted LangGraph run through `AsyncPostgresSaver` all passed. The complete suite passes **140 tests in 49.843 seconds** with only the opt-in real-dbt test skipped. The existing **96 browser checks**, JavaScript syntax, 362 owned documentation links, Terraform format/init/validation and base/Kind/AWS Kustomize renders also pass.
 
-Docker and Kind execution remain assigned to the protected pull-request workflow because the current Mac has no Docker CLI/daemon. Their outcome must be recorded from the actual workflow before claiming the deployment smoke as complete.
+Actual post-merge Linux CI passes the native PostgreSQL suite, 96 native and 120 container browser checks, dedicated real dbt integration, runtime Docker build, Terraform validation, all Kustomize renders and the real Kind deployment smoke. Logs show the migration Job complete, API deployment ready, two worker pods running and authenticated baseline completion passing independent grading. This confirms container/ephemeral-cluster execution; AWS remains unapplied and the public Vercel service remains read-only. Downloaded exact-head logs/metadata are retained locally under `artifacts/generated/production-foundation-001/`.
+
+Kind runs with its default CNI; this smoke does not establish NetworkPolicy enforcement. A policy-capable staging CNI and dedicated deny/allow tests remain required.
 
 ## Remaining release gates
 
