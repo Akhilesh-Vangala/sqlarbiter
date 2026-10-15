@@ -1,3 +1,7 @@
+# Active increment: coherent product workspace — October 15, 2026
+
+The public root becomes a product landing page with dashboard, guided source/rule/review/result pages, actionable record-level errors, actual SSE progress, charts and inspectable evidence. Opt-in immutable device snapshots support history/projects/reload; changed reports are not presented as verified. Optional Supabase Auth/Postgres integration and owner-policy migration are implemented; hosted configuration, email and cloud operation remain unverified. [Design and boundaries](../product/PRODUCT-WORKSPACE.md). Final source-bound CI/deployment evidence is recorded only after execution; existing histories below remain preserved.
+
 # VerifyOps delivery gates
 
 ## Repository organization increment — October 15, 2026

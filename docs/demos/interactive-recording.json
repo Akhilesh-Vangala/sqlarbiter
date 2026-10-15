@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:53370",
+  "url": "http://127.0.0.1:56979",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -19,27 +19,27 @@
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "0b24406322b8623c6cb1144a6af7f2947acfc25ed245fa12a3a02d5b32e4225b"
+      "sha256": "c165fe2e06c440826d268eae727d8a349d66a1574218c1db5383110b8d7a672f"
     },
     {
       "stage": "executed-evidence",
       "path": "02-executed-evidence.png",
-      "sha256": "3938e39036a82a813b578550372b32ba5fd566a58e0765460e040ffc5b8d637e"
+      "sha256": "baaa523cb3a3402ccd68dd25ca499b025249b947072c6a9801b33aceaadaa495"
     },
     {
       "stage": "false-repair-blocked",
       "path": "03-false-repair-blocked.png",
-      "sha256": "e1b4ed13e41018c80eb4ae951d637d279b00daf05a68441634dd6fdfef664115"
+      "sha256": "f06fc4e2ab460985b4b571247f7fa12ea2efc1230a43feaa0b2973e61bf37d34"
     },
     {
       "stage": "independent-regressions",
       "path": "04-independent-regressions.png",
-      "sha256": "c3b7500e940a0737067e0afaaf3d97d71ed3cc5bd0e17f0a2052cf71dd4c5b93"
+      "sha256": "f7a4ff7c9920b8ccba840de05d039532280f3be8699897d73827d88446181ab9"
     },
     {
       "stage": "reviewed-result",
       "path": "05-reviewed-result.png",
-      "sha256": "783b6fb59711c1b9416aa7788fb49b635ca2d1ebdf2c134508fe48849133de9e"
+      "sha256": "de4147929c6715ada9fd97e79887a4e9b2c5e9c19c984fc14cbb9be932869691"
     }
   ],
   "proof": {
@@ -55,7 +55,7 @@
     "backend/src/vdir/api/__init__.py": "6be09e7ee0ba3dc50a55d09f411319e52392ee5b1675f64aa43608f7619370ae",
     "backend/src/vdir/api/demo_security.py": "0ab6771b67c3e0d0859787a255fb6b60dc57370b065461ef7890fe1fa51aa70c",
     "backend/src/vdir/api/public_demo.py": "00904d9b5a0ca9d6cdc335a43b7d08185a829ff3bd4bcbbdd7ba02c1abfe6ba9",
-    "backend/src/vdir/api/routes.py": "54c75b5f7a8c9e882e30f420d294044ab629d73e01cebba214ea7a3c8984f74b",
+    "backend/src/vdir/api/routes.py": "ee132c0c1f2eb764cf91768887d0de99279a7849088db7de4a562f83b74cae6e",
     "backend/src/vdir/cli/__init__.py": "cf91b41403b576dbbee2c6c0e13f26d839c6137450507a748aa00e113d98bce7",
     "backend/src/vdir/cli/graph_resume.py": "3efdd541c68f3cdc8935ddfa2b0c01431bbcb42f970a420382a0994c8f263718",
     "backend/src/vdir/cli/serve.py": "91af56755eac075ce6238c8c3364460d3925eb0112ad65706cde833943b586aa",
@@ -74,10 +74,15 @@
     "backend/src/vdir/platform/config.py": "32b8196c3eebc7d77d97d11c838eb5cdb4fc9e9c9b4e777b602d7cb8f6d5dbe9",
     "backend/src/vdir/platform/observability.py": "58655401fcc63c5eb409f6a427df3f41aa75db07edbd484bffe462ca1ffc945f",
     "backend/src/vdir/platform/spending.py": "4e0af0eceb27c273789c0d4db6e0f9138395a516298eadaf068fbcf10de6cd4e",
+    "backend/src/vdir/product/__init__.py": "791c1ed30288247f5a034be1d7f347d9e95c6d292cae2022fd0d8d82a8ad57e1",
+    "backend/src/vdir/product/accounts.py": "8759c4be8003938414f8bff0414a2759ddbcb2735101a102a83a55b8d9b18711",
+    "backend/src/vdir/product/api.py": "64dca786b60c6216c452fdc72ba8e248090dda25ef34f7a249673e99ac2c2e75",
     "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
-    "backend/src/vdir/uploads/api.py": "6cd3b60a2abef6cda60566f3bcecd15a0923b1cee4a9db84ad3709d817c4eb14",
-    "backend/src/vdir/uploads/ingestion.py": "0f376ef3fd01d75e98b5db06522d6ebfda660fcdf53e1c533471cbe823c00e63",
-    "backend/src/vdir/uploads/service.py": "b1211cb35acb559ebea38b720e5c33ec69159d67b3dd6c6fbafec18ddd822158",
+    "backend/src/vdir/uploads/api.py": "680531d455608e3ceff5d67ade61236ed6298cea737244829f6d1830dfaaffe8",
+    "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
+    "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
+    "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
+    "backend/src/vdir/uploads/stream.py": "8eb78c45855538a1ffdc65549651386d3c73f1453a9f775ce4a80b98f6e89bed",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -101,9 +106,9 @@
     "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "fcba1b22a0c87624872fe0e98b6d2aa7eeafa5e2d742e774351d0790e8f5e50a",
+  "video_sha256": "e389f77016b7fd4f06963afe96f8ad350ed64fc33f6618bed2792f51e46d4c76",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
   "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif",
-  "capture_environment": "Actual isolated local application with current source hashes; original synthetic sample workflow; zero paid inference"
+  "capture_environment": "Actual Python 3.12 local application; original guided synthetic repair workflow; zero paid inference"
 }

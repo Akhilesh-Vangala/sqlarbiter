@@ -19,6 +19,10 @@ verifyops/
 │       │       ├── scripts/
 │       │       ├── styles/
 │       │       └── media/
+│       ├── product/
+│       │   ├── lib/
+│       │   └── views/
+│       ├── uploads/
 │       └── workbench/
 │           └── assets/
 │               ├── scripts/
@@ -26,7 +30,8 @@ verifyops/
 ├── infrastructure/
 │   ├── containers/
 │   ├── kubernetes/
-│   └── terraform/
+│   ├── terraform/
+│   └── supabase/migrations/
 ├── scripts/
 │   ├── checks/
 │   ├── demos/
@@ -119,6 +124,10 @@ verifyops/
 │       │       ├── media/
 │       │       ├── scripts/
 │       │       └── styles/
+│       ├── product/
+│       │   ├── lib/
+│       │   └── views/
+│       ├── uploads/
 │       └── workbench/
 │           └── assets/
 │               ├── scripts/
@@ -130,7 +139,8 @@ verifyops/
 │   │   └── overlays/
 │   │       ├── aws/
 │   │       └── kind/
-│   └── terraform/
+│   ├── terraform/
+│   └── supabase/migrations/
 │       └── aws/
 └── scripts/
     ├── checks/

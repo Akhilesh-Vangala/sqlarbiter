@@ -17,7 +17,7 @@ The GIF is a six-frame preview. The WebM is a continuous Playwright screen recor
 
 ## Scope and provenance
 
-Video SHA256: `2338f799901f92567a844d6aa7a325944212c5e5c652f7166883bb4de4ffc260`. The [manifest](demos/interactive-recording.json) contains frame hashes, source hashes, browser checks and capture scope. Public review/action stages reconstruct isolated fixtures; browser-local signed branches can replay/fork until expiry. The recording is not a globally durable approval/execution claim.
+Video SHA256: `e389f77016b7fd4f06963afe96f8ad350ed64fc33f6618bed2792f51e46d4c76`. The [manifest](demos/interactive-recording.json) contains frame hashes, source hashes, browser checks and capture scope. Public review/action stages reconstruct isolated fixtures; browser-local signed branches can replay/fork until expiry. The recording is not a globally durable approval/execution claim.
 
 ## Reproduce
 
@@ -30,3 +30,9 @@ The public browser runner starts an isolated temporary local app by default; --u
 Older private workbench/dbt captures remain available in docs/assets and their dated technical narratives; they show a different, explicitly scoped private workflow.
 
 [Current system layout](development/LAYOUT.md) · [Private/public architecture](architecture/OVERVIEW.md) · [Evaluation limits](evaluation/README.md).
+
+## Product workspace recording
+
+[Watch the actual file-to-report journey](https://verifyops.vercel.app/uploads/recording.html) · [Source and media manifest](demos/uploads-recording.json). The continuous capture shows the real landing, empty workspace, source preview, explicit contract review, independent result, quality/SQL evidence, consented save and saved history. Automated negative/recovery/mobile/accessibility/portable-restore checks run separately in the same source-bound rehearsal. No customer feedback or paid model inference is claimed. Prior capture manifests are retained under `docs/demos/history/`; use their source commits to recover historical media.
+
+Reproduce with `python scripts/demos/product_browser.py --record --output artifacts/generated/product-recording`. The optional `--axe` points to pinned axe-core 4.14.0.

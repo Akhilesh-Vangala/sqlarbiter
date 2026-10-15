@@ -121,6 +121,8 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
         if request.url.path.startswith("/api/"):
             from vdir.api.public_demo import WRITE_PATHS
             from vdir.uploads.api import WRITE_PATHS as UPLOAD_PATHS
+            from vdir.product.api import WRITE_PATHS as ACCOUNT_PATHS
+            UPLOAD_PATHS = UPLOAD_PATHS | ACCOUNT_PATHS
             if public_showcase and request.method != "GET" and not (public_demo and request.method == "POST" and request.url.path in (WRITE_PATHS | UPLOAD_PATHS)):
                 return JSONResponse({"detail": "Public showcase is read-only"}, status_code=405)
             if public_showcase:
@@ -384,7 +386,7 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.get("/dbt/runs/{job_id}", include_in_schema=False)
     def index(request: Request):
         if public_demo and request.url.path == "/":
-            return RedirectResponse("/demo")
+            return FileResponse(STATIC.parent / "product/index.html")
         return FileResponse(STATIC / "index.html")
 
     @app.get("/investigations/{job_id}/{section}", include_in_schema=False)
@@ -398,4 +400,6 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
         attach(app, LABELS)
     from vdir.uploads.api import attach as attach_uploads
     attach_uploads(app, "VerifyOps", Path(__file__).resolve().parents[4])
+    from vdir.product.api import attach as attach_product
+    attach_product(app, Path(__file__).resolve().parents[4])
     return app

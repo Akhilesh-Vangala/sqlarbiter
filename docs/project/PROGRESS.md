@@ -1,3 +1,7 @@
+# Active increment: coherent product workspace — October 15, 2026
+
+The public root becomes a product landing page with dashboard, guided source/rule/review/result pages, actionable record-level errors, actual SSE progress, charts and inspectable evidence. Opt-in immutable device snapshots support history/projects/reload; changed reports are not presented as verified. Optional Supabase Auth/Postgres integration and owner-policy migration are implemented; hosted configuration, email and cloud operation remain unverified. [Design and boundaries](../product/PRODUCT-WORKSPACE.md). Local verification passed: 170-case Python 3.12 suite (one dbt case separately exercised successfully), real PostgreSQL ownership/concurrent quota checks, 96 existing private browser checks, the new 11-group product rehearsal and 14 automated accessibility views, plus original guided repair and updated upload journeys. Continuous source-bound recordings were refreshed. Protected CI and deployment remain pending until observed; existing histories below remain preserved.
+
 # VerifyOps progress and evidence
 
 ## October 15 — Repository organization and demo refresh

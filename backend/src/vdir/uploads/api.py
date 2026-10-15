@@ -4,14 +4,22 @@ import os
 import secrets
 import time
 from pathlib import Path
+from typing import Any
 
 from fastapi import HTTPException, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
 
-from .ingestion import Upload, UploadBoundary, fingerprint, profile
+from .ingestion import Upload, Preview, UploadBoundary, UploadProblem, fingerprint, profile, preview
 from .service import run
+from .signing import attest, verify_report
 
-WRITE_PATHS = {"/api/uploads/profile", "/api/uploads/analyze", "/api/uploads/approve"}
+WRITE_PATHS = {"/api/uploads/profile", "/api/uploads/preview", "/api/uploads/analyze", "/api/uploads/analyze-stream", "/api/uploads/check-report", "/api/uploads/approve"}
+
+
+class ReportCheck(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    report: dict[str, Any] = Field(max_length=32)
 
 CONFIGS = {
     "VerifyOps": {
@@ -59,7 +67,7 @@ def attach(app, project, root):
 
     @app.get("/uploads", include_in_schema=False)
     def workspace():
-        return FileResponse(static/"index.html", headers={"Cache-Control": "no-store", "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"})
+        return FileResponse(Path(root)/"frontend/apps/product/index.html", headers={"Cache-Control": "no-store", "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"})
 
     @app.get("/uploads/recording.html", include_in_schema=False)
     def recording():
@@ -78,7 +86,7 @@ def attach(app, project, root):
         response.headers["Cache-Control"] = "no-store"
         return {"project": project, **{k: v for k, v in config.items() if k != "template"},
                 "live_ai": False, "max_csv_bytes": 400000, "max_rows": 30 if project == "RelayOps" else 5000,
-                "retention": "Files are processed for this request in memory / temporary scratch, then discarded. No shared upload history. Browser state is cleared on reload or Clear. Hosting request metadata may be retained; file contents are not deliberately logged.",
+                "retention": "Unsaved files are processed for this request and remain in browser memory. Optional device history or configured account storage requires explicit save consent. Hosting metadata may be retained; file contents are not deliberately logged.",
                 "approval_available": session is not None}
 
     @app.get("/api/uploads/template")
@@ -92,6 +100,8 @@ def attach(app, project, root):
             if project == "RelayOps" and inspected["rows"] > 30:
                 raise ValueError("Operational assessment supports at most 30 open cases per export")
             return inspected
+        except UploadProblem as error:
+            return JSONResponse(error.response(), status_code=422)
         except ValueError as error:
             raise HTTPException(422, str(error)) from None
 
@@ -99,13 +109,33 @@ def attach(app, project, root):
     def analyze(upload: Upload, request: Request):
         try:
             result = run(upload)
+        except UploadProblem as error:
+            return JSONResponse(error.response(), status_code=422)
         except ValueError as error:
             raise HTTPException(422, str(error)) from None
         if session:
             result["review"] = session.seal({"visitor": session.visitor(request),
                 "source": fingerprint({"csv": upload.csv, "mapping": upload.mapping, "options": upload.options}),
                 "plan": result["plan_sha256"], "expires": int(time.time())+900}, "upload-review-v1")
-        return JSONResponse(result, headers={"Cache-Control": "no-store"})
+        return JSONResponse(attest(result), headers={"Cache-Control": "no-store"})
+
+    @app.post("/api/uploads/preview")
+    def preview_rows(body: Preview):
+        try:
+            return preview(body)
+        except UploadProblem as error:
+            return JSONResponse(error.response(), status_code=422)
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from None
+
+    @app.post("/api/uploads/analyze-stream")
+    def analyze_stream(upload: Upload):
+        from .stream import stream
+        return stream(upload)
+
+    @app.post("/api/uploads/check-report")
+    def check_saved_report(body: ReportCheck):
+        return {"verified": verify_report(body.report), "scope": "Authenticity of a past computed report; not a fresh source-system check."}
 
     @app.post("/api/uploads/approve")
     def approve_export(upload: Upload, request: Request):
