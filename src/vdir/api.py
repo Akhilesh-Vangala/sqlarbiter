@@ -8,7 +8,7 @@ from typing import Literal, Optional
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Header, Request
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -76,6 +76,7 @@ class NewDbtRun(BaseModel):
 
 def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     public_showcase = os.environ.get("VDIR_PUBLIC_SHOWCASE") == "1"
+    public_demo = public_showcase and os.environ.get("VDIR_PUBLIC_DEMO") == "1"
     if state_dir is None:
         from .config import load_local_configuration
         load_local_configuration()
@@ -107,7 +108,8 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.middleware("http")
     async def boundaries(request: Request, call_next):
         if request.url.path.startswith("/api/"):
-            if public_showcase and request.method != "GET":
+            from .public_demo import WRITE_PATHS
+            if public_showcase and request.method != "GET" and not (public_demo and request.method == "POST" and request.url.path in WRITE_PATHS):
                 return JSONResponse({"detail": "Public showcase is read-only"}, status_code=405)
             if public_showcase:
                 pass
@@ -355,7 +357,9 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     @app.get("/dbt", include_in_schema=False)
     @app.get("/dbt/new", include_in_schema=False)
     @app.get("/dbt/runs/{job_id}", include_in_schema=False)
-    def index():
+    def index(request: Request):
+        if public_demo and request.url.path == "/":
+            return RedirectResponse("/demo")
         return FileResponse(STATIC / "index.html")
 
     @app.get("/investigations/{job_id}/{section}", include_in_schema=False)
@@ -364,4 +368,7 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
             raise NotFound("Page not found")
         return FileResponse(STATIC / "index.html")
 
+    if public_demo:
+        from .public_demo import attach
+        attach(app, LABELS)
     return app

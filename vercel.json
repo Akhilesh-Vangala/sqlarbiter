@@ -4,8 +4,8 @@
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "includeFiles": "{src/vdir/web/**,data/**}",
-      "excludeFiles": "{tests/**,artifacts/**,docs/**,.tools/**}"
+      "includeFiles": "{src/vdir/demo_assets/**,src/vdir/web/**,data/**}",
+      "excludeFiles": "{tests/**,artifacts/**,docs/**,.tools/**,deploy/**}"
     }
   }
 }

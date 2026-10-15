@@ -99,3 +99,8 @@ User requires a credible company-facing UI. Use a focused queue/detail workspace
 ## D017 — October 7, 2026 — Plans, public prechecks and bounded feedback — Implemented locally
 
 User asks to improve the agentic framework. Deepen existing LangGraph rather than add competing controllers. Use strict Pydantic schemas for public hypothesis/test plans; require a cited executed latest-plan test before a repair. Keep healthy no-change/clarification lightweight. Public SQL prechecks enforce safe execution/output shape/completeness, charge existing budgets and persist receipts before graph commits. They never read reference answers or private regressions. Permit two total structured corrections within original budgets; restore plans/counters/activity on continuation. Record actual activity for operator review and remove inherited metadata from manually revised SQL. Live quality improvement is unmeasured; retain baseline default pending evidence. Owned graph version 2 intentionally rejects version-1 continuations instead of silently migrating state; stored historical results remain available. [Behavior and tests](11-AGENT-ORCHESTRATION.md).
+
+
+## October14 — Executable public sandbox
+
+Use request-bounded original fixtures and signed browser envelopes for Vercel interactive actions. Retain full private durable workers separately. This supports real verification/execution in public without claiming persistent effects or immutable global review. Browser session history and explicit replay/fork limitations are accepted tradeoffs; a shared ephemeral SQLite queue is not used for the new endpoints. [Details](20-INTERACTIVE-PUBLIC-DEMO.md).

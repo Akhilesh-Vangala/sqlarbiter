@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="docs/CASE-STUDY.md">Case study</a> ·
-  <a href="https://verifyops.vercel.app">Live showcase</a> ·
+  <a href="https://verifyops.vercel.app">Working app</a> ·
   <a href="docs/DEMO.md">Recorded demo</a> ·
   <a href="#the-agentic-workflow">Agent workflow</a> ·
   <a href="#a-real-dbt-repair-workflow">dbt demo</a> ·
@@ -24,13 +24,23 @@
 
 VerifyOps combines a checkpointed LangGraph investigator, bounded analytical tools and a real dbt repair pipeline. Independent checks accompany every proposal; edits trigger new verification, and reviews bind to the exact checked version.
 
-> **Development release.** The [public Vercel showcase](https://verifyops.vercel.app) is read only. PostgreSQL coordination, Docker Compose, Kubernetes/Kind and unapplied AWS Terraform now form the production foundation. Live AI quality, individual identity, isolated customer execution, monitored AWS operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Production foundation →](docs/19-PRODUCTION-FOUNDATION.md)
+> **Development release.** The [public Vercel app](https://verifyops.vercel.app/demo) runs an interactive guided sandbox with actual verification. [Watch the continuous recording](https://verifyops.vercel.app/demo/recording). PostgreSQL coordination, Docker Compose, Kubernetes/Kind and unapplied AWS Terraform now form the production foundation. Live AI quality, individual identity, isolated customer execution, monitored AWS operation and user feedback remain pending. Approval records review; production writes and repository merges are not connected. [Production foundation →](docs/19-PRODUCTION-FOUNDATION.md)
 
 | Run the product | Inspect the engineering | Challenge the evidence |
 | --- | --- | --- |
-| [Live read-only showcase](https://verifyops.vercel.app) · [Quick start](#run-locally) · [Recorded walkthrough](docs/DEMO.md) | [Design case study](docs/CASE-STUDY.md) · [System map](docs/README.md) | [Reproducible checks](CONTRIBUTING.md) · [Limits and tradeoffs](docs/CASE-STUDY.md#what-the-evidence-establishes) |
+| [Interactive app](https://verifyops.vercel.app) · [Quick start](#run-locally) · [Recorded walkthrough](docs/DEMO.md) | [Design case study](docs/CASE-STUDY.md) · [System map](docs/README.md) | [Reproducible checks](CONTRIBUTING.md) · [Limits and tradeoffs](docs/CASE-STUDY.md#what-the-evidence-establishes) |
 
-## See the workbench
+## Try it and watch it
+
+[**Open the interactive app →**](https://verifyops.vercel.app/demo) · [**Watch the continuous recording →**](https://verifyops.vercel.app/demo/recording) · [Recording file](src/vdir/demo_assets/walkthrough.webm)
+
+![Actual interactive VerifyOps browser journey](docs/assets/verifyops-interactive-demo.gif)
+
+Choose an incident → run the original fixed investigator and source-level verifier → inspect SQL/evidence → submit a SQL revision → run regression checks again → accept or reject the exact checked result. The recorded SUM(DISTINCT) false repair fails independent checks and cannot be accepted.
+
+**Actual calculations, guided synthetic data, no model charges.** Browser-local history and signed version checks support the public flow. Persistent private workers and live-model evaluations are separate. [Public architecture and limits](docs/20-INTERACTIVE-PUBLIC-DEMO.md) · [Recording provenance](docs/demos/interactive-recording.json).
+
+## The private dbt workbench
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/verifyops-demo-poster.png">

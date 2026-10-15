@@ -1,5 +1,7 @@
 # Implementation plan
 
+October14 interactive-public upgrade: working guided fixture workflows, signed browser/version checks, monochrome pages, JSON downloads and continuous actual WebM recording implemented. Local unit/browser verification passes; remote CI and Vercel promotion are being verified. [Design and scope](docs/20-INTERACTIVE-PUBLIC-DEMO.md). No paid AI, persistent cloud execution or customer validation claim. Earlier read-only public status is superseded for the new demo once promoted.
+
 October13 production foundation in progress: PostgreSQL queue/review/event adapter with fenced multi-worker claims, official PostgreSQL LangGraph checkpoints, Python 3.12 Docker Compose, Kubernetes/Kustomize with Kind smoke, and unapplied AWS EKS/RDS/EFS/S3/ECR/KMS Terraform. [Implementation and limits](docs/19-PRODUCTION-FOUNDATION.md). Individual OIDC/tenancy, S3 workspace synchronization, isolated untrusted execution, actual AWS apply/monitoring and live evaluation remain open.
 
 October12: integrate the original dbt CLI as browser catalog/setup/detail with queued execution/progress, protected patch download, independently checked revisions and exact-version review. [Implemented flow](docs/16-DBT-BROWSER-WORKFLOW.md). The trusted sample browser connector is implemented; arbitrary repositories/warehouses, PostgreSQL migration, live model evaluation and cloud remain pending.

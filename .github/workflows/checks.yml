@@ -38,6 +38,11 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m playwright install --with-deps chromium
       - run: node --check src/vdir/web/app.js
+      - run: node --check src/vdir/demo_assets/app.js
+      - run: python scripts/public_demo_browser.py
+        env:
+          PYTHONPATH: src
+          VDIR_LOAD_DOTENV: "0"
       - run: python -m unittest discover -s tests -v
         env:
           PYTHONPATH: src
@@ -72,6 +77,7 @@ jobs:
             artifacts/generated/browser-automation-*
             artifacts/generated/browser-pages-*
             artifacts/generated/ci-benchmark
+            artifacts/generated/public-demo-browser
   container:
     runs-on: ubuntu-latest
     steps:
