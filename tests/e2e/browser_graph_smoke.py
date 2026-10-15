@@ -15,11 +15,12 @@ from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend" / "investigator_runtime"))
+sys.path.insert(0, str(ROOT / "backend" / "tests"))
 from graph import investigate
 from tools import EvidenceTools
 from baseline import LATEST_SQL
 from vdir.cases import JOIN_SQL
-from test_model import ScriptedClient, completion, call
+from model_fixtures import ScriptedClient, completion, call
 from vdir import evaluation
 from vdir.api import create_app
 from vdir.service import process_next

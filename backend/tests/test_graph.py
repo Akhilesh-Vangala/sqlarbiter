@@ -23,7 +23,7 @@ from graph import investigate, Receipts
 from tools import EvidenceTools
 from model import InvestigationFailed
 from baseline import investigate as fixed_investigate
-from test_model import ScriptedClient, completion, call
+from model_fixtures import ScriptedClient, completion, call
 
 
 def finish(messages):

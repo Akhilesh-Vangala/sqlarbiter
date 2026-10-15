@@ -229,7 +229,7 @@ class WorkbenchAPITests(unittest.TestCase):
         import asyncio
         from graph import investigate as graph_investigate
         from tools import EvidenceTools
-        from test_model import ScriptedClient, completion, call
+        from model_fixtures import ScriptedClient, completion, call
         from vdir import evaluation
         original_worker = evaluation.run_worker
         def provider(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):

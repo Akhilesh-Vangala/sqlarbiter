@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend" / "invest
 from tools import EvidenceTools
 from agent_policy import validate_findings, working_memory
 from graph import investigate
-from test_model import ScriptedClient, completion, call
+from model_fixtures import ScriptedClient, completion, call
 
 
 class AgentMemoryTests(unittest.TestCase):
