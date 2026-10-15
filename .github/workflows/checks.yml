@@ -42,6 +42,8 @@ jobs:
       - run: python scripts/checks/check_repository.py
       - run: node --check frontend/apps/workbench/assets/scripts/app.js
       - run: node --check frontend/apps/demo/assets/scripts/app.js
+      - run: node --check frontend/apps/uploads/app.js
+      - run: python scripts/demos/uploads_browser.py
       - run: python scripts/demos/public_demo_browser.py
         env:
           PYTHONPATH: backend/src

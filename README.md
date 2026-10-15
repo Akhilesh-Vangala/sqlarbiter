@@ -1,5 +1,7 @@
 <p align="center"><img src="docs/assets/branding/verifyops-banner.svg" alt="VerifyOps — SQL incident repair" width="100%"></p>
 
+**Use your own data:** [Open the CSV workspace](https://verifyops.vercel.app/uploads) · [Contracts, verification and data handling](docs/product/USER-DATA.md). Upload, map columns, review business rules, and download checked source-derived results. Public processing is contract-driven; live model interpretation remains unavailable.
+
 <p align="center"><a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Required engineering checks"></a> &nbsp; Python · LangGraph · FastAPI · PostgreSQL</p>
 
 # VerifyOps
@@ -154,3 +156,9 @@ Native commands run inside the project's installed environment. Required CI repe
 - **Production boundary:** business-state/workspace files remain same-node; individual identity, per-run isolation, real connectors and monitored persistent cloud operation are open.
 
 [Design decisions](docs/DECISIONS.md) · [Recorded demo](docs/DEMO.md) · [Branch policy](docs/development/BRANCHING.md) · [Contributing](.github/CONTRIBUTING.md) · [Dated history](docs/project/history/PRE-ORGANIZATION-README.md)
+
+## Work with your own export
+
+[Open the upload workspace](https://verifyops.vercel.app/uploads) · [Watch the actual file-to-result recording](https://verifyops.vercel.app/uploads/recording.html) · [Source-bound capture](docs/demos/uploads-recording.json).
+
+![Actual visitor-data workspace using a newly authored CSV](docs/assets/screenshots/uploads-workspace.png)
