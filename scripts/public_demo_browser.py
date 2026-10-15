@@ -242,7 +242,7 @@ def main():
                 player.goto(url + "/demo/recording")
                 player.get_by_role("heading", name=name + " in action.").wait_for()
                 player.wait_for_function(
-                    "document.querySelector('video')?.readyState >= 1", timeout=30000
+                    "() => document.querySelector('video')?.readyState >= 1", timeout=30000
                 )
                 assert player.locator("video").evaluate("video=>video.duration > 0")
                 player_verified = True

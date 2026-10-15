@@ -30,10 +30,12 @@ The browser runner exercises actual actions, failed-state boundaries, a JSON dow
 
 Recordings are continuous Playwright WebM captures of real interactions, with no fabricated results. The tracked file is `src/vdir/demo_assets/walkthrough.webm`; the README GIF is a separate six-frame preview. [Source hashes and recording provenance](demos/interactive-recording.json) identify the source at capture. Automated synthetic review is not user feedback or evidence of live-model quality.
 
-Local verification: 147 unit tests, with5 PostgreSQL/dbt skips; the new public browser journey passes. Remote PostgreSQL/container/dbt checks and actual Vercel execution must also pass before promotion; current results are linked from the PR and deployment evidence.
+Local verification: 147 unit tests, with5 PostgreSQL/dbt skips; the new public browser journey passes. Actual protected Vercel previews pass investigation, bad-repair rejection and exact-result review. Required PostgreSQL/container/dbt checks gate promotion; current results are linked from [the protected implementation PR](https://github.com/Akhilesh-Vangala/verifyops/pull/6).
 
 Persistent monitored cloud workers, individual identity, live model evaluations and actual user feedback remain separate delivery gates. The public sandbox does not complete those milestones.
 
 ## Observed deployment fixes
 
 An actual preview build initially included a790MBlocal Terraform provider cache. `.vercelignore` and function exclusions now omit deployment tooling; the runtime build succeeds without removing local infrastructure files. The isolated `-I` worker also initially could not import Vercel's vendored dependencies. A trusted context supplies only installed third-party dependency roots to its bootstrap; source exports and evaluator separation remain unchanged. A base-interpreter regression test and actual Vercel SQL investigation, bad-repair rejection and exact-version review pass. No evaluator/reference source is added to the worker import path.
+
+The browser video-readiness assertion uses a JavaScript function so the same runner supports deployed CSP without string evaluation. The security policy is unchanged.
