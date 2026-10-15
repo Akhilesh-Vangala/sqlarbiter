@@ -72,7 +72,7 @@ Latest UI redesign: **21 workflow browser checks, 11 scripted-provider LangGraph
 
 59 unittest checks pass on Python 3.11.17 locally and inside containers, covering queue races, owner/lease renewal, restart persistence, idempotency, body/origin/host boundaries, exact-version review, immutable reviews, failing/mutating SQL and existing environment/model tests. Real Chromium smoke passed 13 checks including evidence expansion, edited-candidate approval blocking, failed revision, review/export, escaped notes, clarification, healthy no-change, browser reload, a 390-pixel mobile layout and idle launcher/worker shutdown.
 
-Local generated [browser report](../../artifacts/generated/browser-smoke-76f81514/result.json), [desktop view](../../artifacts/generated/browser-smoke-76f81514/desktop-result.png) and [mobile view](../../artifacts/generated/browser-smoke-76f81514/mobile-result.png) are ignored artifacts, not portable source files. Regenerate with the browser smoke command in the README. Browser tests strip model credentials, disable .env loading and make no provider calls.
+Local generated browser report (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/result.json`; not a published file), desktop view (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/desktop-result.png`; not a published file) and mobile view (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/mobile-result.png`; not a published file) are ignored artifacts, not portable source files. Regenerate with the browser smoke command in the README. Browser tests strip model credentials, disable .env loading and make no provider calls.
 
 ## Remaining production work
 

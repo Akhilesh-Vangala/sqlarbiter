@@ -80,7 +80,7 @@ Added current-evidence exports, schema/contract/lineage/change/SQL tools, bounde
 
 Native Anthropic tool-use adapter and investigator are implemented with explicit local configuration, eight-round/24-evidence-call limits, validated final decisions, token-usage recording and sanitized provider failures. Ten scripted/transport tests exercise the model interface; no live model call, provider performance or training result exists.
 
-Final verification: **34 tests passed on Python 3.9.6**; fixed workflow passed six scenarios in [development-run-003](../../../artifacts/generated/development-run-003/report.json). Results are known-fixture development checks. Run-001 exposed a balanced UTC-boundary fixture that concealed the date error; corrected it to unequal crossings, added a hand-calculated reference check, and preserved the historical artifact. A direct-controller test also found tuple/list trace differences across JSON transport; source results now use JSON-native rows for stable replay.
+Final verification: **34 tests passed on Python 3.9.6**; fixed workflow passed six scenarios in development-run-003 (local historical capture: `../../../artifacts/generated/development-run-003/report.json`; not a published file). Results are known-fixture development checks. Run-001 exposed a balanced UTC-boundary fixture that concealed the date error; corrected it to unequal crossings, added a hand-calculated reference check, and preserved the historical artifact. A direct-controller test also found tuple/list trace differences across JSON transport; source results now use JSON-native rows for stable replay.
 
 No API server, browser app, cloud resources, learned policy, GitHub publication or spending yet.
 
