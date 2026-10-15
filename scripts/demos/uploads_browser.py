@@ -54,7 +54,7 @@ def main():
             page = context.new_page()
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.goto(url+"/uploads")
-            expect(page.locator("#brand")).to_have_text(project)
+            expect(page.locator("#brand")).to_contain_text(project)
             page.screenshot(path=str(output/"upload-desktop.png"), full_page=True)
             checks.append("public-workspace-without-login")
             if project == "RelayOps":
@@ -64,7 +64,12 @@ def main():
             else:
                 source = "transaction_id,region,amount,status\nCLIENT-17,Custom,12.34,completed\nCLIENT-18,Custom,3.21,pending\n"
             page.locator("#file").set_input_files({"name": "customer-export.csv", "mimeType": "text/csv", "buffer": source.encode()})
+            if project == "VerifyOps":
+                page.locator("#review-rules").click()
             expect(page.locator("#contract")).to_be_visible()
+            if project == "VerifyOps":
+                page.locator("#review-definition").click()
+                page.locator("#confirm-rules").check()
             page.locator("#analyze").click()
             expect(page.locator("#output")).to_be_visible(timeout=30000)
             expect(page.locator("#error")).to_be_hidden()
@@ -100,6 +105,8 @@ def main():
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
             checks.append("mobile-without-page-overflow")
             page.locator("#clear").click()
+            if project == "VerifyOps":
+                page.locator("#confirm-clear").click()
             expect(page.locator("#output")).to_be_hidden()
             expect(page.locator("#contract")).to_be_hidden()
             assert not page.locator("#file").input_value()

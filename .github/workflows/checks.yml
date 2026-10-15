@@ -43,6 +43,19 @@ jobs:
       - run: node --check frontend/apps/workbench/assets/scripts/app.js
       - run: node --check frontend/apps/demo/assets/scripts/app.js
       - run: node --check frontend/apps/uploads/app.js
+      - name: Parse product modules as ES modules
+        run: |
+          for file in $(find frontend/apps/product -name '*.js'); do
+            node --input-type=module --check < "$file"
+          done
+      - name: Product browser and automated accessibility checks
+        run: |
+          npm install --prefix /tmp/product-a11y --no-audit --no-fund --save-exact axe-core@4.14.0
+          python scripts/demos/product_browser.py --axe /tmp/product-a11y/node_modules/axe-core/axe.min.js
+      - name: Actual account storage policies and concurrent quota checks
+        run: python scripts/checks/product_rls.py
+        env:
+          VDIR_PRODUCT_TEST_ADMIN_URL: postgresql://verifyops:verifyops-test-password@127.0.0.1:5432/verifyops_test
       - run: python scripts/demos/uploads_browser.py
       - run: python scripts/demos/public_demo_browser.py
         env:
@@ -83,6 +96,7 @@ jobs:
             artifacts/generated/browser-pages-*
             artifacts/generated/ci-benchmark
             artifacts/generated/public-demo-browser
+            artifacts/generated/product-browser
   container:
     timeout-minutes: 30
     runs-on: ubuntu-latest

@@ -115,7 +115,7 @@ def main():
                     )
                     page.wait_for_timeout(1000)
 
-            page.goto(url + "/")
+            page.goto(url + "/demo")
             page.get_by_role("heading", name="Start a working investigation").wait_for()
             page.get_by_label("Choose a synthetic case").select_option(
                 "short-shipment" if relay else "case-002"
