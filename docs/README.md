@@ -1,6 +1,6 @@
 # VerifyOps technical documentation
 
-[Project overview](../README.md) · [Working app](https://verifyops.vercel.app/demo) · [Recorded demo](DEMO.md)
+[Project overview](../README.md) · [Working app](https://verifyops.vercel.app/) · [Recorded demo](DEMO.md)
 
 | Review question | Current source |
 | --- | --- |
@@ -16,4 +16,4 @@ Detailed implementation: [agent framework](architecture/AGENT-ORCHESTRATION.md),
 
 ## Visitor-owned data
 
-[CSV workspace contracts, limits and verification](product/USER-DATA.md).
+[CSV workspace contracts, limits and verification](product/USER-DATA.md) · [Product pages, storage and account architecture](product/PRODUCT-WORKSPACE.md).

@@ -1,3 +1,7 @@
+# Active increment: coherent product workspace — October 15, 2026
+
+The public root becomes a product landing page with dashboard, guided source/rule/review/result pages, actionable record-level errors, actual SSE progress, charts and inspectable evidence. Opt-in immutable device snapshots support history/projects/reload; changed reports are not presented as verified. Optional Supabase Auth/Postgres integration and owner-policy migration are implemented; hosted configuration, email and cloud operation remain unverified. [Design and boundaries](../product/PRODUCT-WORKSPACE.md). Local Python 3.12 regression: 170 suite cases, one real-dbt case separately passed; actual PostgreSQL RLS/quota checks, 96 private browser checks, 11 grouped product checks and 14 axe views passed. Source-bound recordings are current. Protected publication/deployment is pending until observed; existing histories below remain preserved.
+
 # Active: visitor-owned CSV workspaces
 
 Implementation adds `/uploads`, bounded own-data APIs, exact mapping/contracts, source-derived independently reconciled outputs and evidence exports. RelayOps retains exact-source human approval before export. Local verification: 154 tests with 5 environment-dependent skips, actual file-picker/checked-result/download/mobile/Clear/invalid-file browser journeys, plus refreshed original sample recordings. Protected CI and deployment checks are required before production promotion. Existing release-gate limitations remain. See [contracts](../product/USER-DATA.md).
