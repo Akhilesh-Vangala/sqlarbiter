@@ -4,14 +4,14 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from .environment import snapshots
-from .verifier import verify_suite
+from vdir.domain.environment import snapshots
+from vdir.verification.verifier import verify_suite
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 def main():
-    from .config import load_local_configuration
+    from vdir.platform.config import load_local_configuration
     load_local_configuration()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", type=Path, help="Evaluate this SELECT against all development cases")
@@ -22,7 +22,7 @@ def main():
     if args.investigate:
         if args.candidate:
             parser.error("Choose --candidate or --investigate")
-        from .evaluation import evaluate_all
+        from vdir.evaluation.evaluation import evaluate_all
         try:
             report = evaluate_all(args.investigate, mode=args.investigator, engine=args.engine)
         except ValueError as error:
@@ -37,7 +37,7 @@ def main():
         candidates = {args.candidate.name: args.candidate.read_text()}
     else:
         candidates = {path.stem: path.read_text()
-                      for path in sorted((PROJECT_ROOT / "data" / "development" / "sql").glob("*.sql"))}
+                      for path in sorted((PROJECT_ROOT / "backend/data" / "development" / "sql").glob("*.sql"))}
     results = {}
     for name, sql in candidates.items():
         results[name] = [asdict(check) for check in verify_suite(snapshots(), sql)]

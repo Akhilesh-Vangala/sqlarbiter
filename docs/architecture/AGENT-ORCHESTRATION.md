@@ -62,14 +62,14 @@ Enter the private provider key/model in ignored .env. The app enables LangGraph 
 
 ```sh
 PYTHONPATH=backend/src .venv/bin/python -m vdir --investigate artifacts/generated/live-graph-six --investigator langgraph --engine duckdb
-PYTHONPATH=backend/src .venv/bin/python -m vdir.benchmark --output artifacts/generated/live-graph-benchmark --investigator langgraph --samples 1
+PYTHONPATH=backend/src .venv/bin/python -m vdir.evaluation.benchmark --output artifacts/generated/live-graph-benchmark --investigator langgraph --samples 1
 ```
 
 The app's paused result offers an investigation guidance field and Resume investigation button. Changing source data requires a new incident. Standalone exported CLI runs may be explicitly recovered/continued (these commands return an investigator response; they do not independently grade the continuation):
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir.graph_resume --workspace artifacts/generated/live-graph-six/case-003/evidence --guidance-file /path/to/guidance.txt
-PYTHONPATH=backend/src .venv/bin/python -m vdir.graph_resume --workspace artifacts/generated/standalone-interrupted/evidence --recover
+PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.graph_resume --workspace artifacts/generated/live-graph-six/case-003/evidence --guidance-file /path/to/guidance.txt
+PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.graph_resume --workspace artifacts/generated/standalone-interrupted/evidence --recover
 ```
 
 Use the app API for app-owned jobs so admission/ownership/audit rules remain enforced. Graph version, installed framework/provider versions, source bytes and exported code are checked on resume. Checkpoint migration is deliberately unsupported; changed versions require a new run.

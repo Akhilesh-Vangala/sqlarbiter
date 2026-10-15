@@ -1,27 +1,140 @@
-# VerifyOps repository layout
+# VerifyOps component layout
 
-The checkout separates browser code, backend authority, reproducible tooling and documentation. Run commands from the repository root unless a command states otherwise.
+Run commands from the repository root unless a command states otherwise. The file tree is organized by ownership at the root and responsibility inside each component.
 
-| Directory/file | Responsibility |
-| --- | --- |
-| `backend/src/vdir/` | API, agent workflow, typed contracts, verification and persistent-runtime services. |
-| `backend/investigator_runtime/` | Exportable investigator code; evaluator reference data stays outside this runtime. |
-| `backend/tests/` | Backend regression and integration cases. |
-| `frontend/public/` | Guided public pages, JavaScript/CSS, poster and continuous WebM recording. |
-| `frontend/workbench/` | Private native workbench styles/behavior; Python routes still render the server-owned HTML where appropriate. |
-| `tests/e2e/` | Browser journeys across both sides of the application. |
-| `scripts/` | Structural checks, benchmarks, deployment smoke and reproducible capture. |
-| `docs/architecture/` | Current system/agent flow and authority boundaries. |
-| `docs/operations/` | Development, deployment and public/private operating boundaries. |
-| `docs/evaluation/` | Evaluation design, limits and linked engineering evidence. |
-| `docs/project/` | Current handoff, release gates and progress; dated predecessors live under `history/`. |
-| `docs/assets/`, `docs/demos/` | Documentation figures, actual capture previews and provenance manifests. |
-| `compose.yaml`, `vercel.json` | Root deployment wiring; the Vercel launcher remains at the root for framework discovery. |
+```text
+verifyops/
+├── backend/
+│   ├── src/vdir/
+│   ├── tests/
+│   ├── requirements/
+│   ├── docker/
+│   ├── data/
+│   ├── agents/investigator/
+│   └── dbt/revenue_incident/
+├── frontend/
+│   └── apps/
+│       ├── demo/
+│       │   └── assets/
+│       │       ├── scripts/
+│       │       ├── styles/
+│       │       └── media/
+│       └── workbench/
+│           └── assets/
+│               ├── scripts/
+│               └── styles/
+├── infrastructure/
+│   ├── containers/
+│   ├── kubernetes/
+│   └── terraform/
+├── scripts/
+│   ├── checks/
+│   ├── demos/
+│   ├── deployment/
+│   └── development/
+├── docs/
+│   ├── architecture/
+│   ├── operations/
+│   ├── evaluation/
+│   ├── project/history/
+│   └── assets/
+│       ├── branding/
+│       ├── diagrams/
+│       ├── screenshots/
+│       └── demos/
+└── .github/
+```
 
-The Ops applications intentionally retain native HTML/CSS/JavaScript delivery. A separate frontend directory expresses ownership and asset packaging; it does not imply a separate React service or require a JavaScript build step.
+## Ownership and runtime boundaries
 
-## Reorganization compatibility
+Backend APIs own request validation, identity and action authority. Agents propose bounded decisions; verification and execution code own whether a proposal passes and which effects may occur. Persistence and workers own recovery and claims. Frontend code owns presentation and browser interactions. Tests are grouped by capability, with shared fixtures and cross-component browser journeys identified separately.
 
-Source moves update ASGI imports, asset resolution, dependency locks, test discovery, Docker context/copies, CI, source exports and Vercel includes. Existing HTTP routes, data directories and ignored runtime histories remain in place. Changing source paths changes runtime/source fingerprints: old results remain readable, but a stale checked proposal or checkpoint is not silently approved/resumed under changed source. Start a fresh investigation when version checks reject continuation.
+Only GitHub/Python/Vercel discovery files, private-configuration examples and the primary README remain at the root. Compose is under infrastructure/containers; `scripts/deployment/compose.sh` supplies the repository project directory so build contexts, private root .env and existing volume naming retain their intended meaning. No live-model call or cloud apply is part of this reorganization.
 
-The current paths supersede the dated commands in historical records. [Current quick start](../../README.md#run-locally) · [Branch workflow](../../BRANCHING.md).
+Source-path changes intentionally change runtime and review fingerprints. Preserve old results; start a fresh investigation when stale checkpoints or checked proposals are rejected. The exportable VerifyOps investigator deliberately keeps a small flat runtime when copied into an isolated workspace; evaluator references remain outside that runtime.
+
+[Branch policy](BRANCHING.md) · [Backend](../../backend/README.md) · [Frontend](../../frontend/README.md) · [Infrastructure](../../infrastructure/README.md) · [Scripts](../../scripts/README.md)
+
+## Full directory navigation
+
+```text
+verifyops/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── workflows/
+├── backend/
+│   ├── agents/
+│   │   └── investigator/
+│   ├── data/
+│   │   ├── benchmark/
+│   │   ├── development/
+│   │   │   └── sql/
+│   │   └── pricing/
+│   ├── dbt/
+│   │   └── revenue_incident/
+│   │       ├── models/
+│   │       ├── seeds/
+│   │       └── tests/
+│   ├── docker/
+│   ├── requirements/
+│   ├── src/
+│   │   └── vdir/
+│   │       ├── api/
+│   │       ├── cli/
+│   │       ├── domain/
+│   │       ├── evaluation/
+│   │       ├── persistence/
+│   │       ├── platform/
+│   │       ├── verification/
+│   │       ├── workers/
+│   │       └── workflows/
+│   └── tests/
+│       ├── agents/
+│       ├── api/
+│       ├── e2e/
+│       ├── fixtures/
+│       ├── persistence/
+│       ├── verification/
+│       └── workflows/
+├── docs/
+│   ├── architecture/
+│   ├── assets/
+│   │   ├── branding/
+│   │   ├── demos/
+│   │   ├── diagrams/
+│   │   └── screenshots/
+│   ├── demos/
+│   │   └── history/
+│   ├── development/
+│   ├── evaluation/
+│   ├── evidence/
+│   ├── operations/
+│   ├── product/
+│   └── project/
+│       └── history/
+├── frontend/
+│   └── apps/
+│       ├── demo/
+│       │   └── assets/
+│       │       ├── media/
+│       │       ├── scripts/
+│       │       └── styles/
+│       └── workbench/
+│           └── assets/
+│               ├── scripts/
+│               └── styles/
+├── infrastructure/
+│   ├── containers/
+│   ├── kubernetes/
+│   │   ├── base/
+│   │   └── overlays/
+│   │       ├── aws/
+│   │       └── kind/
+│   └── terraform/
+│       └── aws/
+└── scripts/
+    ├── checks/
+    ├── demos/
+    ├── deployment/
+    └── development/
+```

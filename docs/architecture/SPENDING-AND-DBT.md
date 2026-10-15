@@ -17,7 +17,7 @@ VDIR_RUN_BUDGET_USD=1
 VDIR_TOTAL_BUDGET_USD=5
 ```
 
-Default ledger: state-dir/spend.sqlite. API/workers/CLI share it when using the same state configuration. Override VDIR_SPEND_LEDGER with a common absolute path when needed. VDIR_PRICE_PROFILE defaults to data/pricing/claude-sonnet-5-5.json, checked against [official pricing](https://platform.claude.com/docs/en/about-claude/pricing) on October12. Reservations conservatively use the highest configured input/cache rate, including one-hour cache writes; current requests send no cache controls. Profiles must match resolved models. Ledger policy is bound at creation: changing limits/rates cannot silently reset balances. Preserve old records and explicitly select a new ledger for a new allowance period. Do not discard unknown receipts to manufacture available budget. Provider-side billing settings complement these controls.
+Default ledger: state-dir/spend.sqlite. API/workers/CLI share it when using the same state configuration. Override VDIR_SPEND_LEDGER with a common absolute path when needed. VDIR_PRICE_PROFILE defaults to backend/data/pricing/claude-sonnet-5-5.json, checked against [official pricing](https://platform.claude.com/docs/en/about-claude/pricing) on October12. Reservations conservatively use the highest configured input/cache rate, including one-hour cache writes; current requests send no cache controls. Profiles must match resolved models. Ledger policy is bound at creation: changing limits/rates cannot silently reset balances. Preserve old records and explicitly select a new ledger for a new allowance period. Do not discard unknown receipts to manufacture available budget. Provider-side billing settings complement these controls.
 
 Authenticated GET /api/spend exposes allowances, remaining estimate and settled/reserved/unknown/overrun counts, without paths or credentials. Settings displays actual read-only amounts and unresolved requests. Graph child continuation is a new workspace allowance; inherited token budgets and the shared ledger still apply. Operator billing reconciliation and PostgreSQL coordination remain pending.
 
@@ -39,8 +39,8 @@ dbt-core1.12.5 / dbt-duckdb1.11.0 / DuckDB1.5.6 are separately pinned. dbt's Cli
 
 ```sh
 .tools/uv-aarch64-apple-darwin/uv venv --python .venv/bin/python .venv-dbt
-.tools/uv-aarch64-apple-darwin/uv pip sync --python .venv-dbt/bin/python backend/requirements-dbt.txt
-PYTHONPATH=backend/src .venv/bin/python -m vdir.dbt_workflow --output artifacts/generated/my-dbt-run
+.tools/uv-aarch64-apple-darwin/uv pip sync --python .venv-dbt/bin/python backend/requirements/dbt.txt
+PYTHONPATH=backend/src .venv/bin/python -m vdir.workflows.dbt_workflow --output artifacts/generated/my-dbt-run
 VDIR_RUN_DBT_TESTS=1 VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -p test_dbt_integration.py -v
 ```
 
@@ -51,7 +51,7 @@ Other machines: python3.11 -m venv .venv-dbt, then .venv-dbt/bin/python -m pip i
 Exact-version local review:
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir.dbt_workflow --review-report artifacts/generated/my-dbt-run/report.json --expected-version REPORT_VERSION --action approved --note "Reviewed contract and independent checks"
+PYTHONPATH=backend/src .venv/bin/python -m vdir.workflows.dbt_workflow --review-report artifacts/generated/my-dbt-run/report.json --expected-version REPORT_VERSION --action approved --note "Reviewed contract and independent checks"
 ```
 
 Use the actual version. Approval requires passing verification and matching report/diff hashes; review.json is immutable. It records local review only, with no production SQL write/merge. No actual operator approval of the generated demonstration is claimed; test approvals use temporary directories.

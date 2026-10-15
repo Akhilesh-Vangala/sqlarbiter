@@ -4,8 +4,8 @@
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "includeFiles": "{frontend/**,data/**,backend/investigator_runtime/**}",
-      "excludeFiles": "{backend/tests/**,tests/**,artifacts/**,docs/**,.tools/**,deploy/**}"
+      "includeFiles": "{frontend/**,backend/data/**,backend/agents/investigator/**}",
+      "excludeFiles": "{backend/tests/**,artifacts/**,docs/**,.tools/**,infrastructure/**}"
     }
   }
 }

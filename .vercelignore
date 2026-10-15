@@ -6,16 +6,16 @@
 artifacts
 docs
 notebooks
-scripts
+/scripts
 tests
 __pycache__
 *.pyc
 Dockerfile
-compose.yaml
+infrastructure/containers/compose.yaml
 docker-compose.yml
 README-HISTORY.md
-BRANCHING.md
-CONTRIBUTING.md
+docs/development/BRANCHING.md
+.github/CONTRIBUTING.md
 HANDOFF.md
 PLAN.md
 PROGRESS.md
@@ -23,4 +23,8 @@ PROGRESS.md
 # Infrastructure tooling is not part of the serverless app.
 deploy
 backend/tests
-backend/Dockerfile
+backend/docker/Dockerfile
+
+# Component-owned non-serverless material
+infrastructure
+backend/docker
