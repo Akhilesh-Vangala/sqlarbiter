@@ -1,5 +1,7 @@
 # Vercel engineering showcase
 
+> Historical read-only deployment record. The new [interactive public app](20-INTERACTIVE-PUBLIC-DEMO.md) supersedes this behavior for `/demo`; private write routes remain blocked.
+
 ## Public surface
 
 [verifyops.vercel.app](https://verifyops.vercel.app) runs the real VerifyOps FastAPI and native JavaScript interface on Vercel's Python 3.12 runtime. Visitors can inspect six original synthetic incidents, reporting contracts, source schemas, current SQL, the dbt project catalog and the product's review workflow.

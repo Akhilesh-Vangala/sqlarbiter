@@ -35,3 +35,5 @@ The original monochrome SVGs are architecture illustrations. [Catalog](assets/db
 Current checks are linked to a recorded commit and Actions run in the README. Native, container and dedicated dbt jobs publish downloadable evidence. Live model comparisons, held-out evaluation, actual user feedback and monitored cloud delivery remain pending. Earlier milestones remain available in [README history](../README-HISTORY.md).
 
 For repository development, use the [branch, PR and release policy](../BRANCHING.md).
+
+- [Interactive public app, continuous recording and authority boundaries](20-INTERACTIVE-PUBLIC-DEMO.md)

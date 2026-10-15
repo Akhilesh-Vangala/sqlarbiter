@@ -1,5 +1,17 @@
 # VerifyOps / recorded demonstration
 
+## New interactive public demonstration
+
+[Run the app](https://verifyops.vercel.app/demo) · [Watch continuous browser capture](https://verifyops.vercel.app/demo/recording) · [Download the WebM](../src/vdir/demo_assets/walkthrough.webm)
+
+![Actual interactive app preview](assets/verifyops-interactive-demo.gif)
+
+Choose an incident → run the original fixed investigator and source-level verifier → inspect SQL/evidence → submit a SQL revision → run regression checks again → accept or reject the exact checked result. The recorded SUM(DISTINCT) false repair fails independent checks and cannot be accepted.
+
+This recording captures actual automated clicks and server calculations on synthetic fixtures. No live-model generation or customer feedback is represented. [Recording/source hashes](demos/interactive-recording.json) · [Architecture and replay limits](20-INTERACTIVE-PUBLIC-DEMO.md). The earlier private-workbench recording below is preserved as separate evidence.
+
+## Earlier private-workbench recording
+
 [Project README](../README.md) · [Engineering case study](CASE-STUDY.md) · [Technical index](README.md)
 
 ![Static poster from the actual recorded application](assets/verifyops-demo-poster.png)
