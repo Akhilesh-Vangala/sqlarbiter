@@ -6,7 +6,7 @@
 artifacts
 docs
 notebooks
-scripts
+/scripts
 tests
 __pycache__
 *.pyc

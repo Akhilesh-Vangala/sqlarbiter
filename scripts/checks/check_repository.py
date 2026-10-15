@@ -53,6 +53,7 @@ def main():
     assert (ROOT / "infrastructure/containers/compose.yaml").is_file()
     assert (ROOT / "backend/requirements/runtime.txt").is_file()
     assert (ROOT / "backend/docker/Dockerfile").is_file()
+    assert "scripts" not in (ROOT / ".vercelignore").read_text().splitlines(), "Use /scripts to exclude root tooling without dropping frontend assets/scripts"
     # Preserve actual ownership inside components, not only root folder names.
     application = ROOT / "backend/app" if (ROOT / "backend/app").is_dir() else ROOT / "backend/src" / ("vdir" if (ROOT / "backend/src/vdir").is_dir() else "relayops")
     allowed_root_modules = {"__init__.py", "__main__.py", "main.py"}
