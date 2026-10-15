@@ -79,6 +79,17 @@ class InvestigatorError(RuntimeError):
 
 
 EXECUTION_CONTROL = ContextVar("vdir_execution_control", default=None)
+WORKER_DEPENDENCIES = ContextVar("vdir_worker_dependencies", default=())
+
+
+@contextmanager
+def worker_dependencies(paths):
+    """Trusted deployment dependency roots, never user input or application source."""
+    token = WORKER_DEPENDENCIES.set(tuple(str(Path(p).resolve()) for p in paths))
+    try:
+        yield
+    finally:
+        WORKER_DEPENDENCIES.reset(token)
 
 
 class ExecutionInterrupted(RuntimeError):
@@ -140,6 +151,13 @@ def run_worker(workspace, *, mode="baseline", requests=None, continuation=None, 
         control()
     command = [sys.executable, "-I", "-B", str(workspace / "runtime" / "worker.py"),
          "--workspace", str(workspace), "--mode", mode] + (["--resume"] if continuation is not None else [])
+    dependency_paths = WORKER_DEPENDENCIES.get()
+    if dependency_paths:
+        # -I intentionally ignores PYTHONPATH; Vercel vendors packages outside
+        # the base interpreter's site-packages. Add only trusted third-party
+        # roots while preserving the exported runtime/source boundary.
+        bootstrap = "import sys,runpy;sys.path.extend(" + repr(list(dependency_paths)) + ");sys.argv=sys.argv[1:];runpy.run_path(sys.argv[0],run_name='__main__')"
+        command = [sys.executable, "-I", "-B", "-c", bootstrap] + command[3:]
     timeout = 270 if mode in ("anthropic", "langgraph") else 30
     with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as input_file, tempfile.TemporaryFile() as output_file, tempfile.TemporaryFile() as error_file:
         input_file.write(json.dumps(continuation) if continuation is not None else requests or "")

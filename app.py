@@ -1,4 +1,4 @@
-"""Vercel entrypoint for the public, read-only VerifyOps engineering showcase."""
+"""Vercel entrypoint for the interactive synthetic VerifyOps workbench."""
 import os
 import sys
 from pathlib import Path
@@ -8,6 +8,9 @@ sys.path.insert(0, str(ROOT / "src"))
 
 os.environ["VDIR_LOAD_DOTENV"] = "0"
 os.environ["VDIR_PUBLIC_SHOWCASE"] = "1"
+os.environ["VDIR_PUBLIC_DEMO"] = "1"
+os.environ["VDIR_DATABASE_URL"] = ""
+os.environ["ANTHROPIC_API_KEY"] = ""
 
 from vdir.api import create_app  # noqa: E402
 
