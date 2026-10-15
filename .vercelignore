@@ -22,3 +22,5 @@ PROGRESS.md
 
 # Infrastructure tooling is not part of the serverless app.
 deploy
+backend/tests
+backend/Dockerfile

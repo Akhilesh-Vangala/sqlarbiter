@@ -27,12 +27,12 @@ def main():
     if args.publish_assets and not args.record:
         parser.error("Publishing demo media requires --record")
     root = Path(__file__).resolve().parents[1]
-    relay = (root / "src/relayops").is_dir()
+    relay = (root / "backend/src/relayops").is_dir()
     package = "relayops" if relay else "vdir"
     name = "RelayOps" if relay else "VerifyOps"
     output = root / args.output
     output.mkdir(parents=True, exist_ok=True)
-    assets = root / "src" / package / "demo_assets"
+    assets = root / "frontend" / "public"
     server, log = None, None
     url = args.url
     if not url:
@@ -290,10 +290,11 @@ def main():
             str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in [
                 root / "app.py",
-                root / "src" / package / "public_demo.py",
-                root / "src" / package / "demo_security.py",
+                root / "backend" / "src" / package / "public_demo.py",
+                root / "backend" / "src" / package / "demo_security.py",
                 assets / "app.js",
                 assets / "style.css",
+                *[root / "backend/src" / package / name for name in ['api.py', 'evaluation.py', 'service.py', 'cases.py']],
             ]
         },
     }

@@ -10,7 +10,7 @@ cleanup() {
 trap cleanup EXIT
 
 kind create cluster --name "${cluster_name}" --wait 120s
-docker build --target runtime -t verifyops:kind .
+docker build -f backend/Dockerfile --target runtime -t verifyops:kind .
 kind load docker-image verifyops:kind --name "${cluster_name}"
 kubectl apply -k deploy/k8s/overlays/kind
 kubectl -n verifyops wait --for=condition=complete job/verifyops-migrate --timeout=180s

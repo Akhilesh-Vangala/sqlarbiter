@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "backend" / "src"))
 
 os.environ["VDIR_LOAD_DOTENV"] = "0"
 os.environ["VDIR_PUBLIC_SHOWCASE"] = "1"

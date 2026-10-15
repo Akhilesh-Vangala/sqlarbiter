@@ -7,3 +7,9 @@ artifacts
 __pycache__
 *.pyc
 notebooks
+
+**/.env*
+**/.venv*
+**/__pycache__
+**/.tools
+**/.terraform

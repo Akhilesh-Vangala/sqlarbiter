@@ -4,6 +4,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -12,6 +13,7 @@ permissions:
   contents: read
 jobs:
   tests:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -35,37 +37,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pip install -r backend/requirements-dev.txt
       - run: python -m playwright install --with-deps chromium
-      - run: node --check src/vdir/web/app.js
-      - run: node --check src/vdir/demo_assets/app.js
+      - run: python scripts/check_repository.py
+      - run: node --check frontend/workbench/app.js
+      - run: node --check frontend/public/app.js
       - run: python scripts/public_demo_browser.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
-      - run: python -m unittest discover -s tests -v
+      - run: python -m unittest discover -s backend/tests -v
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_TEST_DATABASE_URL: postgresql://verifyops:verifyops-test-password@127.0.0.1:5432/verifyops_test
-      - run: python tests/browser_smoke.py
+      - run: python tests/e2e/browser_smoke.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
-      - run: python tests/browser_graph_smoke.py
+      - run: python tests/e2e/browser_graph_smoke.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
-      - run: python tests/browser_automation_smoke.py
+      - run: python tests/e2e/browser_automation_smoke.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
-      - run: python tests/browser_pages_smoke.py
+      - run: python tests/e2e/browser_pages_smoke.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
       - run: python -m vdir.benchmark --output artifacts/generated/ci-benchmark --samples 1
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
       - uses: actions/upload-artifact@v4
         if: always()
@@ -79,14 +82,15 @@ jobs:
             artifacts/generated/ci-benchmark
             artifacts/generated/public-demo-browser
   container:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build --target test -t vdir:test .
+      - run: docker build -f backend/Dockerfile --target test -t vdir:test .
       - run: docker run --name vdir-check vdir:test
       - run: docker cp vdir-check:/app/artifacts/generated artifacts/generated-container
         if: always()
-      - run: docker build --target runtime -t vdir:check .
+      - run: docker build -f backend/Dockerfile --target runtime -t vdir:check .
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.16.5"
@@ -119,28 +123,29 @@ jobs:
           name: container-evidence
           path: artifacts/generated-container
   dbt:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pip install -r backend/requirements-dev.txt
       - run: python -m playwright install --with-deps chromium
       - run: python -m venv .venv-dbt
-      - run: .venv-dbt/bin/python -m pip install -r requirements-dbt.txt
-      - run: python -m unittest discover -s tests -p test_dbt_integration.py -v
+      - run: .venv-dbt/bin/python -m pip install -r backend/requirements-dbt.txt
+      - run: python -m unittest discover -s backend/tests -p test_dbt_integration.py -v
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
           VDIR_RUN_DBT_TESTS: "1"
       - run: python -m vdir.dbt_workflow --output artifacts/generated/ci-dbt
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
-      - run: python tests/browser_dbt_smoke.py
+      - run: python tests/e2e/browser_dbt_smoke.py
         env:
-          PYTHONPATH: src
+          PYTHONPATH: backend/src
           VDIR_LOAD_DOTENV: "0"
       - uses: actions/upload-artifact@v4
         if: always()
