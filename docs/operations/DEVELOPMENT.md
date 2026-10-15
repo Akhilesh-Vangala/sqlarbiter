@@ -4,9 +4,9 @@ Run from the repository root. Python 3.11–3.12 is supported; CI and images use
 
 ```sh
 python3.12 -m venv .venv
-.venv/bin/python -m pip install -r backend/requirements-dev.txt
+.venv/bin/python -m pip install -r backend/requirements/development.txt
 .venv/bin/python -m playwright install chromium
-PYTHONPATH=backend/src .venv/bin/python -m vdir.serve
+PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.serve
 ```
 
 For dbt, create a separate .venv-dbt and install backend/requirements-dbt.txt. Its dependency constraints differ from the application.
@@ -15,18 +15,18 @@ For dbt, create a separate .venv-dbt and install backend/requirements-dbt.txt. I
 
 The Vercel entrypoint `app.py` serves an interactive guided sandbox at `/demo`, with a continuous player at `/demo/recording`. It disables provider credentials, embedded workers and persistent database settings. Only exact bounded public-demo POST routes are enabled; legacy private writes remain blocked. [Public behavior and replay boundaries](PUBLIC-SANDBOX.md).
 
-Use `python scripts/public_demo_browser.py` to start an isolated temporary public app and exercise it. `--url https://verifyops.vercel.app` checks the deployed app. `--record --publish-assets` captures actual browser media into `frontend/public/`; no model call is needed.
+Use `python scripts/demos/public_demo_browser.py` to start an isolated temporary public app and exercise it. `--url https://verifyops.vercel.app` checks the deployed app. `--record --publish-assets` captures actual browser media into `frontend/apps/demo/`; no model call is needed.
 
 ## Private persistent runtime
 
 ```sh
-docker build -f backend/Dockerfile --target test -t verifyops:test .
+docker build -f backend/docker/Dockerfile --target test -t verifyops:test .
 docker run --rm verifyops:test
 # Configure the required private operator token and PostgreSQL password first.
-docker compose up --build -d
+scripts/deployment/compose.sh up --build -d
 ```
 
-The build context is the repository root; the Dockerfile is `backend/Dockerfile`. Compose declares this explicitly so frontend assets, original data and the exported investigator/dbt project enter the correct image. API and worker are separate processes, coordinated through PostgreSQL; fixture/workspace files remain on same-node shared storage. [Detailed runtime](PRODUCTION-FOUNDATION.md).
+The build context is the repository root; the Dockerfile is `backend/docker/Dockerfile`. Compose declares this explicitly so frontend assets, original data and the exported investigator/dbt project enter the correct image. API and worker are separate processes, coordinated through PostgreSQL; fixture/workspace files remain on same-node shared storage. [Detailed runtime](PRODUCTION-FOUNDATION.md).
 
 ## Private configuration and live inference
 

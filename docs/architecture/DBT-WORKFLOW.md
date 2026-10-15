@@ -37,8 +37,8 @@ Local default: .venv-dbt/bin/dbt; VDIR_DBT_EXECUTABLE overrides trusted service 
 CI runs the actual browser dbt journey in its isolated dbt job and in the full container suite. The browser test creates temporary state, performs real project builds, downloads/revises/reviews, checks responsive monochrome routes and cancels work without publishing a result. API tests cover unauthorized access, idempotency, unsupported uploads, stale/cross-type revisions, failed/tampered artifacts and owner-fenced progress. A separate real-process cancellation test confirms dbt supervision terminates/reaps interrupted work.
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir.serve --port 8000
-VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python tests/e2e/browser_dbt_smoke.py
+PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.serve --port 8000
+VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python backend/tests/e2e/browser_dbt_smoke.py
 VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -v
 ```
 

@@ -1,7 +1,7 @@
 > Historical record. [Current project overview](../../../README.md) and [current handoff](../HANDOFF.md) take precedence.
 
 <p align="center">
-  <img src="../../assets/verifyops-banner.svg" alt="VerifyOps: agentic investigation, independent verification, exact-version review" width="100%">
+  <img src="../../assets/branding/verifyops-banner.svg" alt="VerifyOps: agentic investigation, independent verification, exact-version review" width="100%">
 </p>
 
 <p align="center">
@@ -30,13 +30,13 @@ VerifyOps combines a checkpointed LangGraph investigator, bounded analytical too
 
 | Run the product | Inspect the engineering | Challenge the evidence |
 | --- | --- | --- |
-| [Interactive app](https://verifyops.vercel.app) · [Quick start](#run-locally) · [Recorded walkthrough](../../DEMO.md) | [Design case study](../../architecture/CASE-STUDY.md) · [System map](../../README.md) | [Reproducible checks](../../../CONTRIBUTING.md) · [Limits and tradeoffs](../../architecture/CASE-STUDY.md#what-the-evidence-establishes) |
+| [Interactive app](https://verifyops.vercel.app) · [Quick start](#run-locally) · [Recorded walkthrough](../../DEMO.md) | [Design case study](../../architecture/CASE-STUDY.md) · [System map](../../README.md) | [Reproducible checks](../../../.github/CONTRIBUTING.md) · [Limits and tradeoffs](../../architecture/CASE-STUDY.md#what-the-evidence-establishes) |
 
 ## Try it and watch it
 
-[**Open the interactive app →**](https://verifyops.vercel.app/demo) · [**Watch the continuous recording →**](https://verifyops.vercel.app/demo/recording) · [Recording file](../../../frontend/public/walkthrough.webm)
+[**Open the interactive app →**](https://verifyops.vercel.app/demo) · [**Watch the continuous recording →**](https://verifyops.vercel.app/demo/recording) · [Recording file](../../../frontend/apps/demo/assets/media/walkthrough.webm)
 
-![Actual interactive VerifyOps browser journey](../../assets/verifyops-interactive-demo.gif)
+![Actual interactive VerifyOps browser journey](../../assets/demos/verifyops-interactive-demo.gif)
 
 Choose an incident → run the original fixed investigator and source-level verifier → inspect SQL/evidence → submit a SQL revision → run regression checks again → accept or reject the exact checked result. The recorded SUM(DISTINCT) false repair fails independent checks and cannot be accepted.
 
@@ -45,8 +45,8 @@ Choose an incident → run the original fixed investigator and source-level veri
 ## The private dbt workbench
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="../../assets/verifyops-demo-poster.png">
-  <img src="../../assets/verifyops-demo.gif" alt="Six recorded stages: start the dbt investigation, inspect the finding, verify twenty outputs, review the SQL patch, reject a false fix and record exact-version sandbox review" width="100%">
+  <source media="(prefers-reduced-motion: reduce)" srcset="../../assets/demos/verifyops-demo-poster.png">
+  <img src="../../assets/demos/verifyops-demo.gif" alt="Six recorded stages: start the dbt investigation, inspect the finding, verify twenty outputs, review the SQL patch, reject a false fix and record exact-version sandbox review" width="100%">
 </picture>
 
 **17-second recorded walkthrough.** Actual dbt builds and application execution on original synthetic data with the fixed diagnostic. Reviews are automated sandbox demonstrations. No live model inference, production warehouse write or repository merge. [Static frames and recording provenance →](../../DEMO.md)
@@ -56,8 +56,8 @@ The operator journey connects a queued investigation to source evidence, a SQL d
 ## The business problem
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../../assets/verifyops-case-dark.svg">
-  <img src="../../assets/verifyops-case-light.svg" alt="Original payment event e1 arrives as deliveries d1 and d2: delivery-grain revenue is 2400 cents; event-identity repair restores 1200 cents" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/branding/verifyops-case-dark.svg">
+  <img src="../../assets/branding/verifyops-case-light.svg" alt="Original payment event e1 arrives as deliveries d1 and d2: delivery-grain revenue is 2400 cents; event-identity repair restores 1200 cents" width="100%">
 </picture>
 
 A dashboard can return plausible numbers while its transformations are semantically wrong: a join multiplies revenue, retries duplicate payment events, or timestamp handling shifts transactions into the wrong reporting day. Successful SQL execution alone cannot establish that the metric is correct.
@@ -79,7 +79,7 @@ The owned work connects **bounded agent investigation**, **executed and cited ev
 
 ## System architecture
 
-![VerifyOps system map showing job ownership, a bounded LangGraph investigator, independent verification and exact-version review](../../assets/verifyops-architecture.svg)
+![VerifyOps system map showing job ownership, a bounded LangGraph investigator, independent verification and exact-version review](../../assets/diagrams/verifyops-architecture.svg)
 
 <details>
 <summary><strong>Expand application orchestration and ownership</strong></summary>
@@ -174,7 +174,7 @@ The worker runs actual `dbt seed`, `run`, and `test`; exports staging evidence a
 <details>
 <summary><strong>View the actual verified repair, regression checks, SQL diff, and review screen</strong></summary>
 
-![Actual dbt investigation showing twenty independent model checks, SQL patch and review controls](../../assets/dbt-investigation.png)
+![Actual dbt investigation showing twenty independent model checks, SQL patch and review controls](../../assets/screenshots/dbt-investigation.png)
 
 These screenshots use original synthetic development data and the fixed diagnostic. They show real application/dbt execution, not a live model result. The UI currently retains the earlier VDIR name.
 
@@ -233,8 +233,8 @@ Compose runs the API, worker, and Phoenix with loopback ports and shared local v
 ## Verified evidence
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../../assets/verifyops-evidence-dark.svg">
-  <img src="../../assets/verifyops-evidence-light.svg" alt="Recorded engineering evidence: 133 unit passes plus one optional skip, 120 container browser checks, and twenty outputs per dbt verification; live AI quality pending" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/branding/verifyops-evidence-dark.svg">
+  <img src="../../assets/branding/verifyops-evidence-light.svg" alt="Recorded engineering evidence: 133 unit passes plus one optional skip, 120 container browser checks, and twenty outputs per dbt verification; live AI quality pending" width="100%">
 </picture>
 
 The implementation baseline at [`14f0bce`](https://github.com/Akhilesh-Vangala/verifyops/commit/14f0bce060eec328e46e95ace58c153559015a91) passed all three jobs in [GitHub Actions run 38315249531](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38315249531). The badge above tracks the current branch; the following counts belong to that recorded baseline.
@@ -275,15 +275,15 @@ PYTHONPATH=backend/src .venv/bin/python -m vdir --investigate artifacts/generate
 
 | Layer | Technology and source |
 | --- | --- |
-| Agent orchestration | LangGraph + PostgreSQL/SQLite checkpointers · [`investigator_runtime/graph.py`](../../../backend/investigator_runtime/graph.py) |
-| Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](../../../backend/investigator_runtime/model.py) |
-| Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](../../../backend/investigator_runtime/agent_policy.py) |
-| Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](../../../backend/investigator_runtime/tools.py), [`engines.py`](../../../backend/investigator_runtime/engines.py) |
-| Independent verification | Python references and evidence replay · [`backend/src/vdir/evaluation.py`](../../../backend/src/vdir/evaluation.py), [`reference.py`](../../../backend/src/vdir/reference.py) |
-| API, worker, state | FastAPI + Uvicorn + PostgreSQL/SQLite adapters · [`backend/src/vdir/api.py`](../../../backend/src/vdir/api.py), [`postgres_jobs.py`](../../../backend/src/vdir/postgres_jobs.py), [`jobs.py`](../../../backend/src/vdir/jobs.py) |
-| dbt repair | dbt-core + dbt-duckdb · [`backend/src/vdir/dbt_workflow.py`](../../../backend/src/vdir/dbt_workflow.py), [`original project`](../../../dbt/revenue_incident) |
-| Spend accounting | SQLite ledger · [`backend/src/vdir/spending.py`](../../../backend/src/vdir/spending.py) |
-| Web application | Native HTML / CSS / JavaScript · [`frontend/workbench`](../../../frontend/workbench) |
+| Agent orchestration | LangGraph + PostgreSQL/SQLite checkpointers · [`investigator_runtime/graph.py`](../../../backend/agents/investigator/graph.py) |
+| Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](../../../backend/agents/investigator/model.py) |
+| Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](../../../backend/agents/investigator/agent_policy.py) |
+| Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](../../../backend/agents/investigator/tools.py), [`engines.py`](../../../backend/agents/investigator/engines.py) |
+| Independent verification | Python references and evidence replay · [`backend/src/vdir/evaluation.py`](../../../backend/src/vdir/evaluation/evaluation.py), [`reference.py`](../../../backend/src/vdir/verification/reference.py) |
+| API, worker, state | FastAPI + Uvicorn + PostgreSQL/SQLite adapters · [`backend/src/vdir/api.py`](../../../backend/src/vdir/api/routes.py), [`postgres_jobs.py`](../../../backend/src/vdir/persistence/postgres_jobs.py), [`jobs.py`](../../../backend/src/vdir/persistence/jobs.py) |
+| dbt repair | dbt-core + dbt-duckdb · [`backend/src/vdir/dbt_workflow.py`](../../../backend/src/vdir/workflows/dbt_workflow.py), [`original project`](../../../backend/dbt/revenue_incident) |
+| Spend accounting | SQLite ledger · [`backend/src/vdir/spending.py`](../../../backend/src/vdir/platform/spending.py) |
+| Web application | Native HTML / CSS / JavaScript · [`frontend/workbench`](../../../frontend/apps/workbench) |
 | Tracing and delivery | OpenTelemetry/Phoenix, Docker, Kubernetes/Kind, Terraform/AWS, GitHub Actions, Playwright |
 
 ## Repository map
@@ -317,4 +317,4 @@ verifyops/
 
 The Python package and some UI labels retain the earlier **Verified Data Incident Resolution / VDIR** name. The public project is **VerifyOps**.
 
-[Branch and release workflow](../../../BRANCHING.md) · [Contributing](../../../CONTRIBUTING.md)
+[Branch and release workflow](../../development/BRANCHING.md) · [Contributing](../../../.github/CONTRIBUTING.md)

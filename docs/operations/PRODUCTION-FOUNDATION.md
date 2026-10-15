@@ -22,7 +22,7 @@ PostgreSQL now owns queue admission, idempotency, leases, reviews, events and La
 
 ## PostgreSQL behavior
 
-`backend/src/vdir/postgres_jobs.py` implements the existing `JobStore` contract with:
+`backend/src/vdir/persistence/postgres_jobs.py` implements the existing `JobStore` contract with:
 
 - schema-version verification before the API or worker accepts work;
 - advisory transaction locks around idempotency and queue-cap admission;
@@ -32,7 +32,7 @@ PostgreSQL now owns queue admission, idempotency, leases, reviews, events and La
 - explicit failed/interrupted/unknown boundaries rather than automatic paid replay;
 - separate liveness (`/healthz`) and database readiness (`/readyz`).
 
-`python -m vdir.migrations` creates the application schema and the official PostgreSQL LangGraph checkpoint tables. Migrations run as a distinct Compose service and Kubernetes Job. API and worker pods wait for the schema rather than racing startup.
+`python -m vdir.persistence.migrations` creates the application schema and the official PostgreSQL LangGraph checkpoint tables. Migrations run as a distinct Compose service and Kubernetes Job. API and worker pods wait for the schema rather than racing startup.
 
 The exported LangGraph runtime selects `AsyncPostgresSaver` only when the checkpoint URL is present. Each application job has a stable thread identity; an exact-version continuation uses its parent's thread. The SQLite checkpointer and receipt behavior remain available for the offline adapter.
 
@@ -43,7 +43,7 @@ Compose now runs PostgreSQL, Phoenix/OTLP, one-shot schema migration, FastAPI an
 ```sh
 cp .env.example .env
 # Set VDIR_ACCESS_TOKEN and VDIR_POSTGRES_PASSWORD privately.
-docker compose up --build --wait
+scripts/deployment/compose.sh up --build --wait
 curl http://127.0.0.1:8000/healthz
 curl http://127.0.0.1:8000/readyz
 ```
@@ -52,7 +52,7 @@ The Compose state volume is still a development integration boundary. Do not inf
 
 ## Kubernetes
 
-`deploy/k8s/base` provides:
+`infrastructure/kubernetes/base` provides:
 
 - restricted Pod Security namespace;
 - distinct API, worker and migration service accounts with token automount disabled;
@@ -66,16 +66,16 @@ The Compose state volume is still a development integration boundary. Do not inf
 Render the base without a cluster:
 
 ```sh
-kubectl kustomize deploy/k8s/base
+kubectl kustomize infrastructure/kubernetes/base
 ```
 
-`deploy/k8s/overlays/kind` supplies a disposable PostgreSQL service, test-only credentials, one API replica, two competing workers and a single-node volume patch. `scripts/kind_smoke.sh` creates a Kind cluster, builds and loads the runtime image, runs migrations, waits for both deployments, submits an authenticated baseline incident and requires an independently verified completed result.
+`infrastructure/kubernetes/overlays/kind` supplies a disposable PostgreSQL service, test-only credentials, one API replica, two competing workers and a single-node volume patch. `scripts/deployment/kind_smoke.sh` creates a Kind cluster, builds and loads the runtime image, runs migrations, waits for both deployments, submits an authenticated baseline incident and requires an independently verified completed result.
 
-`deploy/k8s/overlays/aws` adds an EFS CSI storage class and production-sized base. The ECR URL, immutable image SHA, EFS ID, public origin and runtime Secret are deliberate deployment inputs. Placeholders prevent an accidental false production apply.
+`infrastructure/kubernetes/overlays/aws` adds an EFS CSI storage class and production-sized base. The ECR URL, immutable image SHA, EFS ID, public origin and runtime Secret are deliberate deployment inputs. Placeholders prevent an accidental false production apply.
 
 ## Terraform
 
-`deploy/terraform/aws` prepares, but does not apply:
+`infrastructure/terraform/aws` prepares, but does not apply:
 
 - an encrypted EKS control plane with restricted administrator CIDRs and full control-plane logs;
 - an on-demand managed node group;
@@ -87,7 +87,7 @@ kubectl kustomize deploy/k8s/base
 - KMS key rotation, Secrets Manager database material and an AWS budget notification.
 
 ```sh
-cd deploy/terraform/aws
+cd infrastructure/terraform/aws
 cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform fmt -check

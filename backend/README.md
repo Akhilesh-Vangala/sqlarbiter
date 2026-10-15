@@ -1,7 +1,12 @@
 # VerifyOps backend
 
-Python application and agent code is in [src/vdir](src/vdir/). Unit/integration tests live in [tests](tests/); the runtime/test image is built from [Dockerfile](Dockerfile) with the repository root as context.
+Application code is grouped by responsibility in [src/vdir](src/vdir). Each capability has a local guide.
 
-The exportable investigator is separate in [investigator_runtime](investigator_runtime/). Evaluator references stay outside its exported evidence and import path.
+- [Tests](tests/): capability-grouped regression/integration cases and browser journeys where applicable.
+- [Dependency locks](requirements/): runtime and development requirements, plus isolated dbt tooling.
+- [Docker image](docker/Dockerfile): runtime and test build stages.
+- [Fixtures and pricing](data/): original versioned synthetic material.
+- [Exportable investigator](agents/investigator/): deliberately isolated from [independent verification](src/vdir/verification/).
+- [dbt project](dbt/revenue_incident/): original restricted repair target.
 
-[Repository layout](../docs/development/LAYOUT.md) · [Current architecture](../docs/architecture/OVERVIEW.md) · [Run and verify](../README.md#run-locally).
+[Full layout](../docs/development/LAYOUT.md) · [Run locally](../README.md#run-locally).

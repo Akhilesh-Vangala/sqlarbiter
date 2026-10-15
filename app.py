@@ -12,6 +12,6 @@ os.environ["VDIR_PUBLIC_DEMO"] = "1"
 os.environ["VDIR_DATABASE_URL"] = ""
 os.environ["ANTHROPIC_API_KEY"] = ""
 
-from vdir.api import create_app  # noqa: E402
+from vdir.api.routes import create_app  # noqa: E402
 
 app = create_app(state_dir="/tmp/verifyops-public-showcase", token="", public_origin="", operator="public-showcase")

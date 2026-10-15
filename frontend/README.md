@@ -1,5 +1,6 @@
 # VerifyOps frontend
 
-[public](public/) contains the interactive guided UI and continuous recording. [workbench](workbench/) contains private native workbench assets. FastAPI serves these files; no Node build or React service is implied by the folder name.
+- [Guided application](apps/demo/): index.html and nested assets/scripts, assets/styles and assets/media.
+- [Private workbench](apps/workbench/): operator assets; server-owned HTML remains in the backend where appropriate.
 
-[Repository ownership](../docs/development/LAYOUT.md) · [Actual demo](../docs/DEMO.md) · [Working app](https://verifyops.vercel.app/demo).
+These are native browser applications served by Python. Folder separation does not introduce an extra Node service or change backend authority. [Full layout](../docs/development/LAYOUT.md).
