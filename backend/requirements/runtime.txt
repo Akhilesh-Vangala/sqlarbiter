@@ -45,6 +45,7 @@ httpcore2==2.13.1
     # via httpx2
 httpx==0.28.1
     # via
+    #   verified-data-incident-resolution (pyproject.toml)
     #   langchain-core
     #   langgraph-sdk
 httpx2==2.13.1

@@ -5,4 +5,5 @@
 
 These are native browser applications served by Python. Folder separation does not introduce an extra Node service or change backend authority. [Full layout](../docs/development/LAYOUT.md).
 
-- [Own-data workspace](apps/uploads/): file selection, explicit contracts, checked results, approval and downloads.
+- [Product workspace](apps/product/): landing, dashboard, guided own-data intake, checked reports, explicit saved history, projects and account/settings views.
+- [Upload recording](apps/uploads/): hosted video/player and historical compatibility assets; `/uploads` now opens the product frontend.
