@@ -88,7 +88,9 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build -f backend/docker/Dockerfile --target test -t vdir:test .
       - run: docker run --name vdir-check vdir:test
-      - run: docker cp vdir-check:/app/artifacts/generated artifacts/generated-container
+      - run: |
+          mkdir -p artifacts
+          docker cp vdir-check:/app/artifacts/generated artifacts/generated-container
         if: always()
       - run: docker build -f backend/docker/Dockerfile --target runtime -t vdir:check .
       - uses: hashicorp/setup-terraform@v3
