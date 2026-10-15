@@ -120,7 +120,8 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     async def boundaries(request: Request, call_next):
         if request.url.path.startswith("/api/"):
             from vdir.api.public_demo import WRITE_PATHS
-            if public_showcase and request.method != "GET" and not (public_demo and request.method == "POST" and request.url.path in WRITE_PATHS):
+            from vdir.uploads.api import WRITE_PATHS as UPLOAD_PATHS
+            if public_showcase and request.method != "GET" and not (public_demo and request.method == "POST" and request.url.path in (WRITE_PATHS | UPLOAD_PATHS)):
                 return JSONResponse({"detail": "Public showcase is read-only"}, status_code=405)
             if public_showcase:
                 pass
@@ -140,7 +141,7 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
                 chunks, size = [], 0
                 async for chunk in request.stream():
                     size += len(chunk)
-                    if size > 75000:
+                    if size > (1000000 if request.url.path in UPLOAD_PATHS else 75000):
                         return JSONResponse({"detail": "Request exceeds size limit"}, status_code=413)
                     chunks.append(chunk)
                 request._body = b"".join(chunks)
@@ -395,4 +396,6 @@ def create_app(state_dir=None, token=None, public_origin=None, operator=None):
     if public_demo:
         from vdir.api.public_demo import attach
         attach(app, LABELS)
+    from vdir.uploads.api import attach as attach_uploads
+    attach_uploads(app, "VerifyOps", Path(__file__).resolve().parents[4])
     return app

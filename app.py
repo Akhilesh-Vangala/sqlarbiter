@@ -1,4 +1,4 @@
-"""Vercel entrypoint for the interactive synthetic VerifyOps workbench."""
+"""Vercel entrypoint for VerifyOps samples and request-bounded visitor CSVs."""
 import os
 import sys
 from pathlib import Path

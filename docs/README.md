@@ -13,3 +13,7 @@
 | What is current versus historical? | [Handoff](project/HANDOFF.md), [plan](project/PLAN.md), [dated history](project/history/PRE-ORGANIZATION-README.md) |
 
 Detailed implementation: [agent framework](architecture/AGENT-ORCHESTRATION.md), [public sandbox](operations/PUBLIC-SANDBOX.md), [private worker/container topology](operations/PRODUCTION-FOUNDATION.md), [engineering case study](architecture/CASE-STUDY.md).
+
+## Visitor-owned data
+
+[CSV workspace contracts, limits and verification](product/USER-DATA.md).

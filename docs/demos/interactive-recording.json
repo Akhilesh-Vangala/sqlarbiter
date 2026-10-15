@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:49500",
+  "url": "http://127.0.0.1:53370",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -14,32 +14,32 @@
     {
       "stage": "choose-case",
       "path": "00-choose-case.png",
-      "sha256": "49822876e40e05d068496c18308c80dd8f8e55b689c5033b36ca9c9ff9c2859d"
+      "sha256": "73ce1a477e5f77d3c0fa19fb9f7321b2cfc136208a59ccbbbf6ba79f59785800"
     },
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "994cf32efc4dc1233815376d40d18099df337b8d5d7179181000d79c24bb8559"
+      "sha256": "0b24406322b8623c6cb1144a6af7f2947acfc25ed245fa12a3a02d5b32e4225b"
     },
     {
       "stage": "executed-evidence",
       "path": "02-executed-evidence.png",
-      "sha256": "364d4e1f1528d4cc8e14a025cd4bd8e3859f53ddb6287d631e43f131fdb52494"
+      "sha256": "3938e39036a82a813b578550372b32ba5fd566a58e0765460e040ffc5b8d637e"
     },
     {
       "stage": "false-repair-blocked",
       "path": "03-false-repair-blocked.png",
-      "sha256": "06737de3962e4dc205e9221c27ed4f9915df96a108c1a82a191e634fdada65bb"
+      "sha256": "e1b4ed13e41018c80eb4ae951d637d279b00daf05a68441634dd6fdfef664115"
     },
     {
       "stage": "independent-regressions",
       "path": "04-independent-regressions.png",
-      "sha256": "9af9fbbdeb93296259d55de684269baeb45fef6f8b29cdd3acc63d125fb3abb9"
+      "sha256": "c3b7500e940a0737067e0afaaf3d97d71ed3cc5bd0e17f0a2052cf71dd4c5b93"
     },
     {
       "stage": "reviewed-result",
       "path": "05-reviewed-result.png",
-      "sha256": "56d08945f5b590bb90e5ca44707a067c16eea36b6a41c3043b0af8f625da23f0"
+      "sha256": "783b6fb59711c1b9416aa7788fb49b635ca2d1ebdf2c134508fe48849133de9e"
     }
   ],
   "proof": {
@@ -49,13 +49,13 @@
     "exact_version_review": true
   },
   "source_sha256": {
-    "app.py": "d55bd0c18c2ceb0edd35bcd690e61dae8b47494585ef8d717e52ec421f6b2ccb",
+    "app.py": "4891ef0188616fdfc6c869dd450d6e4eb3482b8b40d16e6995d193bcd3169aaa",
     "backend/src/vdir/__init__.py": "a9e62e90432ee3c92bfe7b53bb5311d1595d6e7be77a47b1ede2358332360a04",
     "backend/src/vdir/__main__.py": "fe32d3f6134088bfffd5bc849d0391ebaf30cdfec714d5036cefc7257b0173d9",
     "backend/src/vdir/api/__init__.py": "6be09e7ee0ba3dc50a55d09f411319e52392ee5b1675f64aa43608f7619370ae",
     "backend/src/vdir/api/demo_security.py": "0ab6771b67c3e0d0859787a255fb6b60dc57370b065461ef7890fe1fa51aa70c",
     "backend/src/vdir/api/public_demo.py": "00904d9b5a0ca9d6cdc335a43b7d08185a829ff3bd4bcbbdd7ba02c1abfe6ba9",
-    "backend/src/vdir/api/routes.py": "6863dbbbb75dc20defa459020682af8d37c3d331ed6b9b3be7a6552fad92e576",
+    "backend/src/vdir/api/routes.py": "54c75b5f7a8c9e882e30f420d294044ab629d73e01cebba214ea7a3c8984f74b",
     "backend/src/vdir/cli/__init__.py": "cf91b41403b576dbbee2c6c0e13f26d839c6137450507a748aa00e113d98bce7",
     "backend/src/vdir/cli/graph_resume.py": "3efdd541c68f3cdc8935ddfa2b0c01431bbcb42f970a420382a0994c8f263718",
     "backend/src/vdir/cli/serve.py": "91af56755eac075ce6238c8c3364460d3925eb0112ad65706cde833943b586aa",
@@ -74,6 +74,10 @@
     "backend/src/vdir/platform/config.py": "32b8196c3eebc7d77d97d11c838eb5cdb4fc9e9c9b4e777b602d7cb8f6d5dbe9",
     "backend/src/vdir/platform/observability.py": "58655401fcc63c5eb409f6a427df3f41aa75db07edbd484bffe462ca1ffc945f",
     "backend/src/vdir/platform/spending.py": "4e0af0eceb27c273789c0d4db6e0f9138395a516298eadaf068fbcf10de6cd4e",
+    "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
+    "backend/src/vdir/uploads/api.py": "6cd3b60a2abef6cda60566f3bcecd15a0923b1cee4a9db84ad3709d817c4eb14",
+    "backend/src/vdir/uploads/ingestion.py": "0f376ef3fd01d75e98b5db06522d6ebfda660fcdf53e1c533471cbe823c00e63",
+    "backend/src/vdir/uploads/service.py": "b1211cb35acb559ebea38b720e5c33ec69159d67b3dd6c6fbafec18ddd822158",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -94,12 +98,12 @@
     "backend/agents/investigator/telemetry.py": "b7012da582f5b2636bf6f83ed344d55d2690dd6a3df702b4af1899887ff9e166",
     "backend/agents/investigator/tools.py": "503583193b3cdf8d80fb22960d5a22dc61942e32078589f13f46175e4661a043",
     "backend/agents/investigator/worker.py": "b4feb59a4ffb122e1d241c56750bfc9559adcf4701c0e08b8bcfb7df092db7ec",
-    "frontend/apps/demo/assets/scripts/app.js": "15189d5ef669be0c8b1b3aa1e1a7439b710f8424aef60662f90c392d708f76c7",
+    "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "2338f799901f92567a844d6aa7a325944212c5e5c652f7166883bb4de4ffc260",
+  "video_sha256": "fcba1b22a0c87624872fe0e98b6d2aa7eeafa5e2d742e774351d0790e8f5e50a",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
   "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif",
-  "capture_environment": "Actual isolated local guided application from the reorganized working tree; original synthetic data; no live inference"
+  "capture_environment": "Actual isolated local application with current source hashes; original synthetic sample workflow; zero paid inference"
 }

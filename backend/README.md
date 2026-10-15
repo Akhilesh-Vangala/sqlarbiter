@@ -10,3 +10,5 @@ Application code is grouped by responsibility in [src/vdir](src/vdir). Each capa
 - [dbt project](dbt/revenue_incident/): original restricted repair target.
 
 [Full layout](../docs/development/LAYOUT.md) · [Run locally](../README.md#run-locally).
+
+- [Visitor-owned CSV processing](src/vdir/uploads/): bounded ingestion, source-derived workflows and independent checks.
