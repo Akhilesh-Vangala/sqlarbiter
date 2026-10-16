@@ -128,7 +128,7 @@ export function landing(ctx) {
             [
               "01 / BRING THE SOURCE",
               "Start with your export.",
-              "Upload a CSV and inspect its records. Find missing values, review column types and see the source before making assumptions.",
+              "Upload a data file and inspect its records. Find missing values, review column types and see the source before making assumptions.",
             ],
             [
               "02 / DEFINE WHAT COUNTS",
