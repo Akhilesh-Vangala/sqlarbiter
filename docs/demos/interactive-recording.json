@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:56979",
+  "url": "http://127.0.0.1:65530",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -19,27 +19,27 @@
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "c165fe2e06c440826d268eae727d8a349d66a1574218c1db5383110b8d7a672f"
+      "sha256": "332c17ce6f37b306832b3bb862d1bf1063a61579841c80500171e3de7abd64e3"
     },
     {
       "stage": "executed-evidence",
       "path": "02-executed-evidence.png",
-      "sha256": "baaa523cb3a3402ccd68dd25ca499b025249b947072c6a9801b33aceaadaa495"
+      "sha256": "fa04e6ab31ec40d4114f9a1aeaeee5b0376d22594450b53daec10b7a41b7c251"
     },
     {
       "stage": "false-repair-blocked",
       "path": "03-false-repair-blocked.png",
-      "sha256": "f06fc4e2ab460985b4b571247f7fa12ea2efc1230a43feaa0b2973e61bf37d34"
+      "sha256": "33ab4dea59c87b7dbc79eb8d70374cedd3cf40d040cdbfe0ee10a85bc881b743"
     },
     {
       "stage": "independent-regressions",
       "path": "04-independent-regressions.png",
-      "sha256": "f7a4ff7c9920b8ccba840de05d039532280f3be8699897d73827d88446181ab9"
+      "sha256": "53a0d98b4ec783cb5f9362b2dea583ca7db0156dbe8de460a7d939f2f0ea4e0f"
     },
     {
       "stage": "reviewed-result",
       "path": "05-reviewed-result.png",
-      "sha256": "de4147929c6715ada9fd97e79887a4e9b2c5e9c19c984fc14cbb9be932869691"
+      "sha256": "838c42085e983d6d41467496824101cc0d4c8f322811a0d97d28101a358f3cc0"
     }
   ],
   "proof": {
@@ -78,7 +78,8 @@
     "backend/src/vdir/product/accounts.py": "8759c4be8003938414f8bff0414a2759ddbcb2735101a102a83a55b8d9b18711",
     "backend/src/vdir/product/api.py": "64dca786b60c6216c452fdc72ba8e248090dda25ef34f7a249673e99ac2c2e75",
     "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
-    "backend/src/vdir/uploads/api.py": "680531d455608e3ceff5d67ade61236ed6298cea737244829f6d1830dfaaffe8",
+    "backend/src/vdir/uploads/api.py": "963d5648e6e54feffaa38ab71eb64bcdbf93993f3adaddc9f72bcbc1ba4fbe4d",
+    "backend/src/vdir/uploads/imports.py": "d025a3e701bca899913b580737065f1cb2f87084babc8699d582c03cb5ed778f",
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
@@ -106,9 +107,8 @@
     "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "e389f77016b7fd4f06963afe96f8ad350ed64fc33f6618bed2792f51e46d4c76",
+  "video_sha256": "5289be522c260a160b3c768dd9e786891ddabbaa225a810b92db19ac746491c1",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
-  "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif",
-  "capture_environment": "Actual Python 3.12 local application; original guided synthetic repair workflow; zero paid inference"
+  "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif"
 }
