@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "url": "http://127.0.0.1:56968",
+  "url": "http://127.0.0.1:65529",
   "paid_model_calls": 0,
   "actual_user_feedback": false,
   "checks": [
@@ -64,7 +64,8 @@
     "backend/src/vdir/product/accounts.py": "8759c4be8003938414f8bff0414a2759ddbcb2735101a102a83a55b8d9b18711",
     "backend/src/vdir/product/api.py": "64dca786b60c6216c452fdc72ba8e248090dda25ef34f7a249673e99ac2c2e75",
     "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
-    "backend/src/vdir/uploads/api.py": "680531d455608e3ceff5d67ade61236ed6298cea737244829f6d1830dfaaffe8",
+    "backend/src/vdir/uploads/api.py": "963d5648e6e54feffaa38ab71eb64bcdbf93993f3adaddc9f72bcbc1ba4fbe4d",
+    "backend/src/vdir/uploads/imports.py": "d025a3e701bca899913b580737065f1cb2f87084babc8699d582c03cb5ed778f",
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
@@ -80,28 +81,23 @@
     "backend/src/vdir/workflows/dbt_service.py": "73fb99b0776d0870bb3a5bdacf66febf8c702247f8eff1ffe739392380719ad4",
     "backend/src/vdir/workflows/dbt_workflow.py": "e79aa9ef5c46d85c625894459769cfa4c7caa78336071ecf15fc00906d6413d6",
     "backend/src/vdir/workflows/service.py": "4a9265a4a83f79443f95ad8dbf1cc89bfad6b51619efc51ea4a90a18eabb134d",
-    "frontend/apps/product/app.js": "79b7dbd9e75636d6055ae02ebf1db13473afb8a7a45e236bfe821b7dd31e2ba9",
+    "frontend/apps/product/app.js": "fb5a13ea45aecfbe8f45c3ac75392edb293bed434bd779860556c5f7c9378bbf",
     "frontend/apps/product/index.html": "c4e232f45f89192cf47a5f3a7b77a4f118ec47033c8823428a03b07d0ff1d92c",
     "frontend/apps/product/lib/api.js": "ce6e548786dea58855490795c65494f900838cc60cf7ed8785b95829cd78fc69",
     "frontend/apps/product/lib/dom.js": "ef3025937a144bee88e38893e72126742f403dbfa908d4c486ddf647d67e3afb",
+    "frontend/apps/product/lib/imports.js": "89d2a47dd3b885cee795ff906b6284e8f8be57f3a8e88e2fab30d5e62ce95106",
     "frontend/apps/product/lib/storage.js": "f62282ebd3362c480701ac052e0d0d92b656d9179160df4a8d50f2631b253c41",
     "frontend/apps/product/state.js": "effca3af034e6f9826cee8cb55e7c5f4cba1f694fce06214919880352a72ce3a",
     "frontend/apps/product/styles.css": "bf7217396e2ccd76baef6b2ed544ff804076b551a8ca025f9d7479877a1c1d72",
     "frontend/apps/product/views/account.js": "fdbdce90fc8c7cbeae89db800f27dadef8bf3cac583085fbd49d91b4a0cf8b6f",
-    "frontend/apps/product/views/dashboard.js": "e31d90e627a42560cb56d43a26d92e30ae0c945b043a4f7c5fa6c167dbd534a7",
-    "frontend/apps/product/views/intake.js": "51a4e7f609ab35a4ec03d840c32017e6303a9471486d637313885df156182c3f",
-    "frontend/apps/product/views/landing.js": "6579973666c9b4445e8c8ed1f4d9335429cbe86ddd5b098a07ebc1385675f6af",
-    "frontend/apps/product/views/report.js": "144ac77a3daa3806e85dc24617626f9f079fd724791e1abec7a762013c47beb8",
-    "frontend/apps/uploads/recording.html": "dc58236a66834e85ed3fba486fe2dcb06c485ba70a47b5f09317bb3e4dab52e2",
-    "frontend/apps/uploads/style.css": "332f9067a955c2339ce1305ef0697f17cfa74d0350f3a761d2aed1f3f076cfb1",
-    "pyproject.toml": "1188497cc76f5ddd2ca4518f66a3a59e3900cf3777ad7324b93c01749c4aa652",
-    "backend/requirements/runtime.txt": "d8fda6a61e2db90ff881518a59a0f679a053c47fd32fff5a5ed864eaaef21ce5"
+    "frontend/apps/product/views/dashboard.js": "070bebd5691a1c9c9a1c26bd2475f8ee27b00cac07870c0afceb86f85fccd949",
+    "frontend/apps/product/views/intake.js": "7be84df1dee36d0de40399b4d07cf8a6ca55612eb7ceeca18c8782646e1dc515",
+    "frontend/apps/product/views/landing.js": "e874958d385c7a3e7d37d01bb7652c108632441dbf63fc5a910448e062a7041e",
+    "frontend/apps/product/views/report.js": "144ac77a3daa3806e85dc24617626f9f079fd724791e1abec7a762013c47beb8"
   },
-  "project": "VerifyOps",
-  "recording": "Continuous actual Chromium product journey with readable pauses; generated test CSV, deterministic verification and consented device history. Automated checks are not actual-user feedback.",
-  "video_path": "frontend/apps/uploads/walkthrough.webm",
+  "recording": "Actual continuous product/upload/source/rules/results/history capture with reviewed fixture data; no live inference or customer-feedback claim.",
   "media_sha256": {
-    "frontend/apps/uploads/walkthrough.webm": "24563fcf5364a4f6f2094a4e33dc1d65f10e6205fe9983e88fd25de32969a87c",
-    "frontend/apps/uploads/poster.png": "344fe287c625b0ba46ba39afa10af2f1cf637b0315307ed8df414e84c9c48215"
+    "frontend/apps/uploads/poster.png": "344fe287c625b0ba46ba39afa10af2f1cf637b0315307ed8df414e84c9c48215",
+    "frontend/apps/uploads/walkthrough.webm": "586e123436a23a53a2413f3f136080e85cad275638ae7a5db88241dfaac1fafa"
   }
 }

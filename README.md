@@ -2,6 +2,8 @@
 
 **Bring the metric that doesn’t add up.** [Open the workspace](https://verifyops.vercel.app/) · [Product architecture and storage](docs/product/PRODUCT-WORKSPACE.md). Inspect an export, review the rules, compare independent calculations, and save or download the evidence. Public own-data verification is deterministic; live inference remains a separate private mode.
 
+**File imports:** CSV · TSV · Excel `.xlsx` with worksheet choice · JSON · JSONL. [Import contract and limits](docs/product/FILE-IMPORTS.md). Existing independent checks and approval rules apply to every format.
+
 <p align="center"><a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Required engineering checks"></a> &nbsp; Python · LangGraph · FastAPI · PostgreSQL</p>
 
 # VerifyOps
@@ -19,7 +21,7 @@ Investigate a business-metric discrepancy, propose a SQL repair, and challenge i
 
 ## From source to a checked decision
 
-1. **Inspect** a CSV with column statistics, searchable source records and actionable validation errors.
+1. **Inspect** a CSV, TSV, Excel, JSON or JSONL export with column statistics, searchable source records and actionable validation errors.
 2. **Define and review** the logical key, amount, eligibility and reported total.
 3. **Verify** generated SQL against an independent integer-cents reference, with observed progress.
 4. **Decide** using findings, charts, duplicate impact, SQL/checks and downloadable evidence.

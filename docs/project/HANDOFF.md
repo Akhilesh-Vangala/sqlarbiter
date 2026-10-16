@@ -1,3 +1,7 @@
+# October16 — bounded multi-format import
+
+The product accepts CSV, TSV, Excel .xlsx, JSON and JSONL, with explicit worksheet selection, deterministic normalization and unchanged domain rules. New parser/domain equivalence and actual five-format browser journeys are part of required CI. [Import contract](../product/FILE-IMPORTS.md). Publication status must be verified through the protected PR and canonical source metadata; live inference, hosted Auth and monitored durable customer execution remain separate gates. Previous release notes below are preserved.
+
 # Active increment: coherent product workspace — October 15, 2026
 
 The public root becomes a product landing page with dashboard, guided source/rule/review/result pages, actionable record-level errors, actual SSE progress, charts and inspectable evidence. Opt-in immutable device snapshots support history/projects/reload; changed reports are not presented as verified. Optional Supabase Auth/Postgres integration and owner-policy migration are implemented; hosted configuration, email and cloud operation remain unverified. [Design and boundaries](../product/PRODUCT-WORKSPACE.md). Local Python 3.12 regression: 170 suite cases, one real-dbt case separately passed; actual PostgreSQL RLS/quota checks, 96 private browser checks, 11 grouped product checks and 14 axe views passed. Source-bound recordings are current. Protected publication/deployment is pending until observed; existing histories below remain preserved.

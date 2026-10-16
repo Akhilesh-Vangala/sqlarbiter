@@ -1,3 +1,4 @@
+import { ACCEPT, FORMAT_HELP } from "../lib/imports.js";
 import {
   el,
   button,
@@ -254,9 +255,9 @@ function source(ctx) {
   const input = el("input", {
     type: "file",
     id: "file",
-    accept: ".csv,text/csv",
+    accept: ACCEPT,
     disabled: state.busy,
-    "aria-label": "Choose a CSV file",
+    "aria-label": "Choose a tabular file",
     onchange: (e) => {
       if (e.target.files[0]) ctx.loadFile(e.target.files[0]);
     },
@@ -265,10 +266,10 @@ function source(ctx) {
     "div",
     { class: "dropzone", id: "dropzone" },
     el("div", { class: "upload-mark" }, icon("upload")),
-    el("h3", {}, "Drop your transaction CSV here."),
+    el("h3", {}, "Drop your data file here."),
     el("p", { class: "hint" }, "Or choose a file from your device."),
     input,
-    el("p", { class: "hint" }, "UTF-8 CSV · Up to 400 KB · 5,000 records"),
+    el("p", { class: "hint" }, FORMAT_HELP + " · 5,000 records"),
   );
   for (const name of ["dragover", "dragenter"])
     dropzone.addEventListener(name, (event) => {
@@ -283,7 +284,7 @@ function source(ctx) {
     dropzone.classList.remove("dragging");
     if (state.busy) return;
     if (event.dataTransfer.files.length !== 1) {
-      ctx.problem("Choose one CSV file at a time.");
+      ctx.problem("Choose one tabular file at a time.");
       return;
     }
     ctx.loadFile(event.dataTransfer.files[0]);
@@ -385,6 +386,23 @@ function source(ctx) {
         }),
       ),
     ),
+    draft.importSource &&
+      el(
+        "div",
+        { class: "callout" },
+        el(
+          "p",
+          {},
+          "Imported " +
+            String(draft.importSource.format || "table")
+              .slice(0, 12)
+              .toUpperCase() +
+            (draft.importSource.sheet
+              ? " · Worksheet: " + draft.importSource.sheet
+              : "") +
+            ". Review the values and column mappings below. Original formatting and spreadsheet formulas are not used.",
+        ),
+      ),
     draft.profile && draft.csv && filePreview(ctx),
     el(
       "div",

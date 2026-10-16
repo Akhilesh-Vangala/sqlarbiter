@@ -1,3 +1,7 @@
+## Multiple tabular formats — October16
+
+CSV, TSV, Excel .xlsx, JSON and JSONL are accepted through the guided product. [Formats, worksheet selection, exact conversion and limits](FILE-IMPORTS.md). Existing domain contracts and result/approval checks remain applicable; PDFs/images are unsupported. Earlier CSV-specific implementation descriptions below remain historical context for the normalized analysis engine.
+
 # Product workspace
 
 VerifyOps turns a suspicious transaction total into an inspectable reconciliation. A visitor brings an export, reviews its business definition, compares an independent reference with generated SQL, and keeps a checked report. The public calculation is deterministic. It does not call a live model, infer unstated business semantics or deploy a warehouse patch.

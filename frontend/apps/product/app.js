@@ -1,3 +1,4 @@
+import { importFile } from "./lib/imports.js";
 import {
   el,
   $,
@@ -330,9 +331,10 @@ async function loadFile(file, kind = "upload") {
   state.issues = null;
   state.draft ||= newDraft();
   const restore = state.draft.requiredSourceHash;
-  const previous = restore ? structuredClone(state.draft) : null;
-  if (file.size > 400000 || !file.name.toLowerCase().endsWith(".csv")) {
-    problem("Choose a UTF-8 .csv file no larger than 400 KB.");
+  const beforeImport = structuredClone(state.draft);
+  const previous = restore ? beforeImport : null;
+  if (file.size > 400000 || !/\.(csv|tsv|xlsx|json|jsonl)$/i.test(file.name)) {
+    problem("Choose CSV, TSV, Excel .xlsx, JSON or JSONL, up to 400 KB.");
     return;
   }
   state.busy = true;
@@ -351,18 +353,20 @@ async function loadFile(file, kind = "upload") {
   render();
   state.controller = new AbortController();
   try {
-    const text = new TextDecoder("utf-8", {
-      fatal: true,
-      ignoreBOM: true,
-    }).decode(await file.arrayBuffer());
-    if (current !== epoch) return;
-    state.draft.csv = text;
-    const profile = await request(
-      "/api/uploads/profile",
-      { csv: text },
-      { signal: state.controller.signal },
+    const imported = await importFile(
+      file,
+      (body) =>
+        request("/api/uploads/import", body, {
+          signal: state.controller.signal,
+        }),
+      state.controller.signal,
     );
     if (current !== epoch) return;
+    const text = imported.csv,
+      profile = imported.profile;
+    state.draft.csv = text;
+    state.draft.importSource = imported.source;
+
     if (restore && profile.sha256 !== restore) {
       state.draft = previous;
       throw Error(
@@ -397,12 +401,18 @@ async function loadFile(file, kind = "upload") {
       state.draft.title === "Untitled investigation" ||
       state.draft.title.startsWith("Sample ·")
     )
-      state.draft.title = file.name.replace(/\.csv$/i, "").slice(0, 100);
+      state.draft.title = file.name
+        .replace(/\.(csv|tsv|xlsx|json|jsonl)$/i, "")
+        .slice(0, 100);
     announce(
       "File inspected. " + profile.rows + " records are ready for review.",
     );
   } catch (error) {
-    if (current === epoch) userProblem(error);
+    if (current === epoch) {
+      state.draft = beforeImport;
+      if (error.name !== "AbortError") userProblem(error);
+      else announce("Import cancelled. Previous work is preserved.");
+    }
   } finally {
     if (current === epoch) {
       state.busy = false;
