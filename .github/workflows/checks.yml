@@ -52,6 +52,7 @@ jobs:
         run: |
           npm install --prefix /tmp/product-a11y --no-audit --no-fund --save-exact axe-core@4.14.0
           python scripts/demos/product_browser.py --axe /tmp/product-a11y/node_modules/axe-core/axe.min.js
+          python scripts/demos/import_browser.py --axe /tmp/product-a11y/node_modules/axe-core/axe.min.js
       - name: Actual account storage policies and concurrent quota checks
         run: python scripts/checks/product_rls.py
         env:
