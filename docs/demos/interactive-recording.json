@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:61731",
+  "url": "http://127.0.0.1:61973",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -14,12 +14,12 @@
     {
       "stage": "choose-case",
       "path": "00-choose-case.png",
-      "sha256": "73ce1a477e5f77d3c0fa19fb9f7321b2cfc136208a59ccbbbf6ba79f59785800"
+      "sha256": "437fb86a216088dd500e41948077a98408441aa2675a65488a6df8db41d7b669"
     },
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "dfbf0886962e6492a1be12e18cc3a2c61502c8d01951689187c7e106a22f936c"
+      "sha256": "0aaf071d9e0d10f86fd2660b33800e760c5f9d39471d8bc7469c76c64b95f0e2"
     },
     {
       "stage": "executed-evidence",
@@ -83,7 +83,7 @@
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
-    "backend/src/vdir/uploads/stream.py": "7bae483dc25d25905549a4ce7eacefcb7de4613a9f1d11c24b704ec08dc7e552",
+    "backend/src/vdir/uploads/stream.py": "e8a56931777202f52ba616a4194dd77fa2a1e369ac6628e6956e8b0ea1635643",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -107,7 +107,7 @@
     "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "044adbdf0b0e0ed7006a296bb043b75e99a166849aeb8e4453fbbcf15a263acb",
+  "video_sha256": "2530dbdee0136828a121730232960fa4d3e6ddf6bd33f2e3bc7d1055f48d4579",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
   "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif"
