@@ -135,11 +135,14 @@ class Receipts:
                     continue
                 payload = json.loads(text)
                 result = payload.get("result")
-                reported = result.get("usage", {}) if isinstance(result, dict) else {}
+                reported = result.get("usage") if isinstance(result, dict) else None
                 for name in usage:
-                    value = reported.get(name, 0) if isinstance(reported, dict) else 0
+                    value = reported.get(name) if isinstance(reported, dict) else None
                     if type(value) is int and value >= 0:
                         usage[name] += value
+                    else:
+                        # A complete receipt without complete usage is not a zero-cost call.
+                        unresolved = True
         return usage, unresolved
 
 
@@ -189,12 +192,12 @@ def build_graph(tools, client, saver, receipts):
         blocks = result["content"]
         if any(not isinstance(block, dict) for block in blocks):
             raise InvestigationFailed("Invalid provider content")
-        reported = result.get("usage", {})
+        reported = result.get("usage")
         if not isinstance(reported, dict):
             raise InvestigationFailed("Invalid provider usage")
         usage = dict(state["usage"])
         for name in usage:
-            value = reported.get(name, 0)
+            value = reported.get(name)
             if type(value) is not int or value < 0:
                 raise InvestigationFailed("Invalid provider usage")
             usage[name] += value
@@ -205,7 +208,7 @@ def build_graph(tools, client, saver, receipts):
                         active_seconds=metadata.get("active_seconds", 0) + payload["seconds"],
                         client_budget=payload["client"])
         for name in ("cache_creation_input_tokens", "cache_read_input_tokens"):
-            value = reported.get(name, 0)
+            value = reported.get(name)
             if type(value) is int and value >= 0:
                 metadata[name] = metadata.get(name, 0) + value
         calls = [block for block in blocks if block.get("type") == "tool_use"]

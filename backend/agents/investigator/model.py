@@ -239,17 +239,17 @@ async def _investigate(tools, client, messages, usage, repeats, metadata, save):
         blocks = result["content"]
         if any(not isinstance(block, dict) for block in blocks):
             raise InvestigationFailed("Invalid provider content")
-        reported_usage = result.get("usage", {})
+        reported_usage = result.get("usage")
         if not isinstance(reported_usage, dict):
             raise InvestigationFailed("Invalid provider usage")
         for key in usage:
-            value = reported_usage.get(key, 0)
+            value = reported_usage.get(key)
             if type(value) is not int or value < 0:
                 raise InvestigationFailed("Invalid provider usage")
             usage[key] += value
         metadata["reported_model"] = result.get("model")
         for key in ("cache_creation_input_tokens", "cache_read_input_tokens"):
-            value = reported_usage.get(key, 0)
+            value = reported_usage.get(key)
             if type(value) is int and value >= 0:
                 metadata[key] = metadata.get(key, 0) + value
         save("running")
