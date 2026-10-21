@@ -140,4 +140,4 @@ The project accepts one trusted original sample, not arbitrary repository upload
 | Evaluation | Known 38-case synthetic corpus and repeated-attempt reporting; scripted integration checks remain separate from live quality. |
 | Delivery | Actual native, container and dbt GitHub Actions jobs; archived reports; no API key required for CI. |
 
-SQLite is single-host state. Individual identity, PostgreSQL/distributed recovery, OS-isolated execution, broader held-out/safety tests, actual user feedback and monitored cloud hosting remain pending. See [operational limits](../../README.md#operational-controls), [graph design](AGENT-ORCHESTRATION.md), [dbt workflow](DBT-WORKFLOW.md), and [spend accounting](SPENDING-AND-DBT.md).
+SQLite is single-host state. Individual identity, PostgreSQL/distributed recovery, OS-isolated execution, broader held-out/safety tests, actual user feedback and monitored cloud hosting remain pending. See [operational limits](../operations/PRODUCTION-FOUNDATION.md), [graph design](AGENT-ORCHESTRATION.md), [dbt workflow](DBT-WORKFLOW.md), and [spend accounting](SPENDING-AND-DBT.md).
