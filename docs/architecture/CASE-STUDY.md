@@ -66,7 +66,7 @@ The passing repair is checked with actual dbt builds over five designed fixtures
 
 ## What the evidence establishes
 
-Recorded CI evidence includes 133 unit passes plus one optional integration skip per workbench suite, 96 native browser checks, 120 container checks including 24 dbt checks, a dedicated real dbt job, a runtime build and 38 known fixed-diagnostic cases. Exact source/run references and reproduction are in the [README evidence](../../README.md#verified-evidence) and [contribution guide](../../.github/CONTRIBUTING.md).
+Recorded CI evidence includes 133 unit passes plus one optional integration skip per workbench suite, 96 native browser checks, 120 container checks including 24 dbt checks, a dedicated real dbt job, a runtime build and 38 known fixed-diagnostic cases. Exact source/run references and reproduction are in the [recorded verification progress](../project/PROGRESS.md) and [contribution guide](../../.github/CONTRIBUTING.md).
 
 The new recording shows actual app/dbt execution, 20 output checks, false-fix rejection and automated exact-version sandbox review. It does not establish live AI accuracy, unseen generalization, real operator validation or monitored cloud operation.
 

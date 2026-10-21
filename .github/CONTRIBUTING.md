@@ -6,7 +6,7 @@ Follow the [README quick start](../README.md#run-locally). Python 3.12, Chromium
 
 ## Verify a change
 
-Run the [README verification commands](../README.md#reproduce-checks-and-evaluation) appropriate to the change. The [CI workflow](workflows/checks.yml) runs native tests, the actual test container and runtime build, and a dedicated dbt integration/browser job.
+Run the [development verification commands](../docs/operations/DEVELOPMENT.md) appropriate to the change. The [CI workflow](workflows/checks.yml) runs native tests, the actual test container and runtime build, and a dedicated dbt integration/browser job.
 
 For agent changes, retain strict evidence citations, bounded calls, public corrective feedback and the independent private verification boundary. For queue/recovery changes, verify cancellation, ownership, unknown receipts and stale-version rejection. For dbt changes, run the real CLI integration and browser suite against all designed fixture outputs.
 

@@ -9,7 +9,7 @@ python3.12 -m venv .venv
 PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.serve
 ```
 
-For dbt, create a separate .venv-dbt and install backend/requirements-dbt.txt. Its dependency constraints differ from the application.
+For dbt, create a separate .venv-dbt and install backend/requirements/dbt.txt. Its dependency constraints differ from the application.
 
 ## Public application
 

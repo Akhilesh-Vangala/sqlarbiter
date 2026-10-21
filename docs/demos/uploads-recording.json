@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "url": "http://127.0.0.1:65529",
+  "url": "http://127.0.0.1:61972",
   "paid_model_calls": 0,
   "actual_user_feedback": false,
   "checks": [
@@ -69,7 +69,7 @@
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
-    "backend/src/vdir/uploads/stream.py": "8eb78c45855538a1ffdc65549651386d3c73f1453a9f775ce4a80b98f6e89bed",
+    "backend/src/vdir/uploads/stream.py": "e8a56931777202f52ba616a4194dd77fa2a1e369ac6628e6956e8b0ea1635643",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -98,6 +98,6 @@
   "recording": "Actual continuous product/upload/source/rules/results/history capture with reviewed fixture data; no live inference or customer-feedback claim.",
   "media_sha256": {
     "frontend/apps/uploads/poster.png": "344fe287c625b0ba46ba39afa10af2f1cf637b0315307ed8df414e84c9c48215",
-    "frontend/apps/uploads/walkthrough.webm": "586e123436a23a53a2413f3f136080e85cad275638ae7a5db88241dfaac1fafa"
+    "frontend/apps/uploads/walkthrough.webm": "2c1de371b7d9362ed4d072378446f0938c84a0b9b16d1e958cb0cf10a68c806d"
   }
 }
