@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/assets/branding/verifyops-banner.svg" alt="VerifyOps — SQL incident repair" width="100%"></p>
+<p align="center"><img src="docs/assets/branding/verifyops-banner.svg" alt="RepairDesk — SQL incident repair" width="100%"></p>
 
 **Bring the metric that doesn’t add up.** [Open the workspace](https://verifyops.vercel.app/) · [Product architecture and storage](docs/product/PRODUCT-WORKSPACE.md). Inspect an export, review the rules, compare independent calculations, and save or download the evidence. Public own-data verification is deterministic; live inference remains a separate private mode.
 
@@ -6,7 +6,7 @@
 
 <p align="center"><a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Required engineering checks"></a> &nbsp; Python · LangGraph · FastAPI · PostgreSQL</p>
 
-# VerifyOps
+# RepairDesk
 
 **Investigate. Repair. Verify.** Evidence-backed SQL incident analysis with independent regression checks and a real dbt repair pipeline.
 
@@ -27,7 +27,7 @@ Investigate a business-metric discrepancy, propose a SQL repair, and challenge i
 4. **Decide** using findings, charts, duplicate impact, SQL/checks and downloadable evidence.
 5. **Keep** an explicit, immutable device snapshot; reload history and organize projects. Cloud accounts require a configured provider.
 
-![Actual VerifyOps product report from an uploaded export](docs/assets/screenshots/product-report.png)
+![Actual RepairDesk product report from an uploaded export](docs/assets/screenshots/product-report.png)
 
 [**Watch the file-to-report recording ↗**](https://verifyops.vercel.app/uploads/recording.html) · [Data contract and limits](docs/product/USER-DATA.md)
 
@@ -51,7 +51,7 @@ Six original synthetic incidents. Run the fixed diagnostic, inspect source evide
 
 ## Architecture and authority
 
-![VerifyOps architecture and verification boundaries](docs/assets/diagrams/verifyops-architecture.svg)
+![RepairDesk architecture and verification boundaries](docs/assets/diagrams/verifyops-architecture.svg)
 
 A checkpointed LangGraph investigator uses bounded evidence tools and public corrective feedback. Independent SQL verification and a real dbt workflow check restricted patches across five fixtures and four output relations. PostgreSQL coordinates separate workers and optional graph checkpoints; workspace files still require shared same-node storage.
 
