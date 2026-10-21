@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:65530",
+  "url": "http://127.0.0.1:61731",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -19,27 +19,27 @@
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "332c17ce6f37b306832b3bb862d1bf1063a61579841c80500171e3de7abd64e3"
+      "sha256": "dfbf0886962e6492a1be12e18cc3a2c61502c8d01951689187c7e106a22f936c"
     },
     {
       "stage": "executed-evidence",
       "path": "02-executed-evidence.png",
-      "sha256": "fa04e6ab31ec40d4114f9a1aeaeee5b0376d22594450b53daec10b7a41b7c251"
+      "sha256": "8660135af2774c63ca65138a9e46db3be8f0242363b348fe17e37893478d723c"
     },
     {
       "stage": "false-repair-blocked",
       "path": "03-false-repair-blocked.png",
-      "sha256": "33ab4dea59c87b7dbc79eb8d70374cedd3cf40d040cdbfe0ee10a85bc881b743"
+      "sha256": "96ae17a3dddb45b29f8c90cee64135bb127e658596bb932bdce38055400b1956"
     },
     {
       "stage": "independent-regressions",
       "path": "04-independent-regressions.png",
-      "sha256": "53a0d98b4ec783cb5f9362b2dea583ca7db0156dbe8de460a7d939f2f0ea4e0f"
+      "sha256": "42fc017178947b841e46cce640bff8ab47f41b018340088f4f2764d376574e8a"
     },
     {
       "stage": "reviewed-result",
       "path": "05-reviewed-result.png",
-      "sha256": "838c42085e983d6d41467496824101cc0d4c8f322811a0d97d28101a358f3cc0"
+      "sha256": "3c6aa68489c16ffc263e940ccecc32eab3143bca6d34d635872aa1756183681b"
     }
   ],
   "proof": {
@@ -83,7 +83,7 @@
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
-    "backend/src/vdir/uploads/stream.py": "8eb78c45855538a1ffdc65549651386d3c73f1453a9f775ce4a80b98f6e89bed",
+    "backend/src/vdir/uploads/stream.py": "7bae483dc25d25905549a4ce7eacefcb7de4613a9f1d11c24b704ec08dc7e552",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -98,8 +98,8 @@
     "backend/agents/investigator/agent_policy.py": "95b5cf77e1cecbb0b74f8cc689756f705955ec5c202db604c7d919af703b9900",
     "backend/agents/investigator/baseline.py": "4009d53f9f13ff4e73a73a0210f3bfd8fedca2e6a5fc8951c5275cf1e2613b56",
     "backend/agents/investigator/engines.py": "000441dd9bae010361454a2f0a2a28756789f8dfb42c9592941a728a4c374bc9",
-    "backend/agents/investigator/graph.py": "f1ab0f86bc4e69fd46bb506e7690fb7d10a0bb52519b0193e7886772bf85c31c",
-    "backend/agents/investigator/model.py": "96d64500e4b3dabb555c8cc2dc73b35e351fd0f33ac6c1aa93f7a38425a20c41",
+    "backend/agents/investigator/graph.py": "386ba724f0c49c52544d8ce24bb4f4dc4c9ef5500c626c9bd8e1c052f8515a37",
+    "backend/agents/investigator/model.py": "f2d6d25db2bd17ccedf9d7f4955c00921fcc2d7f997b2fb36d93be38c95d788c",
     "backend/agents/investigator/spending.py": "787abe5ac829d957035e91aa61eb7b574f83e74ad7d0676bda229615391491e9",
     "backend/agents/investigator/telemetry.py": "b7012da582f5b2636bf6f83ed344d55d2690dd6a3df702b4af1899887ff9e166",
     "backend/agents/investigator/tools.py": "503583193b3cdf8d80fb22960d5a22dc61942e32078589f13f46175e4661a043",
@@ -107,7 +107,7 @@
     "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "5289be522c260a160b3c768dd9e786891ddabbaa225a810b92db19ac746491c1",
+  "video_sha256": "044adbdf0b0e0ed7006a296bb043b75e99a166849aeb8e4453fbbcf15a263acb",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
   "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif"
