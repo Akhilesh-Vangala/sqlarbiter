@@ -1,6 +1,6 @@
 {
   "project": "VerifyOps",
-  "url": "http://127.0.0.1:51688",
+  "url": "http://127.0.0.1:53257",
   "interactive_journey": true,
   "guided": true,
   "paid_model_calls": 0,
@@ -19,7 +19,7 @@
     {
       "stage": "checked-proposal",
       "path": "01-checked-proposal.png",
-      "sha256": "54cea91802ebf56985358067dfedce1a95f0fc05f6bc9110246518fa00347499"
+      "sha256": "cb81611346acb3553f4b25ffee2f0129fef3a59e3e29f9061a83f8330baf0cfb"
     },
     {
       "stage": "executed-evidence",
@@ -63,7 +63,7 @@
     "backend/src/vdir/domain/cases.py": "da343b4272ae951824fef5dfd3dab4fc1cf51da8f2a00d2e9954a99a9464396b",
     "backend/src/vdir/domain/environment.py": "1d13c1b9f7d57524bddcfcf8d46581d401632012158644f552c4104e6f06aab8",
     "backend/src/vdir/evaluation/__init__.py": "1d5ac446fe1d2f650963eeebf0e1fd297e6a9c34d415159e2d338321ebee8e70",
-    "backend/src/vdir/evaluation/benchmark.py": "b1d16142f86758f7b56524e4ae544db7c63cb1b5508907f10047f815038eea2d",
+    "backend/src/vdir/evaluation/benchmark.py": "702134ad14d84eb92652f3287897e7ca4f7ad50663adb9634a0a56446b7bd0d4",
     "backend/src/vdir/evaluation/benchmark_cases.py": "df5e192dcb290a04e8dd993f8b9fd41be472f9ced7af6f6f1bc7982d80cd6150",
     "backend/src/vdir/evaluation/evaluation.py": "c1f7ae9ce6a5736aab3bf75e87fd509c61a5cbd791d32d7446a1c2ae1078c262",
     "backend/src/vdir/evaluation/prelive_cases.py": "e45d01925dc868e1764d5ca4edab564ffb037cae107c6fba80dba88c79aa2cad",
@@ -109,7 +109,7 @@
     "frontend/apps/demo/assets/scripts/app.js": "b71d4ef78d51b48c714f3a4dbbaff29ef2d4afb0ae2a4e9c6ade9dc51b5d5193",
     "frontend/apps/demo/assets/styles/style.css": "5e4e30e952040b4cdac45b655c775226cc16a7805ac74690535999c46a771bbe"
   },
-  "video_sha256": "9889111e5d66443ef1aeda016617c14ba15f9f9998177e0dd244faf31bf925fc",
+  "video_sha256": "bc7b2b49dbaba2f7a10cefaf75557e1a632db524bcc187afb9d06863fb6e757a",
   "recording": "Continuous actual browser capture; automated synthetic interactions, not customer feedback or live model inference",
   "video_path": "frontend/apps/demo/assets/media/walkthrough.webm",
   "preview_path": "docs/assets/demos/verifyops-interactive-demo.gif"

@@ -10,7 +10,7 @@ PYTHONPATH=backend/src python -m vdir.evaluation.benchmark \
 
 Use a new output directory; runs do not overwrite prior results. The source-reference evaluator and private regression snapshots remain outside exported agent runtimes. The frozen manifest checks every case hash before evaluation. Do not edit it to make an observed model failure disappear; version future changes explicitly.
 
-Each attempt has a unique run ID passed into the exported worker and model ledger. The report classifies verified repair, no-change, clarification, execution error, verification failure and evaluator error separately. Evaluator/source-contract faults are excluded from agent accuracy, with both raw and scored attempt counts retained. Pass@3 stays null with fewer than three scored independent attempts. Missing/invalid provider usage is unknown, never a free generation. These costs remain estimates, not invoice guarantees.
+Each attempt has a unique run ID passed into the exported worker and model ledger. The report classifies verified repair, no-change, clarification, execution error, verification failure and evaluator error separately. Evaluator/source-contract faults are excluded from agent accuracy, with both raw and scored attempt counts retained; any such fault makes valid_evaluation false and the command exits unsuccessfully even if scored accuracy is perfect. Pass@3 stays null with fewer than three scored independent attempts. Missing/invalid provider usage is unknown, never a free generation. These costs remain estimates, not invoice guarantees.
 
 ## Run contract
 

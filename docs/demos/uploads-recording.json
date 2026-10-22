@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "url": "http://127.0.0.1:51590",
+  "url": "http://127.0.0.1:53252",
   "paid_model_calls": 0,
   "actual_user_feedback": false,
   "checks": [
@@ -49,7 +49,7 @@
     "backend/src/vdir/domain/cases.py": "da343b4272ae951824fef5dfd3dab4fc1cf51da8f2a00d2e9954a99a9464396b",
     "backend/src/vdir/domain/environment.py": "1d13c1b9f7d57524bddcfcf8d46581d401632012158644f552c4104e6f06aab8",
     "backend/src/vdir/evaluation/__init__.py": "1d5ac446fe1d2f650963eeebf0e1fd297e6a9c34d415159e2d338321ebee8e70",
-    "backend/src/vdir/evaluation/benchmark.py": "b1d16142f86758f7b56524e4ae544db7c63cb1b5508907f10047f815038eea2d",
+    "backend/src/vdir/evaluation/benchmark.py": "702134ad14d84eb92652f3287897e7ca4f7ad50663adb9634a0a56446b7bd0d4",
     "backend/src/vdir/evaluation/benchmark_cases.py": "df5e192dcb290a04e8dd993f8b9fd41be472f9ced7af6f6f1bc7982d80cd6150",
     "backend/src/vdir/evaluation/evaluation.py": "c1f7ae9ce6a5736aab3bf75e87fd509c61a5cbd791d32d7446a1c2ae1078c262",
     "backend/src/vdir/evaluation/prelive_cases.py": "e45d01925dc868e1764d5ca4edab564ffb037cae107c6fba80dba88c79aa2cad",
@@ -100,6 +100,6 @@
   "recording": "Actual continuous product/upload/source/rules/results/history capture with reviewed fixture data; no live inference or customer-feedback claim.",
   "media_sha256": {
     "frontend/apps/uploads/poster.png": "344fe287c625b0ba46ba39afa10af2f1cf637b0315307ed8df414e84c9c48215",
-    "frontend/apps/uploads/walkthrough.webm": "ab48afbe16b605d0be0e3198289c866a6c8f9155de9dc323ba4c7439f642513c"
+    "frontend/apps/uploads/walkthrough.webm": "f29c0ea13b919df8449d1d0de476b7767b49d561f380ae92e3f7d67998f0206d"
   }
 }

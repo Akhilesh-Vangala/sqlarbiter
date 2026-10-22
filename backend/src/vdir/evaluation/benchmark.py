@@ -96,6 +96,7 @@ def summarize(records):
         return statistics.mean(values) if values and all(v is not None for v in values) else None
     paid = [r["cost_usd_estimate"] for r in records if r["cost_usd_estimate"] is not None]
     return {"cases": len(grouped), "attempts": len(records),
+            "valid_evaluation": not any(r.get("outcome") == "evaluator_error" for r in records),
             "scored_attempts": sum(len(attempts) for attempts in grouped.values()),
             "outcomes": dict(Counter(r.get("outcome", "legacy") for r in records)),
             "pass_at_1": metric(1),
@@ -232,7 +233,7 @@ def main():
     except ValueError as error:
         parser.error(str(error))
     print(json.dumps(report["summary"], indent=2))
-    raise SystemExit(0 if report["summary"]["pass_at_1"] == 1 else 1)
+    raise SystemExit(0 if report["summary"]["pass_at_1"] == 1 and report["summary"]["valid_evaluation"] else 1)
 
 
 if __name__ == "__main__":
