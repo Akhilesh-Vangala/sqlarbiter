@@ -4,6 +4,7 @@ import sqlite3
 from decimal import Decimal
 
 from .ingestion import UploadProblem, column, decimal_value, parse, safe_csv
+from vdir.platform.run_contract import upload_record
 
 
 def run(upload, progress=None):
@@ -118,5 +119,6 @@ def run(upload, progress=None):
             "csv": safe_csv(["segment", "total_cents"], [[r["segment"], r["total_cents"]] for r in results]),
             "scope": "Verified against your declared key, status and amount rules. Generated SQL targets normalized records with __amount_cents and __eligible; it is not an automatic dbt patch or proof of unstated business semantics.",
             "activity": ["parse-source", "validate-contract-and-grain", "compile-normalized-sql", "execute-in-memory", "independent-cents-reconciliation", "export-evidence"]}
+    result["run_record"] = upload_record(upload, result)
     progress("report", "complete")
     return result

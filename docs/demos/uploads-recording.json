@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "url": "http://127.0.0.1:61972",
+  "url": "http://127.0.0.1:53252",
   "paid_model_calls": 0,
   "actual_user_feedback": false,
   "checks": [
@@ -49,9 +49,10 @@
     "backend/src/vdir/domain/cases.py": "da343b4272ae951824fef5dfd3dab4fc1cf51da8f2a00d2e9954a99a9464396b",
     "backend/src/vdir/domain/environment.py": "1d13c1b9f7d57524bddcfcf8d46581d401632012158644f552c4104e6f06aab8",
     "backend/src/vdir/evaluation/__init__.py": "1d5ac446fe1d2f650963eeebf0e1fd297e6a9c34d415159e2d338321ebee8e70",
-    "backend/src/vdir/evaluation/benchmark.py": "6daf78bd5c9b15db310ae9a3478e9f7baad1b3df443d6696651ed947d14c9ea8",
+    "backend/src/vdir/evaluation/benchmark.py": "702134ad14d84eb92652f3287897e7ca4f7ad50663adb9634a0a56446b7bd0d4",
     "backend/src/vdir/evaluation/benchmark_cases.py": "df5e192dcb290a04e8dd993f8b9fd41be472f9ced7af6f6f1bc7982d80cd6150",
-    "backend/src/vdir/evaluation/evaluation.py": "236c9dc26887c9a7b0d1edc7aeb2dbb6429809101e559b6ea50fe827cabb2f56",
+    "backend/src/vdir/evaluation/evaluation.py": "c1f7ae9ce6a5736aab3bf75e87fd509c61a5cbd791d32d7446a1c2ae1078c262",
+    "backend/src/vdir/evaluation/prelive_cases.py": "e45d01925dc868e1764d5ca4edab564ffb037cae107c6fba80dba88c79aa2cad",
     "backend/src/vdir/persistence/__init__.py": "3ca206777c38f388d48cec021a2b4eeb2f3797fec72adecf62eecc12c52e3c82",
     "backend/src/vdir/persistence/jobs.py": "911bb1e3fd8a1317aab29b927ca0c0f568e63f0c89898a7048dd4ea0860a8a40",
     "backend/src/vdir/persistence/migrations.py": "579c8ba653340b009acd89056367f83e1b5df6f8fd2ae59bae5dd39b5aa14266",
@@ -59,17 +60,18 @@
     "backend/src/vdir/platform/__init__.py": "37a456ed4e141d9561e5e49276293e1da05b3014cb4453e0f0655f20910c2598",
     "backend/src/vdir/platform/config.py": "32b8196c3eebc7d77d97d11c838eb5cdb4fc9e9c9b4e777b602d7cb8f6d5dbe9",
     "backend/src/vdir/platform/observability.py": "58655401fcc63c5eb409f6a427df3f41aa75db07edbd484bffe462ca1ffc945f",
-    "backend/src/vdir/platform/spending.py": "4e0af0eceb27c273789c0d4db6e0f9138395a516298eadaf068fbcf10de6cd4e",
+    "backend/src/vdir/platform/run_contract.py": "a25609e029fcd8471bc240b805f0a76ae994c847fa3ebbda0ebe701cb80d8e14",
+    "backend/src/vdir/platform/spending.py": "342699cf22a65110f98b2c5e7e7583f891dd392fea0832e24577257a2686d72a",
     "backend/src/vdir/product/__init__.py": "791c1ed30288247f5a034be1d7f347d9e95c6d292cae2022fd0d8d82a8ad57e1",
     "backend/src/vdir/product/accounts.py": "8759c4be8003938414f8bff0414a2759ddbcb2735101a102a83a55b8d9b18711",
     "backend/src/vdir/product/api.py": "64dca786b60c6216c452fdc72ba8e248090dda25ef34f7a249673e99ac2c2e75",
     "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
-    "backend/src/vdir/uploads/api.py": "963d5648e6e54feffaa38ab71eb64bcdbf93993f3adaddc9f72bcbc1ba4fbe4d",
+    "backend/src/vdir/uploads/api.py": "95cf11c8a3d8d2158117655b2e8faf9d1083070fcac062ab5266f5baf417cb97",
     "backend/src/vdir/uploads/imports.py": "d025a3e701bca899913b580737065f1cb2f87084babc8699d582c03cb5ed778f",
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
-    "backend/src/vdir/uploads/service.py": "c026a6509d5a0304b0dec78246b4daf955be923d9350d8a5670a312d782d7b44",
+    "backend/src/vdir/uploads/service.py": "6ea1eecfe0e5585fc7855c470829b5d4a1b43a3aa93939231bc2b2c05bedd5fd",
     "backend/src/vdir/uploads/signing.py": "1126d9078c4829888a114766679f9976b3a774b78ef7f8a32cfde48d5ef24708",
-    "backend/src/vdir/uploads/stream.py": "e8a56931777202f52ba616a4194dd77fa2a1e369ac6628e6956e8b0ea1635643",
+    "backend/src/vdir/uploads/stream.py": "6bc883c462c02421214a8302edcddc74aa74c6c4e17095256026788895b60410",
     "backend/src/vdir/verification/__init__.py": "e79f47856ac72444982146da26520dc49d6f883f8ae0cbc713e717151d52cd0c",
     "backend/src/vdir/verification/reference.py": "34304ef83798aee9c8329528ec83684345886b0338fc9265e4fe217d31e3ee02",
     "backend/src/vdir/verification/runner.py": "fe97ebb33efc40dabba131bae7c7c9002b943b73f76e09b1a13441a0629657c7",
@@ -80,7 +82,7 @@
     "backend/src/vdir/workflows/__init__.py": "440c1b3f3bb11f56e1d412557223edf3d7a1ab5b888c30a41f448d9dfc436f01",
     "backend/src/vdir/workflows/dbt_service.py": "73fb99b0776d0870bb3a5bdacf66febf8c702247f8eff1ffe739392380719ad4",
     "backend/src/vdir/workflows/dbt_workflow.py": "e79aa9ef5c46d85c625894459769cfa4c7caa78336071ecf15fc00906d6413d6",
-    "backend/src/vdir/workflows/service.py": "4a9265a4a83f79443f95ad8dbf1cc89bfad6b51619efc51ea4a90a18eabb134d",
+    "backend/src/vdir/workflows/service.py": "0f33d2f7c25fecb31f9ed780352dd2415c92a23328342f6c2fb71f8028f9a98d",
     "frontend/apps/product/app.js": "fb5a13ea45aecfbe8f45c3ac75392edb293bed434bd779860556c5f7c9378bbf",
     "frontend/apps/product/index.html": "c4e232f45f89192cf47a5f3a7b77a4f118ec47033c8823428a03b07d0ff1d92c",
     "frontend/apps/product/lib/api.js": "ce6e548786dea58855490795c65494f900838cc60cf7ed8785b95829cd78fc69",
@@ -98,6 +100,6 @@
   "recording": "Actual continuous product/upload/source/rules/results/history capture with reviewed fixture data; no live inference or customer-feedback claim.",
   "media_sha256": {
     "frontend/apps/uploads/poster.png": "344fe287c625b0ba46ba39afa10af2f1cf637b0315307ed8df414e84c9c48215",
-    "frontend/apps/uploads/walkthrough.webm": "2c1de371b7d9362ed4d072378446f0938c84a0b9b16d1e958cb0cf10a68c806d"
+    "frontend/apps/uploads/walkthrough.webm": "f29c0ea13b919df8449d1d0de476b7767b49d561f380ae92e3f7d67998f0206d"
   }
 }

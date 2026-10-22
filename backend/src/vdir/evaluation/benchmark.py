@@ -7,7 +7,8 @@ import platform
 import statistics
 import subprocess
 import time
-from collections import defaultdict
+import uuid
+from collections import Counter, defaultdict
 from dataclasses import asdict
 from dataclasses import replace
 from datetime import datetime
@@ -15,6 +16,7 @@ from datetime import timezone
 from pathlib import Path
 
 from vdir.evaluation.benchmark_cases import benchmark_cases
+from vdir.evaluation.prelive_cases import prelive_cases
 from vdir.platform.config import load_local_configuration
 from vdir.evaluation.evaluation import InvestigatorError
 from vdir.evaluation.evaluation import export_workspace
@@ -22,12 +24,19 @@ from vdir.evaluation.evaluation import grade
 from vdir.evaluation.evaluation import run_worker
 
 MANIFEST = Path(__file__).resolve().parents[4] / "backend/data" / "benchmark" / "manifest.json"
+PRELIVE_MANIFEST = MANIFEST.with_name("prelive-manifest.json")
 
 
-def corpus_manifest():
-    cases = [asdict(case) for case in benchmark_cases()]
+def suite_cases(suite):
+    if suite not in ("regression", "prelive"):
+        raise ValueError("Unknown evaluation suite")
+    return prelive_cases() if suite == "prelive" else benchmark_cases()
+
+
+def corpus_manifest(suite="regression"):
+    cases = [asdict(case) for case in suite_cases(suite)]
     payload = json.dumps(cases, sort_keys=True, separators=(",", ":"))
-    return {"version": "synthetic-v1", "sha256": hashlib.sha256(payload.encode()).hexdigest(),
+    return {"version": "prelive-v1" if suite == "prelive" else "synthetic-v1", "sha256": hashlib.sha256(payload.encode()).hexdigest(),
             "count": len(cases), "cases": [{"case_id": c["incident"]["case_id"],
                 "family": c["family"], "split": c["split"], "template_group": c["template_group"],
                 "sha256": hashlib.sha256(json.dumps(c, sort_keys=True).encode()).hexdigest()}
@@ -52,6 +61,12 @@ def estimate_cost(model_run, pricing):
     usage = model_run.get("usage", {})
     if model_run.get("additional_billing_unknown") or model_run.get("status") != "completed":
         return None
+    if not isinstance(usage, dict) or any(type(usage.get(k)) is not int or usage[k] < 0
+                                        for k in ("input_tokens", "output_tokens")):
+        return None
+    if any(type(model_run.get(k, 0)) is not int or model_run.get(k, 0) < 0
+           for k in ("cache_creation_input_tokens", "cache_read_input_tokens")):
+        return None
     return sum([
         usage.get("input_tokens", 0) * pricing["input_per_million"],
         usage.get("output_tokens", 0) * pricing["output_per_million"],
@@ -72,14 +87,19 @@ def sqlite_case(case):
 def summarize(records):
     grouped = defaultdict(list)
     for record in records:
-        grouped[record["case_id"]].append(record)
+        if record.get("outcome") != "evaluator_error":
+            grouped[record["case_id"]].append(record)
     def metric(k, sql_only=False):
         values = [pass_at_k(sum(r["sql_execution_passed"] if sql_only else r["grading"]["passed"] for r in attempts),
                             len(attempts), k) for attempts in grouped.values()
                   if not sql_only or attempts[0]["repairable"]]
         return statistics.mean(values) if values and all(v is not None for v in values) else None
     paid = [r["cost_usd_estimate"] for r in records if r["cost_usd_estimate"] is not None]
-    return {"cases": len(grouped), "attempts": len(records), "pass_at_1": metric(1),
+    return {"cases": len(grouped), "attempts": len(records),
+            "valid_evaluation": not any(r.get("outcome") == "evaluator_error" for r in records),
+            "scored_attempts": sum(len(attempts) for attempts in grouped.values()),
+            "outcomes": dict(Counter(r.get("outcome", "legacy") for r in records)),
+            "pass_at_1": metric(1),
             "pass_at_3": metric(3), "sql_execution_pass_at_1": metric(1, True),
             "sql_execution_pass_at_3": metric(3, True),
             "mean_tool_calls": statistics.mean(r["tool_calls"] for r in records),
@@ -92,7 +112,7 @@ def summarize(records):
             "costed_attempts": len(paid)}
 
 
-def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, split="all", case_ids=None, pricing=None):
+def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, split="all", case_ids=None, pricing=None, suite="regression"):
     if investigator not in ("baseline", "anthropic", "langgraph") or engine not in ("sqlite", "duckdb") or split not in ("all", "calibration", "evaluation"):
         raise ValueError("Invalid benchmark configuration")
     if pricing is not None:
@@ -103,11 +123,11 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
             raise ValueError("Pricing requires model, verified_at, source_url and four nonnegative per-million rates")
     if samples < 1 or samples > 3:
         raise ValueError("Samples must be 1–3; every live sample is a separate billable investigation")
-    frozen = json.loads(MANIFEST.read_text())
-    current = corpus_manifest()
+    frozen = json.loads((PRELIVE_MANIFEST if suite == "prelive" else MANIFEST).read_text())
+    current = corpus_manifest(suite)
     if frozen != current:
         raise ValueError("Corpus differs from the frozen manifest; review and version the corpus before evaluating")
-    selected = [case for case in benchmark_cases() if (split == "all" or case.split == split)
+    selected = [case for case in suite_cases(suite) if (split == "all" or case.split == split)
                 and (not case_ids or case.incident.case_id in case_ids)]
     if not selected or case_ids and set(case_ids) - {c.incident.case_id for c in selected}:
         raise ValueError("No cases selected or unknown case ID/split combination")
@@ -122,10 +142,12 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
     runtime_hash = hashlib.sha256(b"".join(runtime_source(name).read_bytes() for name in RUNTIME_FILES)).hexdigest()
     from vdir.evaluation import evaluation
     report = {"corpus": current, "investigator": investigator, "engine": engine,
+              "suite": suite,
               "python": platform.python_version(), "runtime_sha256": runtime_hash,
               "evaluator_sha256": hashlib.sha256(Path(evaluation.__file__).read_bytes()).hexdigest(),
               "samples": samples, "split": split, "started_at_utc": datetime.now(timezone.utc).isoformat(),
-              "scope": "38 known synthetic scenarios, including data variants of eight new SQL-shape templates; not a validated real-world benchmark",
+              "scope": ("Eight developer-authored pre-live capabilities, including hostile source/change text; not unseen or measured prompt-injection resistance"
+                        if suite == "prelive" else "38 known synthetic scenarios, including data variants of eight SQL-shape templates; not a validated real-world benchmark"),
               "pricing": pricing, "records": []}
     def checkpoint():
         if report["records"]:
@@ -141,8 +163,9 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
             root.mkdir(parents=True)
             workspace = export_workspace(case, root / "evidence", engine)
             started = time.monotonic()
+            run_id = uuid.uuid4().hex
             try:
-                response = run_worker(workspace, mode=investigator)
+                response = run_worker(workspace, mode=investigator, run_id=run_id, budget_run_id=run_id)
             except (InvestigatorError, subprocess.TimeoutExpired) as error:
                 response = error.response if isinstance(error, InvestigatorError) else {
                     "decision": {}, "trace": [], "error": "Worker timed out; billing may be incomplete"}
@@ -152,10 +175,17 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
                     response["model_run"].update(status="failed", additional_billing_unknown=True)
             investigation_seconds = time.monotonic() - started
             started = time.monotonic()
-            checked = grade(case, response, root / "grading", engine)
+            evaluator_error = False
+            try:
+                checked = grade(case, response, root / "grading", engine)
+                repairable = reference_outcome(case, case.sources[0])["status"] == "repairable"
+            except ValueError:
+                checked = {"passed": False, "reason": "Evaluator/source contract error; excluded from agent accuracy"}
+                repairable, evaluator_error = False, True
+            outcome = classify_outcome(response, checked, evaluator_error)
             record = {"case_id": case.case_id, "family": selected_case.family, "split": selected_case.split,
                       "attempt": sample + 1, "grading": checked,
-                      "repairable": reference_outcome(case, case.sources[0])["status"] == "repairable",
+                      "repairable": repairable, "outcome": outcome, "run_id": run_id,
                       "sql_execution_passed": bool(checked.get("checks")) and all(c["passed"] for c in checked.get("checks", [])),
                       "tool_calls": len(response.get("trace", [])), "investigation_seconds": investigation_seconds,
                       "verification_seconds": time.monotonic() - started,
@@ -174,6 +204,17 @@ def run_benchmark(output, investigator="baseline", engine="duckdb", samples=1, s
     return report
 
 
+def classify_outcome(response, checked, evaluator_error=False):
+    if evaluator_error:
+        return "evaluator_error"
+    if response.get("error"):
+        return "execution_error"
+    if not checked["passed"]:
+        return "verification_failed"
+    return {"needs_information": "clarification", "no_change": "no_change",
+            "candidate": "verified_repair"}.get(response.get("decision", {}).get("status"), "verification_failed")
+
+
 def main():
     load_local_configuration()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -184,14 +225,15 @@ def main():
     parser.add_argument("--split", choices=("all", "calibration", "evaluation"), default="all")
     parser.add_argument("--case-ids", nargs="+")
     parser.add_argument("--pricing", type=Path)
+    parser.add_argument("--suite", choices=("regression", "prelive"), default="regression")
     args = parser.parse_args()
     try:
         pricing = json.loads(args.pricing.read_text()) if args.pricing else None
-        report = run_benchmark(args.output, args.investigator, args.engine, args.samples, args.split, args.case_ids, pricing)
+        report = run_benchmark(args.output, args.investigator, args.engine, args.samples, args.split, args.case_ids, pricing, args.suite)
     except ValueError as error:
         parser.error(str(error))
     print(json.dumps(report["summary"], indent=2))
-    raise SystemExit(0 if report["summary"]["pass_at_1"] == 1 else 1)
+    raise SystemExit(0 if report["summary"]["pass_at_1"] == 1 and report["summary"]["valid_evaluation"] else 1)
 
 
 if __name__ == "__main__":

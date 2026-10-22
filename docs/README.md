@@ -17,3 +17,5 @@ Detailed implementation: [agent framework](architecture/AGENT-ORCHESTRATION.md),
 ## Visitor-owned data
 
 [CSV workspace contracts, limits and verification](product/USER-DATA.md) · [Product pages, storage and account architecture](product/PRODUCT-WORKSPACE.md).
+
+Current scoped implementation: [project status](project/STATUS.md).
