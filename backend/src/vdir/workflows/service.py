@@ -15,6 +15,7 @@ from vdir.domain.cases import incidents
 from vdir.persistence.jobs import Conflict
 from vdir.persistence.jobs import JobCancelled
 from vdir.persistence.jobs import digest
+from vdir.platform.run_contract import record
 
 
 def find_case(case_id):
@@ -27,6 +28,8 @@ def find_case(case_id):
 def case_version(case, engine=None):
     engine = engine or os.environ.get("VDIR_SQL_ENGINE", "duckdb")
     files = [evaluation.__file__] + [evaluation.runtime_source(name) for name in evaluation.RUNTIME_FILES]
+    from vdir.platform import run_contract
+    files += [__file__, run_contract.__file__]
     files += [Path(__file__).resolve().parents[4] / "pyproject.toml", Path(__file__).resolve().parents[3] / "requirements/runtime.txt"]
     code_hash = hashlib.sha256()
     for file in files:
@@ -35,6 +38,30 @@ def case_version(case, engine=None):
 
 
 def execute_one(store, job, telemetry=None):
+    """Correlate queue, exported worker, billing lineage and trusted verifier."""
+    request = job["request"]
+    parent_id = request.get("parent_id")
+    parent = store.get(parent_id) if parent_id else None
+    budget_id = (parent.get("result") or {}).get("run_record", {}).get("budget_run_id", parent_id) if parent else job["id"]
+    with evaluation.execution_identity(job["id"], budget_id):
+        result = _execute_one(store, job, telemetry)
+    mode = "operator-revision" if request["kind"] in ("verification", "dbt_verification") else request["investigator"]
+    live = mode in ("anthropic", "langgraph")
+    model = result["response"].get("model_run", {})
+    known_usage = (model.get("status") == "completed" and not model.get("additional_billing_unknown")
+                   and all(type(model.get("usage", {}).get(k)) is int for k in ("input_tokens", "output_tokens")))
+    result["run_record"] = record(run_id=job["id"], budget_run_id=budget_id, parent_run_id=parent_id,
+        task="dbt_repair" if request.get("project_id") else "incident_investigation", mode=mode,
+        owner_scope="operator-workspace", input_sha256=request["input_version"], contract=result["contract"],
+        result={"decision": result["response"].get("decision", {}), "grading": result["grading"]},
+        verification_scope="independent-regression", verification_passed=result["grading"]["passed"],
+        check_count=max(1, len(result["grading"].get("checks", []))), evidence_count=len(result["response"].get("trace", [])),
+        producer_versions={"execution": request["input_version"], "contract": result["contract"].get("version", "unversioned")},
+        billing=("provider-reported" if known_usage else "unknown") if live else "not-used")
+    return result
+
+
+def _execute_one(store, job, telemetry=None):
     request = job["request"]
     if request.get("project_id"):
         from vdir.workflows.dbt_service import execute

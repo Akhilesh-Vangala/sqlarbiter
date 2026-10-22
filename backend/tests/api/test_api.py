@@ -227,6 +227,8 @@ class WorkbenchAPITests(unittest.TestCase):
 
     def test_graph_api_service_pause_resume_keeps_original_and_verifies_continuation(self):
         import asyncio
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend/agents/investigator"))
         from graph import investigate as graph_investigate
         from tools import EvidenceTools
         from fixtures.model_fixtures import ScriptedClient
@@ -234,9 +236,11 @@ class WorkbenchAPITests(unittest.TestCase):
         from fixtures.model_fixtures import call
         from vdir.evaluation import evaluation
         original_worker = evaluation.run_worker
+        identities = []
         def provider(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
             if mode != "langgraph":
                 return original_worker(workspace, mode=mode, requests=requests)
+            identities.append(evaluation.WORKER_RUN.get())
             def clarify(messages):
                 import json
                 if continuation:
@@ -271,6 +275,9 @@ class WorkbenchAPITests(unittest.TestCase):
             self.assertEqual(resumed["result"]["response"]["model_run"]["rounds"], 3)
             self.assertEqual(len(resumed["result"]["response"]["trace"]), 1)
             self.assertTrue(resumed["result"]["grading"]["passed"])
+            self.assertEqual(identities, [(parent["id"], parent["id"]), (resumed["id"], parent["id"])])
+            self.assertEqual(resumed["result"]["run_record"]["budget_run_id"], parent["id"])
+            self.assertEqual(resumed["result"]["run_record"]["parent_run_id"], parent["id"])
             unchanged = self.client.get("/api/jobs/" + parent["id"]).json()
             self.assertEqual(unchanged["result_version"], parent["result_version"])
             self.assertEqual(unchanged["result"], parent["result"])

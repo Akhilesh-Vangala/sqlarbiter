@@ -33,7 +33,10 @@ class AnthropicClient:
             raise InvestigationFailed(str(error)) from None
         self.sdk = sdk or AsyncAnthropic(api_key=self.api_key, base_url="https://api.anthropic.com",
                                         timeout=20, max_retries=0, _strict_response_validation=True)
-        self.run_id = hashlib.sha256(str(Path(event_path).resolve().parent).encode()).hexdigest() if event_path else uuid.uuid4().hex
+        fallback_id = hashlib.sha256(str(Path(event_path).resolve().parent).encode()).hexdigest() if event_path else uuid.uuid4().hex
+        self.run_id = os.environ.get("VDIR_BUDGET_RUN_ID") or os.environ.get("VDIR_RUN_ID") or fallback_id
+        if not isinstance(self.run_id, str) or not 1 <= len(self.run_id) <= 128 or not all(c.isascii() and (c.isalnum() or c in "_-") for c in self.run_id):
+            raise InvestigationFailed("Invalid execution identifier")
         self.sdk_max_retries = 0 if self.spend else getattr(self.sdk, "max_retries", 0)
         self.telemetry = telemetry
         self.event_path = event_path
@@ -61,6 +64,8 @@ class AnthropicClient:
             body["model"] = self.resolved_model
             counted = await self.sdk.messages.count_tokens(
                 model=self.resolved_model, messages=messages, system=system, tools=definitions)
+            if type(counted.input_tokens) is not int or counted.input_tokens < 0:
+                raise InvestigationFailed("Invalid provider input-token count")
             if counted.input_tokens > 16000 or self.context_tokens_requested + counted.input_tokens > 64000:
                 raise InvestigationFailed("Provider input-token budget exceeded before generation")
             self.context_tokens_requested += counted.input_tokens

@@ -105,6 +105,8 @@ class SpendLedger:
         return int(amount.to_integral_value(rounding=ROUND_CEILING))
 
     def reserve(self, run_id, model, input_tokens, max_output):
+        if not isinstance(run_id, str) or not run_id or len(run_id) > 128:
+            raise SpendRejected("A bounded execution identifier is required")
         if model != self.pricing["model"]:
             raise SpendRejected("Resolved model does not match the verified pricing profile")
         if any(type(value) is not int or value < 0 for value in (input_tokens, max_output)) or max_output == 0:
@@ -113,8 +115,8 @@ class SpendLedger:
         amount = int((input_tokens * max(self.rates[key] for key in ("input_per_million", "cache_write_per_million", "cache_read_per_million")) + max_output * self.rates["output_per_million"]).to_integral_value(rounding=ROUND_CEILING))
         identity = uuid.uuid4().hex
         with self.transaction() as db:
-            if db.execute("SELECT 1 FROM requests WHERE status='overrun' LIMIT 1").fetchone():
-                raise SpendRejected("Provider usage exceeded a prior reservation; generation is blocked")
+            if db.execute("SELECT 1 FROM requests WHERE status IN ('overrun','unknown') LIMIT 1").fetchone():
+                raise SpendRejected("Uncertain or overrun provider usage blocks further generation")
             total = db.execute("SELECT COALESCE(SUM(COALESCE(actual,reserved)),0) FROM requests").fetchone()[0]
             run = db.execute("SELECT COALESCE(SUM(COALESCE(actual,reserved)),0) FROM requests WHERE run_id=?", (run_id,)).fetchone()[0]
             if total + amount > self.total_limit or run + amount > self.run_limit:
@@ -147,5 +149,5 @@ class SpendLedger:
         return {"model": self.pricing["model"], "pricing_verified_at": self.pricing["verified_at"],
                 "run_limit_usd": self.run_limit / 1000000, "total_limit_usd": self.total_limit / 1000000,
                 "accounted_usd": charged, "remaining_usd": max(0, self.total_limit / 1000000 - charged),
-                "states": totals, "admission_blocked": "overrun" in totals,
+                "states": totals, "admission_blocked": bool({"overrun", "unknown"}.intersection(totals)),
                 "scope": "Estimated application usage; unresolved reservations retained; not a provider invoice cap"}

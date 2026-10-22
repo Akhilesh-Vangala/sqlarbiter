@@ -81,6 +81,17 @@ class InvestigatorError(RuntimeError):
 
 EXECUTION_CONTROL = ContextVar("vdir_execution_control", default=None)
 WORKER_DEPENDENCIES = ContextVar("vdir_worker_dependencies", default=())
+WORKER_RUN = ContextVar("vdir_worker_run", default=(None, None))
+
+
+@contextmanager
+def execution_identity(run_id, budget_run_id):
+    from vdir.platform.run_contract import identifier
+    token = WORKER_RUN.set((identifier(run_id), identifier(budget_run_id)))
+    try:
+        yield
+    finally:
+        WORKER_RUN.reset(token)
 
 
 @contextmanager
@@ -126,9 +137,16 @@ def _stop_process(process):
 
 
 def run_worker(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None,
-               checkpoint_thread_id=None):
+               checkpoint_thread_id=None, run_id=None, budget_run_id=None):
     workspace = Path(workspace).resolve()
     environment = {"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"}
+    from vdir.platform.run_contract import identifier
+    inherited_run, inherited_budget = WORKER_RUN.get()
+    run_id, budget_run_id = run_id or inherited_run, budget_run_id or inherited_budget
+    if run_id:
+        environment["VDIR_RUN_ID"] = identifier(run_id)
+    if budget_run_id:
+        environment["VDIR_BUDGET_RUN_ID"] = identifier(budget_run_id)
     for name in ("VDIR_OTLP_ENDPOINT", "VDIR_TRACEPARENT", "VDIR_CHECKPOINT_DATABASE_URL"):
         if os.environ.get(name):
             environment[name] = os.environ[name]

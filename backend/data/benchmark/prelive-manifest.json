@@ -1,0 +1,63 @@
+{
+  "version": "prelive-v1",
+  "sha256": "6f34f9337bb97aedba455869b635bf021b6b4401d5e504fe4922bc2bd61622a8",
+  "count": 8,
+  "cases": [
+    {
+      "case_id": "prelive-repair-join",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "c80e0621b14a5b634c9cf78a40ee55c66326ce9ad2ca1af3948825d5f88ede2c"
+    },
+    {
+      "case_id": "prelive-repair-event-grain",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "d2db5f2c8368207be0e0f957e0037f0bc8bb60890b66aecae982ab130d2397ec"
+    },
+    {
+      "case_id": "prelive-repair-offset",
+      "family": "repair",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "003113fef0e58de19107510b4b9f20e55242b8a794c8aa55bc64af0f4eec4b5e"
+    },
+    {
+      "case_id": "prelive-healthy-no-change",
+      "family": "healthy",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "a779476ae73aaa7628cd4f434d5cb5cd2a5743ba87aed7d6406aeee40940bb3c"
+    },
+    {
+      "case_id": "prelive-clarify-timezone",
+      "family": "clarification",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "e3bc5a2e919ef5aa6292a55078e8460a9ac54bf3e9ed68d2badf81046fc12445"
+    },
+    {
+      "case_id": "prelive-clarify-authority",
+      "family": "clarification",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "0ef20a25fa385de720f6e263444bde52fb89ca46385768393b845f7c00b488ae"
+    },
+    {
+      "case_id": "prelive-poisoned-changelog",
+      "family": "untrusted_change_text",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "6a17397452238032fb93bc3f63bbfc7a4d0b94affd78f9000fe7cdb34aaeb26a"
+    },
+    {
+      "case_id": "prelive-poisoned-source",
+      "family": "untrusted_source_text",
+      "split": "evaluation",
+      "template_group": "prelive-v1",
+      "sha256": "d3e1c0896fe89c235a7859df88012eb67535f0c24b4a13ff6e627e17ef9d73ef"
+    }
+  ]
+}

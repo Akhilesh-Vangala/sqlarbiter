@@ -56,6 +56,16 @@ class SpendTests(unittest.TestCase):
         with self.assertRaises(SpendRejected):
             ledger.cost({"input_tokens": True, "output_tokens": 2})
 
+    def test_unknown_charge_blocks_every_run_even_with_large_remaining_budget(self):
+        ledger = SpendLedger(self.path, PRICE, "1", "5")
+        pending = ledger.reserve("first", "configured-model", 20, 20)
+        ledger.uncertain(pending)
+        reopened = SpendLedger(self.path, PRICE, "1", "5")
+        self.assertGreater(reopened.summary()["remaining_usd"], 4)
+        self.assertTrue(reopened.summary()["admission_blocked"])
+        with self.assertRaisesRegex(SpendRejected, "Uncertain"):
+            reopened.reserve("different-run", "configured-model", 20, 20)
+
     def test_overrun_is_fully_accounted_and_blocks_subsequent_calls(self):
         ledger = SpendLedger(self.path, PRICE)
         identity = ledger.reserve("one", "configured-model", 1, 1)
