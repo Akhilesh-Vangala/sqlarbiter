@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[3]/"backend/agents/investigator"))
+sys.path.insert(0,str(Path(__file__).resolve().parents[3]/"agent/investigator"))
 from vdir.domain.cases import incidents
 from vdir.evaluation.evaluation import export_workspace
 from model import investigate as linear, InvestigationFailed

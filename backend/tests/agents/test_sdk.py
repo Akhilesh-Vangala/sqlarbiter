@@ -11,7 +11,7 @@ from unittest.mock import patch
 import httpx2
 from anthropic import AsyncAnthropic
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend/agents/investigator"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 from model import AnthropicClient
 from model import InvestigationFailed
 

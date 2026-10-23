@@ -275,10 +275,10 @@ PYTHONPATH=backend/src .venv/bin/python -m vdir --investigate artifacts/generate
 
 | Layer | Technology and source |
 | --- | --- |
-| Agent orchestration | LangGraph + PostgreSQL/SQLite checkpointers · [`investigator_runtime/graph.py`](../../../backend/agents/investigator/graph.py) |
-| Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](../../../backend/agents/investigator/model.py) |
-| Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](../../../backend/agents/investigator/agent_policy.py) |
-| Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](../../../backend/agents/investigator/tools.py), [`engines.py`](../../../backend/agents/investigator/engines.py) |
+| Agent orchestration | LangGraph + PostgreSQL/SQLite checkpointers · [`investigator_runtime/graph.py`](../../../agent/investigator/graph.py) |
+| Model transport | Official AsyncAnthropic SDK · [`investigator_runtime/model.py`](../../../agent/investigator/model.py) |
+| Typed plans/findings | Pydantic · [`investigator_runtime/agent_policy.py`](../../../agent/investigator/agent_policy.py) |
+| Analytical tools | DuckDB / SQLite + SQLGlot · [`investigator_runtime/tools.py`](../../../agent/investigator/tools.py), [`engines.py`](../../../agent/investigator/engines.py) |
 | Independent verification | Python references and evidence replay · [`backend/src/vdir/evaluation.py`](../../../backend/src/vdir/evaluation/evaluation.py), [`reference.py`](../../../backend/src/vdir/verification/reference.py) |
 | API, worker, state | FastAPI + Uvicorn + PostgreSQL/SQLite adapters · [`backend/src/vdir/api.py`](../../../backend/src/vdir/api/routes.py), [`postgres_jobs.py`](../../../backend/src/vdir/persistence/postgres_jobs.py), [`jobs.py`](../../../backend/src/vdir/persistence/jobs.py) |
 | dbt repair | dbt-core + dbt-duckdb · [`backend/src/vdir/dbt_workflow.py`](../../../backend/src/vdir/workflows/dbt_workflow.py), [`original project`](../../../backend/dbt/revenue_incident) |

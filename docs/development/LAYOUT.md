@@ -4,14 +4,6 @@ Run commands from the repository root unless a command states otherwise. The fil
 
 ```text
 verifyops/
-├── backend/
-│   ├── src/vdir/
-│   ├── tests/
-│   ├── requirements/
-│   ├── docker/
-│   ├── data/
-│   ├── agents/investigator/
-│   └── dbt/revenue_incident/
 ├── frontend/
 │   └── apps/
 │       ├── demo/
@@ -27,6 +19,13 @@ verifyops/
 │           └── assets/
 │               ├── scripts/
 │               └── styles/
+├── agent/
+│   └── investigator/
+├── backend/
+│   ├── src/vdir/
+│   ├── tests/
+│   ├── data/
+│   └── dbt/revenue_incident/
 ├── infrastructure/
 │   ├── containers/
 │   ├── kubernetes/
@@ -67,9 +66,9 @@ verifyops/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   └── workflows/
+├── agent/
+│   └── investigator/
 ├── backend/
-│   ├── agents/
-│   │   └── investigator/
 │   ├── data/
 │   │   ├── benchmark/
 │   │   ├── development/

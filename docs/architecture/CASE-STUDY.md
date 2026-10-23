@@ -18,8 +18,8 @@ A repair can execute, appear reasonable, and pass the original incident while br
 
 | Responsibility | Owned implementation | Why it matters |
 | --- | --- | --- |
-| Investigate source evidence | [graph.py](../../backend/agents/investigator/graph.py), [tools.py](../../backend/agents/investigator/tools.py) | Checkpointed transitions, bounded SQL tools, hypotheses and executed/cited findings. |
-| Bound model execution | [model.py](../../backend/agents/investigator/model.py), [spending.py](../../backend/src/vdir/platform/spending.py) | Typed async model transport, call receipts, token/time limits and retained estimated commitments. |
+| Investigate source evidence | [graph.py](../../agent/investigator/graph.py), [tools.py](../../agent/investigator/tools.py) | Checkpointed transitions, bounded SQL tools, hypotheses and executed/cited findings. |
+| Bound model execution | [model.py](../../agent/investigator/model.py), [spending.py](../../backend/src/vdir/platform/spending.py) | Typed async model transport, call receipts, token/time limits and retained estimated commitments. |
 | Check correctness independently | [evaluation.py](../../backend/src/vdir/evaluation/evaluation.py), [reference.py](../../backend/src/vdir/verification/reference.py) | Separate source references and private regressions outside model authority. |
 | Execute the real dbt repair | [dbt_workflow.py](../../backend/src/vdir/workflows/dbt_workflow.py), [original project](../../backend/dbt/revenue_incident) | Actual seed/run/test, restricted model patch and fresh builds across designed fixtures. |
 | Own durable execution/review | [jobs.py](../../backend/src/vdir/persistence/jobs.py), [worker.py](../../backend/src/vdir/workers/worker.py), [dbt_service.py](../../backend/src/vdir/workflows/dbt_service.py) | Claims/leases, cancellation, guarded publication and source/model/patch/report integrity. |
@@ -62,7 +62,7 @@ The passing repair is checked with actual dbt builds over five designed fixtures
 | Failed/tampered patch | Block approval and verified download. | [dbt browser workflow](DBT-WORKFLOW.md), [service implementation](../../backend/src/vdir/workflows/dbt_service.py) |
 | Missing authoritative source facts | Request clarification; do not invent a timezone or conflicting event payload. | [Development cases](../../backend/src/vdir/domain/cases.py), [agent flow](AGENT-ORCHESTRATION.md) |
 | Cancellation or lost ownership | Stop controlled work and fence result publication. | [Worker](../../backend/src/vdir/workers/worker.py), [job store](../../backend/src/vdir/persistence/jobs.py) |
-| Interrupted model generation | Retain uncertain receipts; explicit compatible recovery only. | [Model/recovery boundaries](AGENT-ORCHESTRATION.md), [transport](../../backend/agents/investigator/model.py) |
+| Interrupted model generation | Retain uncertain receipts; explicit compatible recovery only. | [Model/recovery boundaries](AGENT-ORCHESTRATION.md), [transport](../../agent/investigator/model.py) |
 
 ## What the evidence establishes
 

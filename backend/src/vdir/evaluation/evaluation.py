@@ -18,7 +18,7 @@ from pathlib import Path
 
 from vdir.domain.cases import incidents
 
-RUNTIME = Path(__file__).resolve().parents[3] / "agents/investigator"
+RUNTIME = Path(__file__).resolve().parents[4] / "agent" / "investigator"
 RUNTIME_FILES = ("tools.py", "baseline.py", "model.py", "graph.py", "agent_policy.py", "worker.py", "engines.py", "telemetry.py", "spending.py")
 
 

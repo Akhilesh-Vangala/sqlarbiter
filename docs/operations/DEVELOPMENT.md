@@ -34,4 +34,4 @@ Never overwrite an existing `.env`. Configure provider credentials privately, us
 
 The required CI jobs execute real native/container/browser and PostgreSQL checks, plus actual dbt integration and Terraform validation. Prepared manifests do not establish deployed cloud operation. AWS remains unapplied; individual identity, real connectors, isolated execution, monitored operation and restore/load evidence remain release gates.
 
-[Current layout](../development/LAYOUT.md) · [Dated setup history](../project/history/PRE-ORGANIZATION-operations-DEVELOPMENT.md).
+[Current layout](../development/LAYOUT.md).

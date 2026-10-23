@@ -1,47 +1,31 @@
-<p align="center"><img src="docs/assets/branding/verifyops-banner.svg" alt="VerifyOps — SQL incident repair" width="100%"></p>
+# VerifyOps
 
-**Investigate. Repair. Verify.** [Open VerifyOps](https://verifyops.vercel.app/) · [Upload your data](https://verifyops.vercel.app/uploads) · [Docs](docs/README.md)
+A checkpointed LangGraph investigator proposes a SQL repair for a metric discrepancy. Independent regression checks and a real dbt pipeline decide whether that repair can be accepted. The model does not grade its own fix.
+
+[Open the app](https://verifyops.vercel.app/) · [Upload a file](https://verifyops.vercel.app/uploads) · [Architecture](docs/architecture/OVERVIEW.md) · [What the checks measure](docs/evaluation/README.md) · [Run locally](docs/operations/DEVELOPMENT.md)
 
 <p align="center"><a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Required engineering checks"></a> &nbsp; Python · LangGraph · FastAPI · PostgreSQL</p>
 
-# VerifyOps
-
-Evidence-backed SQL incident investigation with checkpointed LangGraph, independent regression checks, and a real dbt repair pipeline — so a metric discrepancy gets a proposed fix that cannot be accepted until checks pass.
-
-[**Open the app ↗**](https://verifyops.vercel.app/) · [Technical documentation](docs/README.md) · [Repository layout](docs/development/LAYOUT.md)
+The public app uses synthetic fixtures and does not call a model. Live model quality is not a result of this repository.
 
 ## Architecture
 
-![VerifyOps architecture](docs/assets/diagrams/verifyops-architecture.svg)
+Read-only evidence tools feed the agent. A separate verifier runs source computations and dbt builds. An operator accepts or rejects that exact checked version.
 
-```mermaid
-%%{init: {"theme": "neutral"}}%%
-flowchart LR
-  Incident --> Evidence[Bounded evidence tools]
-  Evidence --> Agent[LangGraph investigation]
-  Agent --> Candidate[Candidate SQL]
-  Candidate --> Verify[Independent checks]
-  Verify --> Review[Exact-result review]
-  Review --> Export[Evidence or dbt patch]
-```
+![System map: web workbench, persistent jobs, LangGraph investigator, independent verification, operator review](docs/assets/diagrams/verifyops-architecture.svg)
 
-| Component | Responsibility |
-| --- | --- |
-| Frontend | Landing, guided intake, report views, device projects/history |
-| Backend | FastAPI, typed contracts, LangGraph orchestration, review gates |
-| Independent checking | Source computations, regressions, restricted dbt patch checks |
-| Runtime | PostgreSQL workers; fixtures/workspace remain same-node |
+| Layer | Where | Responsibility |
+| --- | --- | --- |
+| Frontend | `frontend/` | Landing, guided intake, report views, device projects |
+| Agent | `agent/investigator/` | LangGraph loop and tools. Proposes SQL. Cannot accept it. |
+| Backend | `backend/` | FastAPI, jobs, independent checks, dbt, review |
 
 ## Repository layout
 
 ```text
-verifyops/
-├── backend/          src, tests, agents, dbt, data
-├── frontend/         demo, product, uploads, workbench
-├── infrastructure/   containers, kubernetes, terraform
-├── scripts/
-├── docs/
-└── .github/
+frontend/             demo, product, uploads, workbench
+agent/investigator/   LangGraph loop, tools, model transport
+backend/              API, jobs, verification, dbt, data
 ```
 
 ## Run locally

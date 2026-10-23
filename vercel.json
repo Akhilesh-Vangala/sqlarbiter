@@ -4,7 +4,7 @@
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "includeFiles": "{frontend/**,backend/data/**,backend/agents/investigator/**}",
+      "includeFiles": "{frontend/**,backend/data/**,agent/investigator/**}",
       "excludeFiles": "{backend/tests/**,artifacts/**,docs/**,.tools/**,infrastructure/**}"
     }
   }
