@@ -18,7 +18,7 @@ RUN sed -i 's|http://deb.debian.org|https://deb.debian.org|g' /etc/apt/sources.l
 RUN python -m playwright install --with-deps chromium && chmod -R a+rX /opt/playwright
 COPY backend/src ./backend/src
 COPY frontend ./frontend
-COPY backend/agents/investigator ./backend/agents/investigator
+COPY agent/investigator ./agent/investigator
 COPY backend/tests ./backend/tests
 COPY backend/data ./backend/data
 COPY backend/dbt ./backend/dbt
@@ -30,7 +30,7 @@ CMD ["sh", "scripts/checks/container_checks.sh"]
 FROM dbt_tooling AS runtime
 COPY backend/src ./backend/src
 COPY frontend ./frontend
-COPY backend/agents/investigator ./backend/agents/investigator
+COPY agent/investigator ./agent/investigator
 COPY backend/data ./backend/data
 COPY backend/dbt ./backend/dbt
 RUN mkdir -p /state && chown 10001:10001 /state
