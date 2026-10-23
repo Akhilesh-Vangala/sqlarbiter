@@ -292,7 +292,7 @@ def main():
             for path in [
                 root / "app.py",
                 *sorted((root / "backend/src" / package).rglob("*.py")),
-                *sorted((root / "backend/agents/investigator").glob("*.py")),
+                *sorted((root / "agent/investigator").glob("*.py")),
                 assets / "assets/scripts/app.js",
                 assets / "assets/styles/style.css",
             ]

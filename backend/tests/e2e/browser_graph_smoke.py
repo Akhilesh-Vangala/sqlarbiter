@@ -15,7 +15,7 @@ from playwright.sync_api import sync_playwright
 from playwright.sync_api import expect
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / "backend/agents/investigator"))
+sys.path.insert(0, str(ROOT / "agent/investigator"))
 sys.path.insert(0, str(ROOT / "backend" / "tests"))
 from graph import investigate
 from tools import EvidenceTools

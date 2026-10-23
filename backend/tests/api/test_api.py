@@ -228,7 +228,7 @@ class WorkbenchAPITests(unittest.TestCase):
     def test_graph_api_service_pause_resume_keeps_original_and_verifies_continuation(self):
         import asyncio
         import sys
-        sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend/agents/investigator"))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
         from graph import investigate as graph_investigate
         from tools import EvidenceTools
         from fixtures.model_fixtures import ScriptedClient

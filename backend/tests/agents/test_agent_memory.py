@@ -11,7 +11,7 @@ from vdir.domain.cases import Incident
 from vdir.domain.cases import Source
 from vdir.evaluation.evaluation import export_workspace
 from vdir.evaluation.evaluation import grade
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend/agents/investigator"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 from tools import EvidenceTools
 from agent_policy import validate_findings
 from agent_policy import working_memory

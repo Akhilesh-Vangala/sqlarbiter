@@ -66,7 +66,7 @@ def main():
         import subprocess
         tracked = subprocess.check_output(["git", "ls-files"], cwd=ROOT, text=True).splitlines()
         root_folders = {p.split("/")[0] for p in tracked if "/" in p}
-        assert root_folders <= {".github", "backend", "frontend", "infrastructure", "scripts", "docs"}, root_folders
+        assert root_folders <= {".github", "agent", "backend", "frontend", "infrastructure", "scripts", "docs"}, root_folders
 
     capture = ROOT / "docs/demos/interactive-recording.json"
     manifest = json.loads(capture.read_text())

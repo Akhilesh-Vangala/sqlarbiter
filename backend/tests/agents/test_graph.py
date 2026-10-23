@@ -20,7 +20,7 @@ from vdir.persistence.jobs import JobStore
 from vdir.persistence.jobs import Conflict
 from vdir.workflows.service import case_version
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend/agents/investigator"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 import graph as graph_runtime
 from graph import investigate
 from graph import Receipts

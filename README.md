@@ -14,23 +14,18 @@ Read-only evidence tools feed the agent. A separate verifier runs source computa
 
 ![System map: web workbench, persistent jobs, LangGraph investigator, independent verification, operator review](docs/assets/diagrams/verifyops-architecture.svg)
 
-| Component | Responsibility |
-| --- | --- |
-| Frontend | Landing, guided intake, report views, device projects/history |
-| Backend | FastAPI, typed contracts, LangGraph orchestration, review gates |
-| Independent checking | Source computations, regressions, restricted dbt patch checks |
-| Runtime | PostgreSQL workers; fixtures/workspace remain same-node |
+| Layer | Where | Responsibility |
+| --- | --- | --- |
+| Frontend | `frontend/` | Landing, guided intake, report views, device projects |
+| Agent | `agent/investigator/` | LangGraph loop and tools. Proposes SQL. Cannot accept it. |
+| Backend | `backend/` | FastAPI, jobs, independent checks, dbt, review |
 
 ## Repository layout
 
 ```text
-verifyops/
-├── backend/          src, tests, agents, dbt, data
-├── frontend/         demo, product, uploads, workbench
-├── infrastructure/   containers, kubernetes, terraform
-├── scripts/
-├── docs/
-└── .github/
+frontend/             demo, product, uploads, workbench
+agent/investigator/   LangGraph loop, tools, model transport
+backend/              API, jobs, verification, dbt, data
 ```
 
 ## Run locally
