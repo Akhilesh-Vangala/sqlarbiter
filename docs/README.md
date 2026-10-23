@@ -1,21 +1,16 @@
-# VerifyOps technical documentation
+# VerifyOps documentation
 
-[Project overview](../README.md) · [Working app](https://verifyops.vercel.app/) · [Recorded demo](DEMO.md)
+[App](https://verifyops.vercel.app/) · [Project overview](../README.md)
 
-| Review question | Current source |
+| Question | Read |
 | --- | --- |
-| Where do frontend, backend and tests live? | [Layout and commands](development/LAYOUT.md) |
-| How does the system work? | [Architecture](architecture/OVERVIEW.md) |
-| What do the checks establish? | [Evaluation](evaluation/README.md), [progress and source-linked evidence](project/PROGRESS.md) |
-| How do I run/deploy it? | [Operations](operations/DEVELOPMENT.md) |
-| What are the design tradeoffs? | [Decisions](DECISIONS.md) |
-| How was the demo captured? | [Actual continuous recording and provenance](DEMO.md) |
-| What is current versus historical? | [Handoff](project/HANDOFF.md), [plan](project/PLAN.md), [dated history](project/history/PRE-ORGANIZATION-README.md) |
+| How is the system split? | [Architecture](architecture/OVERVIEW.md) |
+| Where does the code live? | [Layout and commands](development/LAYOUT.md) |
+| What do the checks actually establish? | [Evaluation](evaluation/README.md) |
+| How do I run it? | [Development](operations/DEVELOPMENT.md) |
+| Why these boundaries? | [Decisions](DECISIONS.md) |
+| What does the recording show? | [Demo](DEMO.md) |
 
-Detailed implementation: [agent framework](architecture/AGENT-ORCHESTRATION.md), [public sandbox](operations/PUBLIC-SANDBOX.md), [private worker/container topology](operations/PRODUCTION-FOUNDATION.md), [engineering case study](architecture/CASE-STUDY.md).
+The investigator, the dbt repair path, and the public sandbox are written up separately: [agent orchestration](architecture/AGENT-ORCHESTRATION.md), [dbt workflow](architecture/DBT-WORKFLOW.md), [public sandbox](operations/PUBLIC-SANDBOX.md), [case study](architecture/CASE-STUDY.md).
 
-## Visitor-owned data
-
-[CSV workspace contracts, limits and verification](product/USER-DATA.md) · [Product pages, storage and account architecture](product/PRODUCT-WORKSPACE.md).
-
-Current scoped implementation: [project status](project/STATUS.md).
+Uploaded files and the product pages: [file contracts](product/USER-DATA.md) · [product workspace](product/PRODUCT-WORKSPACE.md).

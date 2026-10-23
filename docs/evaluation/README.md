@@ -10,7 +10,7 @@
 | Known synthetic regression | 38 fixed-diagnostic cases, plus five dbt fixtures and four output relations per patch verification. |
 | Live model quality | Not measured. Scripted providers and fixed diagnostics are not model-accuracy evidence. |
 
-Local and container executions repeat the same distinct cases; do not add their counts as unique tests. Actual result/source links are in [progress](../project/PROGRESS.md) and the required CI artifacts. The repository-layout increment must pass its own exact-head checks before merge.
+Local and container executions repeat the same distinct cases; do not add their counts as unique tests. The required CI artifacts are the source for those counts.
 
 ## Independent acceptance boundary
 
@@ -20,4 +20,4 @@ Source-level reference computations and private regression snapshots remain outs
 
 Frozen unseen task/data families, live model comparisons and repeats, representative real integrations, safety challenges, actual operator feedback, observed costs/latency, and monitored persistent cloud/load/restore evidence remain release work. No live quality, customer impact or causal inference result is inferred from deterministic success.
 
-[Known corpus and scoring details](BENCHMARK.md) · [Prior evaluation history](../project/history/PRE-ORGANIZATION-evaluation-README.md).
+[Known corpus and scoring details](BENCHMARK.md).
