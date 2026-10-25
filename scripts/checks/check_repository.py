@@ -41,9 +41,6 @@ class Media(HTMLParser):
 def main():
     assert (ROOT / "backend").is_dir()
     assert (ROOT / "frontend").is_dir()
-    for name in ("HANDOFF", "PLAN", "PROGRESS"):
-        assert (ROOT / "docs/project" / (name + ".md")).is_file()
-        assert not (ROOT / (name + ".md")).exists(), "Project history belongs in docs/project"
     files = list(ROOT.glob("*.md")) + list((ROOT / "docs").rglob("*.md"))
     files += list((ROOT / "backend").glob("*.md")) + list((ROOT / "frontend").glob("*.md"))
     for area in ("backend", "frontend/apps", "frontend/src", "infrastructure", "scripts", ".github"):

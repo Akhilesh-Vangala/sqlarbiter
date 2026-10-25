@@ -24,6 +24,6 @@ flowchart TD
  Verify --> Review[Exact-version review]
 ```
 
-The model cannot approve its own proposal or bypass typed scope, SQL/action policy or independent verification. Durable business-state/workspace files remain same-node; individual identity, real connectors, per-run isolation and monitored cloud operation are release work. Temporal and a general browser-action agent are proposals, not installed components.
+The model cannot approve its own proposal or bypass typed scope, SQL policy, or independent verification. Durable business-state and workspace files stay on the same node as the worker.
 
-[Agent details](AGENT-ORCHESTRATION.md) · [Current layout](../development/LAYOUT.md) · [Original foundation architecture](../project/history/FOUNDATION-OVERVIEW.md).
+[Agent details](AGENT-ORCHESTRATION.md) · [Current layout](../development/LAYOUT.md).

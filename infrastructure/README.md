@@ -6,4 +6,4 @@
 scripts/deployment/compose.sh up --build -d
 ```
 
-The wrapper explicitly retains the root build context, private configuration and intended project/volume naming. [Kubernetes](kubernetes/) separates base resources and environment overlays. [Terraform](terraform/) is prepared and validated but remains unapplied. Actual image/topology checks belong to required CI; these files alone are not proof of monitored cloud delivery.
+The wrapper keeps the root build context, private configuration, and volume names. [Kubernetes](kubernetes/) separates base resources and environment overlays. [Terraform](terraform/) is validated in CI. Image and topology checks run in the required CI jobs.

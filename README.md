@@ -2,17 +2,22 @@
 
 A checkpointed LangGraph investigator proposes a SQL repair for a metric discrepancy. Independent regression checks and a real dbt pipeline decide whether that repair can be accepted. The model does not grade its own fix.
 
-[Open the app](https://verifyops.vercel.app/) · [Upload a file](https://verifyops.vercel.app/uploads) · [Architecture](docs/architecture/OVERVIEW.md) · [What the checks measure](docs/evaluation/README.md) · [Run locally](docs/operations/DEVELOPMENT.md)
+[Open the app](https://verifyops.vercel.app/) · [Upload a file](https://verifyops.vercel.app/uploads) · [Architecture](docs/architecture/OVERVIEW.md) · [Evaluation](docs/evaluation/README.md) · [Run locally](docs/operations/DEVELOPMENT.md)
 
-<p align="center"><a href="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml"><img src="https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml/badge.svg" alt="Required engineering checks"></a> &nbsp; Python · LangGraph · FastAPI · PostgreSQL</p>
-
-The public app uses synthetic fixtures and does not call a model. Live model quality is not a result of this repository.
+Python · LangGraph · FastAPI · PostgreSQL · [CI](https://github.com/Akhilesh-Vangala/verifyops/actions/workflows/checks.yml)
 
 ## Architecture
 
 Read-only evidence tools feed the agent. A separate verifier runs source computations and dbt builds. An operator accepts or rejects that exact checked version.
 
-![System map: web workbench, persistent jobs, LangGraph investigator, independent verification, operator review](docs/assets/diagrams/verifyops-architecture.svg)
+```mermaid
+flowchart LR
+  Incident --> Evidence[Read-only evidence tools]
+  Evidence --> Agent[LangGraph investigator]
+  Agent --> SQL[Candidate SQL]
+  SQL --> Verify[Independent checks and dbt]
+  Verify --> Review[Exact-version review]
+```
 
 | Layer | Where | Responsibility |
 | --- | --- | --- |
@@ -46,5 +51,3 @@ Open **http://127.0.0.1:8000**. [Full development guide](docs/operations/DEVELOP
 PYTHONPATH=backend/src VDIR_LOAD_DOTENV=0 python -m unittest discover -s backend/tests -v
 python scripts/checks/check_repository.py
 ```
-
-Public demos use guided synthetic fixtures (no live inference claim). Live model quality and customer production certification remain out of scope. [Evaluation](docs/evaluation/README.md) · [Demo notes](docs/DEMO.md)

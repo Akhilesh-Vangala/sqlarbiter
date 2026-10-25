@@ -17,6 +17,6 @@ For agent changes, retain strict evidence citations, bounded calls, public corre
 - Preserve immutable exact-version review and protected verified exports.
 - Keep estimated spend accounting separate from provider invoice claims.
 - Use focused conventional commits such as `feat(agent): ...`, `fix(worker): ...` or `docs(readme): ...`.
-- Never commit credentials, generated reports, private data or local environments. Preserve earlier dated milestones and update the current handoff.
+- Never commit credentials, generated reports, private data, or local environments.
 
-The [documentation index](../docs/README.md) maps architecture, evidence and tradeoffs. Individual identity, distributed persistence, execution isolation, live evaluation and cloud delivery remain release work.
+The [documentation index](../docs/README.md) maps architecture, evidence, and tradeoffs.

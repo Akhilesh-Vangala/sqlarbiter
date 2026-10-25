@@ -30,8 +30,8 @@ The build context is the repository root; the Dockerfile is `backend/docker/Dock
 
 ## Private configuration and live inference
 
-Never overwrite an existing `.env`. Configure provider credentials privately, using `.env.example` only as a template on a fresh checkout. The VerifyOps launcher loads .env without overriding explicit process values; VDIR_LOAD_DOTENV=0 disables loading. The official SDK requires a provider key, explicit live selection and a matching model/pricing profile. Live execution is billable and has not been evaluated by the guided demo.
+Never overwrite an existing `.env`. Configure provider credentials privately, using `.env.example` only as a template on a fresh checkout. The VerifyOps launcher loads .env without overriding explicit process values; VDIR_LOAD_DOTENV=0 disables loading. The official SDK requires a provider key, explicit live selection, and a matching model and pricing profile.
 
-The required CI jobs execute real native/container/browser and PostgreSQL checks, plus actual dbt integration and Terraform validation. Prepared manifests do not establish deployed cloud operation. AWS remains unapplied; individual identity, real connectors, isolated execution, monitored operation and restore/load evidence remain release gates.
+The required CI jobs execute native, container, browser, and PostgreSQL checks, plus dbt integration and Terraform validation.
 
 [Current layout](../development/LAYOUT.md).

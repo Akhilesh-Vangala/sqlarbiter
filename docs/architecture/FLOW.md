@@ -14,4 +14,4 @@ flowchart LR
   Review --> Export[Evidence or restricted dbt patch]
 ```
 
-[Frontend/backend ownership](../development/LAYOUT.md) · [Agent behavior](AGENT-ORCHESTRATION.md) · [Public per-request replay boundary](../operations/PUBLIC-SANDBOX.md) · [Original flow history](../project/history/FOUNDATION-FLOW.md).
+[Frontend/backend ownership](../development/LAYOUT.md) · [Agent behavior](AGENT-ORCHESTRATION.md) · [Public per-request replay boundary](../operations/PUBLIC-SANDBOX.md).

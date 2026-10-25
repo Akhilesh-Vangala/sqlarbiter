@@ -66,17 +66,16 @@ The passing repair is checked with actual dbt builds over five designed fixtures
 
 ## What the evidence establishes
 
-Recorded CI evidence includes 133 unit passes plus one optional integration skip per workbench suite, 96 native browser checks, 120 container checks including 24 dbt checks, a dedicated real dbt job, a runtime build and 38 known fixed-diagnostic cases. Exact source/run references and reproduction are in the [recorded verification progress](../project/PROGRESS.md) and [contribution guide](../../.github/CONTRIBUTING.md).
+Recorded CI evidence includes 133 unit passes plus one optional integration skip per workbench suite, 96 native browser checks, 120 container checks including 24 dbt checks, a dedicated real dbt job, a runtime build and 38 known fixed-diagnostic cases. Reproduction is in the [contribution guide](../../.github/CONTRIBUTING.md).
 
-The new recording shows actual app/dbt execution, 20 output checks, false-fix rejection and automated exact-version sandbox review. It does not establish live AI accuracy, unseen generalization, real operator validation or monitored cloud operation.
+The recording shows app and dbt execution, 20 output checks, false-fix rejection, and exact-version review.
 
 ## Design choices and current limits
 
 - **Separate investigation and correctness.** Public plans/findings are checked against executed evidence; private references and regressions never become model feedback.
-- **Restrict the patch surface.** Only the trusted project's declared intermediate model is editable; arbitrary customer repositories/macros need new isolation and connector work.
-- **Keep reviews version-bound.** Changed SQL creates a new verification job; source/model/patch/report versions protect approval and export integrity.
-- **Retain uncertain execution.** Local leases, checkpoints and receipts preserve ownership and replay boundaries. They do not establish distributed scalability or per-investigation OS isolation.
-- **Measure the actual scope.** Designed fixtures and known fixed cases are regression/integration evidence; live comparisons and broader untouched cases remain release gates.
-- **Resolve packaging conflicts explicitly.** dbt tooling uses a separate environment and is executed in container/dedicated CI, rather than assumed compatible with the application lock.
+- **Restrict the patch surface.** Only the trusted project's declared intermediate model is editable.
+- **Keep reviews version-bound.** Changed SQL creates a new verification job; source, model, patch, and report versions protect approval and export.
+- **Retain uncertain execution.** Local leases, checkpoints, and receipts preserve ownership and replay.
+- **Separate the dbt environment.** dbt tooling runs in its own environment in the container and in the dedicated CI job.
 
-Next gates are controlled live evaluation, representative warehouse/dbt inputs, individual identity, durable shared state, isolated execution and a measured cloud/operator pilot. See [release plan](../project/PLAN.md), [decisions](../DECISIONS.md) and [technical index](../README.md).
+[Decisions](../DECISIONS.md) · [Technical index](../README.md).

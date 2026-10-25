@@ -40,7 +40,6 @@ verifyops/
 │   ├── architecture/
 │   ├── operations/
 │   ├── evaluation/
-│   ├── project/history/
 │   └── assets/
 │       ├── branding/
 │       ├── diagrams/
@@ -113,9 +112,7 @@ verifyops/
 │   ├── evaluation/
 │   ├── evidence/
 │   ├── operations/
-│   ├── product/
-│   └── project/
-│       └── history/
+│   └── product/
 ├── frontend/
 │   └── apps/
 │       ├── demo/
