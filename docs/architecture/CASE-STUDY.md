@@ -2,7 +2,7 @@
 
 **Executing SQL successfully is weaker evidence than showing that the business outputs are correct.**
 
-[Recorded demo](../DEMO.md) · [System map](../assets/diagrams/verifyops-architecture.svg) · [Full flows](SYSTEM-FLOWCHARTS.md) · [Run it](../../README.md#run-locally)
+[Recorded demo](../DEMO.md) · [System map](../assets/diagrams/verifyops-architecture.svg) · [Full flows](SYSTEM-FLOWCHARTS.md) · [Run it](../../README.md#quick-start)
 
 ## The original business case
 
