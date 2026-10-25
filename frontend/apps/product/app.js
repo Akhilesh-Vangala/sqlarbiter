@@ -160,7 +160,7 @@ function shell(content) {
           el(
             "span",
             {},
-            "VerifyOps · Explicit rules · Independent verification",
+            "SQLArbiter · Explicit rules · Independent verification",
           ),
           el(
             "div",
@@ -168,7 +168,7 @@ function shell(content) {
             link("Data handling", "/workspace/settings"),
             link(
               "Engineering documentation ↗",
-              "https://github.com/Akhilesh-Vangala/verifyops/tree/main/docs",
+              "https://github.com/Akhilesh-Vangala/sqlarbiter/tree/main/docs",
               "",
               { target: "_blank", rel: "noreferrer" },
             ),
@@ -183,7 +183,7 @@ function render(focusHeading = false) {
     path = location.pathname;
   let content;
   if (path === "/") {
-    document.title = "VerifyOps · Find the number you can stand behind";
+    document.title = "SQLArbiter · Find the number you can stand behind";
     $("#app").replaceChildren(landing(ctx));
   } else {
     if (isInvestigation()) {
@@ -225,7 +225,7 @@ function render(focusHeading = false) {
       );
     document.title =
       (isInvestigation() ? state.draft.title : path.split("/").at(-1)) +
-      " · VerifyOps";
+      " · SQLArbiter";
     $("#app").replaceChildren(shell(content));
   }
   if (focusHeading) {
@@ -448,7 +448,7 @@ async function sample() {
     if (!response.ok)
       throw Error("The sample file couldn’t be loaded. Try again.");
     await loadFile(
-      new File([await response.text()], "verifyops-sample.csv", {
+      new File([await response.text()], "sqlarbiter-sample.csv", {
         type: "text/csv",
       }),
       "sample",
@@ -622,7 +622,7 @@ function exportReport() {
   if (state.draft?.report)
     download(
       JSON.stringify(state.draft.report, null, 2),
-      "verifyops-evidence.json",
+      "sqlarbiter-evidence.json",
     );
 }
 function save() {
@@ -1013,7 +1013,7 @@ function restoreBackup(file) {
     file.size > 24_000_000 ||
     !file.name.toLowerCase().endsWith(".json")
   ) {
-    notify("Choose a VerifyOps JSON backup no larger than 24 MB.");
+    notify("Choose a SQLArbiter JSON backup no larger than 24 MB.");
     return;
   }
   const consent = el("input", { type: "checkbox", id: "restore-consent" });
@@ -1027,14 +1027,14 @@ function restoreBackup(file) {
       try {
         const value = JSON.parse(await file.text());
         if (
-          value.format !== "verifyops-device-backup-v1" ||
+          value.format !== "sqlarbiter-device-backup-v1" ||
           !Array.isArray(value.entries) ||
           !Array.isArray(value.projects) ||
           value.entries.length > 50 ||
           value.projects.length > 20
         )
           throw Error(
-            "This is not a supported VerifyOps backup, or it exceeds the device limits.",
+            "This is not a supported SQLArbiter backup, or it exceeds the device limits.",
           );
         const ids = new Map();
         const projects = value.projects.map((p) => {

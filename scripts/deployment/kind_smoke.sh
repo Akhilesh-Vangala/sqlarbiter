@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cluster_name="${VDIR_KIND_CLUSTER:-verifyops-ci}"
+cluster_name="${SQLARBITER_KIND_CLUSTER:-sqlarbiter-ci}"
 token="kind-only-access-token-0000000000000000"
 cleanup() {
   if [[ -n "${forward_pid:-}" ]]; then kill "${forward_pid}" 2>/dev/null || true; fi
@@ -10,13 +10,13 @@ cleanup() {
 trap cleanup EXIT
 
 kind create cluster --name "${cluster_name}" --wait 120s
-docker build -f backend/docker/Dockerfile --target runtime -t verifyops:kind .
-kind load docker-image verifyops:kind --name "${cluster_name}"
+docker build -f backend/docker/Dockerfile --target runtime -t sqlarbiter:kind .
+kind load docker-image sqlarbiter:kind --name "${cluster_name}"
 kubectl apply -k infrastructure/kubernetes/overlays/kind
-kubectl -n verifyops wait --for=condition=complete job/verifyops-migrate --timeout=180s
-kubectl -n verifyops rollout status deployment/verifyops-api --timeout=180s
-kubectl -n verifyops rollout status deployment/verifyops-worker --timeout=180s
-kubectl -n verifyops port-forward service/verifyops-api 18080:80 > /tmp/verifyops-kind-forward.log 2>&1 &
+kubectl -n sqlarbiter wait --for=condition=complete job/sqlarbiter-migrate --timeout=180s
+kubectl -n sqlarbiter rollout status deployment/sqlarbiter-api --timeout=180s
+kubectl -n sqlarbiter rollout status deployment/sqlarbiter-worker --timeout=180s
+kubectl -n sqlarbiter port-forward service/sqlarbiter-api 18080:80 > /tmp/sqlarbiter-kind-forward.log 2>&1 &
 forward_pid=$!
 
 for _ in $(seq 1 40); do
@@ -50,4 +50,4 @@ for _ in $(seq 1 80); do
   sleep 0.5
 done
 [[ "${status}" == "completed" ]]
-kubectl -n verifyops get pods
+kubectl -n sqlarbiter get pods

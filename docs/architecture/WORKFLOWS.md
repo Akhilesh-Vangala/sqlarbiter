@@ -2,7 +2,7 @@
 
 [Application pages](APPLICATION-PAGES.md) provide investigation and workflow setup, separate workflow collection and detail, metrics, settings, and direct section links. Cancellation and evidence inspection stay in contextual dialogs.
 
-The owned workflow is `vdir-graph-3`: source-cited findings, public working memory, two analytical diagnostics, atomic multi-metric admission, and supervised cancellation.
+The owned workflow is `sqlarbiter-graph-3`: source-cited findings, public working memory, two analytical diagnostics, atomic multi-metric admission, and supervised cancellation.
 
 ## Business workflow
 

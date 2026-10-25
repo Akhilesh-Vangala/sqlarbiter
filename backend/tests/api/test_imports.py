@@ -11,10 +11,10 @@ import zipfile
 from openpyxl import Workbook
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from vdir.uploads.api import attach
-from vdir.uploads.imports import FileImport, import_file
-from vdir.uploads.ingestion import Upload, UploadProblem, parse
-from vdir.uploads.service import run
+from sqlarbiter.uploads.api import attach
+from sqlarbiter.uploads.imports import FileImport, import_file
+from sqlarbiter.uploads.ingestion import Upload, UploadProblem, parse
+from sqlarbiter.uploads.service import run
 
 class MultiFormatTests(unittest.TestCase):
     def body(self,content,name="data.json",sheet=None):
@@ -88,7 +88,7 @@ class MultiFormatTests(unittest.TestCase):
         with self.assertRaises(ValueError):import_file(FileImport(filename='x.csv',content_base64='!!!'))
 
     def test_actual_import_api_profile_structured_errors_and_request_boundary(self):
-        app=FastAPI();attach(app,"VerifyOps",Path(__file__).resolve().parents[3])
+        app=FastAPI();attach(app,"SQLArbiter",Path(__file__).resolve().parents[3])
         with TestClient(app) as client:
             result=client.post('/api/uploads/import',json=self.body('[{"id":"a","value":1.25}]').model_dump())
             self.assertEqual(result.status_code,200,result.text);self.assertEqual(result.headers['cache-control'],'no-store')

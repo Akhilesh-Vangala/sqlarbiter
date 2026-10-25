@@ -1,3 +1,3 @@
 """Development import bridge; exports replace this with the standalone trusted module."""
-from vdir.platform.spending import SpendLedger
-from vdir.platform.spending import SpendRejected
+from sqlarbiter.platform.spending import SpendLedger
+from sqlarbiter.platform.spending import SpendRejected

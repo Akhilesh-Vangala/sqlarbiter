@@ -1,9 +1,9 @@
-verifyops_revenue:
+sqlarbiter_revenue:
   target: local
   outputs:
     local:
       type: duckdb
-      path: "{{ env_var('VDIR_DBT_DATABASE') }}"
+      path: "{{ env_var('SQLARBITER_DBT_DATABASE') }}"
       schema: main
       threads: 1
       settings:

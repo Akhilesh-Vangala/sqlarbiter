@@ -2,7 +2,7 @@
 
 The benchmark is a frozen set of original synthetic incidents. DuckDB is the default analytical engine and SQLite is the alternative. Both are graded by the same source references. Current suite counts are in the [evaluation index](README.md).
 
-`backend/src/vdir/evaluation/benchmark_cases.py` defines six original controls plus 32 variants across join fan-out, outer-join null handling, eligibility-filter omissions, and explicit-offset UTC boundaries. The families contain eight SQL-shape templates, varied values, healthy controls, and private regression snapshots. These are 38 scenarios. They are not 38 independent fault mechanisms.
+`backend/src/sqlarbiter/evaluation/benchmark_cases.py` defines six original controls plus 32 variants across join fan-out, outer-join null handling, eligibility-filter omissions, and explicit-offset UTC boundaries. The families contain eight SQL-shape templates, varied values, healthy controls, and private regression snapshots. These are 38 scenarios. They are not 38 independent fault mechanisms.
 
 The frozen `backend/data/benchmark/manifest.json` records corpus and case hashes and explicit calibration and evaluation membership. Shape A variants and original controls are calibration; Shape B variants are evaluation. Template groups do not overlap, but schemas, contracts, and underlying fault families do. The cases are known to the fixed baseline. Version the manifest after reviewed changes rather than adapting the corpus to an observed output.
 

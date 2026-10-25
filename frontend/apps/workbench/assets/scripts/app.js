@@ -124,7 +124,7 @@ function showView(view) {
   $("page-actions").hidden = ["new-investigation", "new-workflow", "new-dbt", "dbt-run", "dbt", "not-found"].includes(view);
   $("page-eyebrow").hidden = nested;
   $("page-title").textContent = view === "workflows" && selectedWorkflow ? "Workflow details" : pageTitles[view];
-  document.title = "VDIR — " + $("page-title").textContent;
+  document.title = "SQLArbiter — " + $("page-title").textContent;
   $("breadcrumb-view").textContent = $("page-title").textContent;
   const parent = ["new-dbt", "dbt-run"].includes(view) ? ["dbt projects", "/dbt"] : view === "detail" || view === "new-investigation" ? ["Investigations", "/investigations"] : view === "metric" ? ["Metrics", "/metrics"] : view === "new-workflow" || selectedWorkflow ? ["Workflows", "/workflows"] : null;
   $("breadcrumb-parent").hidden = !parent; $("breadcrumb-separator").hidden = !parent;
@@ -436,7 +436,7 @@ async function refreshMetric() {
     const metric = await api("/incidents/" + encodeURIComponent(id));
     if (sequence !== metricRequest || selectedMetric !== id || activeView !== "metric") return;
     metricRendered = id;
-    document.title = "VDIR — " + metric.title;
+    document.title = "SQLArbiter — " + metric.title;
     $("metric-content").replaceChildren(node("div", {className: "metric-layout"},
       node("div", {className: "metric-main"},
         node("section", {className: "home-card metric-overview"}, node("div", {className: "metric-card-top"}, badge("Sample metric"), node("code", {}, metric.id)), node("h2", {}, metric.title), node("p", {}, metric.description), node("div", {className: "content-actions"}, node("button", {className: "primary", onclick: () => openInvestigation(metric.id)}, "Investigate this metric"))),
@@ -992,7 +992,7 @@ function renderDetail(job, force = false) {
   if (!force && rendered === fingerprint) return;
   rendered = fingerprint;
   current = job;
-  if (activeView === "detail") { document.title = "VDIR — " + title(job.request.case_id) + " · " + activeTab; $("breadcrumb-view").textContent = activeTab; }
+  if (activeView === "detail") { document.title = "SQLArbiter — " + title(job.request.case_id) + " · " + activeTab; $("breadcrumb-view").textContent = activeTab; }
   renderContext(job);
   const state = outcome(job),
     wrapper = node("div");

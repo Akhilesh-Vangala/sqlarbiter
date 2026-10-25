@@ -4,10 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vdir.domain.cases import Incident
-from vdir.domain.cases import Source
-from vdir.evaluation.evaluation import export_workspace
-from vdir.evaluation.evaluation import _matches
+from sqlarbiter.domain.cases import Incident
+from sqlarbiter.domain.cases import Source
+from sqlarbiter.evaluation.evaluation import export_workspace
+from sqlarbiter.evaluation.evaluation import _matches
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 from tools import EvidenceTools

@@ -1,4 +1,4 @@
-"""Runs from an exported runtime without importing the vdir evaluator package."""
+"""Runs from an exported runtime without importing the sqlarbiter evaluator package."""
 import argparse
 import asyncio
 import json
@@ -23,7 +23,7 @@ def main():
     tools = EvidenceTools(args.workspace, telemetry=telemetry)
     if args.mode == "baseline":
         try:
-            with telemetry.root("investigation", **{"vdir.mode": args.mode, "vdir.engine": tools.engine}):
+            with telemetry.root("investigation", **{"arbiter.mode": args.mode, "arbiter.engine": tools.engine}):
                 decision = investigate(tools)
             print(json.dumps({"decision": decision, "trace": tools.trace}))
         except (ValueError, ToolRejected) as error:
@@ -46,7 +46,7 @@ def main():
                         return await model_investigate(tools, client, **continuation)
                 finally:
                     await client.close()
-            with telemetry.root("investigation", **{"vdir.mode": args.mode, "vdir.engine": tools.engine}):
+            with telemetry.root("investigation", **{"arbiter.mode": args.mode, "arbiter.engine": tools.engine}):
                 response = asyncio.run(run())
             print(json.dumps(response))
         except Exception as error:

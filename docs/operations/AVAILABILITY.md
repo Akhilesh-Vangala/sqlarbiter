@@ -1,6 +1,6 @@
 # Public availability and no-credit checks
 
-The canonical application is https://verifyops.vercel.app/. Vercel serves the application independently of a local Mac or terminal. Do not stop or remove the existing production deployment to prepare a replacement. Test a preview first, pass the exact-head required CI and protected merge, then verify the promoted source and actual upload/result workflows. Retain the previous ready deployment for an explicit rollback if the replacement fails; do not repeatedly redeploy to conceal a failure.
+The canonical application is https://sqlarbiter.vercel.app/. Vercel serves the application independently of a local Mac or terminal. Do not stop or remove the existing production deployment to prepare a replacement. Test a preview first, pass the exact-head required CI and protected merge, then verify the promoted source and actual upload/result workflows. Retain the previous ready deployment for an explicit rollback if the replacement fails; do not repeatedly redeploy to conceal a failure.
 
 ## Synthetic monitor
 

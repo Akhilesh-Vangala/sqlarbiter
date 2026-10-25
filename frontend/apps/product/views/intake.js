@@ -124,7 +124,7 @@ export function issueBox(ctx) {
                 null,
                 2,
               ),
-              "verifyops-issues.json",
+              "sqlarbiter-issues.json",
             ),
           "quiet",
         ),
@@ -382,7 +382,7 @@ function source(ctx) {
           disabled: state.busy,
         }),
         link("Download CSV template ↗", "/api/uploads/template", "text-link", {
-          download: "verifyops-template.csv",
+          download: "sqlarbiter-template.csv",
         }),
       ),
     ),
@@ -425,7 +425,7 @@ function source(ctx) {
       el(
         "p",
         {},
-        "Your selected file is sent to VerifyOps for bounded processing. It stays out of saved history unless you explicitly save it. Remove unnecessary confidential or personal fields before uploading.",
+        "Your selected file is sent to SQLArbiter for bounded processing. It stays out of saved history unless you explicitly save it. Remove unnecessary confidential or personal fields before uploading.",
       ),
     ),
     el(

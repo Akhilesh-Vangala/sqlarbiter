@@ -1,5 +1,5 @@
 /** Opt-in IndexedDB storage. A failed transaction never reports a successful save. */
-const DB = "verifyops-workspace-v1";
+const DB = "sqlarbiter-workspace-v1";
 let connection;
 function open() {
   if (connection) return Promise.resolve(connection);
@@ -24,7 +24,7 @@ function open() {
         ),
       );
     req.onblocked = () =>
-      reject(new Error("Close other VerifyOps tabs, then retry saving."));
+      reject(new Error("Close other SQLArbiter tabs, then retry saving."));
   });
 }
 async function transaction(store, mode, action) {

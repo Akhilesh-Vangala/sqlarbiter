@@ -8,14 +8,14 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from vdir.api.routes import create_app
-from vdir.persistence.jobs import digest
-from vdir.persistence.migrations import migrate
-from vdir.persistence.postgres_jobs import PostgresJobStore
-from vdir.workflows.service import process_next
+from sqlarbiter.api.routes import create_app
+from sqlarbiter.persistence.jobs import digest
+from sqlarbiter.persistence.migrations import migrate
+from sqlarbiter.persistence.postgres_jobs import PostgresJobStore
+from sqlarbiter.workflows.service import process_next
 
 
-DATABASE_URL = os.getenv("VDIR_TEST_DATABASE_URL")
+DATABASE_URL = os.getenv("SQLARBITER_TEST_DATABASE_URL")
 
 
 def request(case_id="case-001"):
@@ -38,7 +38,7 @@ def result(case_id="case-001"):
     }
 
 
-@unittest.skipUnless(DATABASE_URL, "Set VDIR_TEST_DATABASE_URL for PostgreSQL integration")
+@unittest.skipUnless(DATABASE_URL, "Set SQLARBITER_TEST_DATABASE_URL for PostgreSQL integration")
 class PostgresJobStoreTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -116,7 +116,7 @@ class PostgresJobStoreTests(unittest.TestCase):
 
     def test_api_and_worker_complete_a_verified_job_through_postgres(self):
         token = "p" * 32
-        with patch.dict(os.environ, {"VDIR_DATABASE_URL": DATABASE_URL, "VDIR_LOAD_DOTENV": "0"}):
+        with patch.dict(os.environ, {"SQLARBITER_DATABASE_URL": DATABASE_URL, "SQLARBITER_LOAD_DOTENV": "0"}):
             app = create_app(self.root / "api", token=token)
             with TestClient(app, base_url="http://localhost") as client:
                 headers = {

@@ -1,4 +1,4 @@
-# VerifyOps tooling
+# SQLArbiter tooling
 
 Run these from the repository root.
 

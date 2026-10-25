@@ -8,10 +8,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from vdir.domain.cases import incidents
-from vdir.evaluation.evaluation import export_workspace
-from vdir.evaluation.evaluation import grade
-from vdir.evaluation.evaluation import evaluate_all
+from sqlarbiter.domain.cases import incidents
+from sqlarbiter.evaluation.evaluation import export_workspace
+from sqlarbiter.evaluation.evaluation import grade
+from sqlarbiter.evaluation.evaluation import evaluate_all
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 from model import AnthropicClient

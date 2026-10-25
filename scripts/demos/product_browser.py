@@ -40,8 +40,8 @@ def main():
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         url = f"http://127.0.0.1:{port}"
-        environment = dict(os.environ, VDIR_LOAD_DOTENV="0", VDIR_DEMO_SECRET=secrets.token_urlsafe(64), ANTHROPIC_API_KEY="",
-                           VDIR_SUPABASE_URL="", VDIR_SUPABASE_PUBLISHABLE_KEY="")
+        environment = dict(os.environ, SQLARBITER_LOAD_DOTENV="0", SQLARBITER_DEMO_SECRET=secrets.token_urlsafe(64), ANTHROPIC_API_KEY="",
+                           SQLARBITER_SUPABASE_URL="", SQLARBITER_SUPABASE_PUBLISHABLE_KEY="")
         log = (output/"server.log").open("w")
         server = subprocess.Popen([sys.executable, "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", str(port), "--no-access-log"], cwd=root, env=environment, stdout=log, stderr=log)
         for _ in range(200):
@@ -199,7 +199,7 @@ def main():
             count = page.evaluate("async()=>{const {saved}=await import('/product-assets/lib/storage.js');return (await saved.list()).length}")
             assert count == 2
             checks.append("edited-investigation-saves-new-snapshot-original-preserved")
-            page.evaluate("""async id=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('verifyops-workspace-v1',1);r.onsuccess=()=>resolve(r.result);r.onerror=reject});await new Promise((resolve,reject)=>{const tx=db.transaction('investigations','readwrite'),s=tx.objectStore('investigations'),r=s.get(id);r.onsuccess=()=>{const v=r.result;v.report.summary.verified_total_cents=99999;s.put(v)};tx.oncomplete=resolve;tx.onerror=reject});db.close()}""", original_id)
+            page.evaluate("""async id=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('sqlarbiter-workspace-v1',1);r.onsuccess=()=>resolve(r.result);r.onerror=reject});await new Promise((resolve,reject)=>{const tx=db.transaction('investigations','readwrite'),s=tx.objectStore('investigations'),r=s.get(id);r.onsuccess=()=>{const v=r.result;v.report.summary.verified_total_cents=99999;s.put(v)};tx.oncomplete=resolve;tx.onerror=reject});db.close()}""", original_id)
             page.goto(first)
             expect(page.locator("#error")).to_contain_text("could not be authenticated")
             expect(page.locator("#output")).not_to_be_visible()
@@ -254,7 +254,7 @@ def main():
             context.close()
             browser.close()
         assert not errors, errors
-        sources = [root/"app.py", *sorted((root/"backend/src/vdir").rglob("*.py")),
+        sources = [root/"app.py", *sorted((root/"backend/src/sqlarbiter").rglob("*.py")),
                    *[f for f in sorted((root/"frontend/apps/product").rglob("*")) if f.suffix in (".js", ".css", ".html")]]
         result = {"passed": True, "url": url, "paid_model_calls": 0, "actual_user_feedback": False, "checks": checks,
                   "page_errors": errors, "frames": frames, "automated_accessibility_views": len(audits),

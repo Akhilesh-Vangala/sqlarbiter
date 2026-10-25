@@ -398,10 +398,10 @@ function calculation(report) {
           "Download SQL",
           () =>
             download(
-              "-- VerifyOps normalized contract query.\n-- Requires records with cN column bindings, __amount_cents and __eligible.\n-- Adapt to your warehouse and review before use.\n" +
+              "-- SQLArbiter normalized contract query.\n-- Requires records with cN column bindings, __amount_cents and __eligible.\n-- Adapt to your warehouse and review before use.\n" +
                 report.sql +
                 "\n",
-              "verifyops-contract.sql",
+              "sqlarbiter-contract.sql",
               "text/plain",
             ),
           "secondary",
@@ -602,7 +602,7 @@ export function reportView(ctx) {
           () =>
             download(
               report.csv,
-              "verifyops-results.csv",
+              "sqlarbiter-results.csv",
               "text/csv;charset=utf-8",
             ),
           "primary",

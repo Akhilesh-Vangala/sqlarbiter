@@ -29,8 +29,8 @@ def main():
         parser.error("Publishing demo media requires --record")
     root = Path(__file__).resolve().parents[2]
     relay = (root / "backend/src/relayops").is_dir()
-    package = "relayops" if relay else "vdir"
-    name = "RelayOps" if relay else "VerifyOps"
+    package = "relayops" if relay else "sqlarbiter"
+    name = "RelayOps" if relay else "SQLArbiter"
     output = root / args.output
     output.mkdir(parents=True, exist_ok=True)
     assets = root / "frontend/apps/demo"
@@ -42,9 +42,9 @@ def main():
             port = sock.getsockname()[1]
         url = "http://127.0.0.1:" + str(port)
         environment = dict(
-            os.environ, VDIR_LOAD_DOTENV="0", RELAY_ALLOW_LIVE="0", ANTHROPIC_API_KEY=""
+            os.environ, SQLARBITER_LOAD_DOTENV="0", RELAY_ALLOW_LIVE="0", ANTHROPIC_API_KEY=""
         )
-        environment["RELAY_DEMO_SECRET" if relay else "VDIR_DEMO_SECRET"] = secrets.token_urlsafe(
+        environment["RELAY_DEMO_SECRET" if relay else "SQLARBITER_DEMO_SECRET"] = secrets.token_urlsafe(
             48
         )
         log = (output / "server.log").open("w")

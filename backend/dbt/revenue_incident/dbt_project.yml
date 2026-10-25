@@ -1,15 +1,15 @@
-name: verifyops_revenue
+name: sqlarbiter_revenue
 version: '1.0.0'
 config-version: 2
-profile: verifyops_revenue
+profile: sqlarbiter_revenue
 model-paths: [models]
 seed-paths: [seeds]
 test-paths: [tests]
 models:
-  verifyops_revenue:
+  sqlarbiter_revenue:
     +materialized: table
 seeds:
-  verifyops_revenue:
+  sqlarbiter_revenue:
     +column_types:
       delivery_id: varchar
       event_id: varchar

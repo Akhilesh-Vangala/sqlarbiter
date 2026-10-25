@@ -6,4 +6,4 @@ python backend/tests/e2e/browser_graph_smoke.py
 python backend/tests/e2e/browser_automation_smoke.py
 python backend/tests/e2e/browser_pages_smoke.py
 python backend/tests/e2e/browser_dbt_smoke.py
-python -m vdir.evaluation.benchmark --output artifacts/generated/container-benchmark --samples 1
+python -m sqlarbiter.evaluation.benchmark --output artifacts/generated/container-benchmark --samples 1

@@ -1,6 +1,6 @@
 """Run the actual migration and two-owner policies in a disposable PostgreSQL DB.
 
-VDIR_PRODUCT_TEST_ADMIN_URL must point to a test PostgreSQL service with CREATE
+SQLARBITER_PRODUCT_TEST_ADMIN_URL must point to a test PostgreSQL service with CREATE
 DATABASE/ROLE privileges. This script creates/drops its own random database;
 it never applies the migration to the supplied database or a hosted project.
 """
@@ -17,8 +17,8 @@ from psycopg.types.json import Jsonb
 
 
 def main():
-    admin_url = os.environ["VDIR_PRODUCT_TEST_ADMIN_URL"]
-    database = "vdir_product_test_" + uuid4().hex[:12]
+    admin_url = os.environ["SQLARBITER_PRODUCT_TEST_ADMIN_URL"]
+    database = "sqlarbiter_product_test_" + uuid4().hex[:12]
     owner, other = str(uuid4()), str(uuid4())
     passed = []
     with psycopg.connect(admin_url, autocommit=True) as admin:
@@ -50,39 +50,39 @@ def main():
                 raise AssertionError("An unauthorized write unexpectedly succeeded")
 
             project = str(uuid4())
-            act(owner, "insert into vdir_projects(id,owner_id,name) values (%s,%s,'Revenue')", [project, owner])
-            assert act(owner, "select name from vdir_projects") == [("Revenue",)]
-            assert act(other, "select name from vdir_projects") == []
-            denied(owner, "select * from vdir_projects", role="anon")
-            denied(other, "insert into vdir_projects(id,owner_id,name) values (%s,%s,'spoof')", [str(uuid4()), owner])
-            denied(owner, "update vdir_projects set name='overwrite'")
+            act(owner, "insert into sqlarbiter_projects(id,owner_id,name) values (%s,%s,'Revenue')", [project, owner])
+            assert act(owner, "select name from sqlarbiter_projects") == [("Revenue",)]
+            assert act(other, "select name from sqlarbiter_projects") == []
+            denied(owner, "select * from sqlarbiter_projects", role="anon")
+            denied(other, "insert into sqlarbiter_projects(id,owner_id,name) values (%s,%s,'spoof')", [str(uuid4()), owner])
+            denied(owner, "update sqlarbiter_projects set name='overwrite'")
             passed.append("real-RLS-owner-visibility-anon-denial-spoofing-and-no-update")
 
-            insert = "insert into vdir_investigations(id,owner_id,project_id,title,filename,status,source_sha256,contract,profile) values (%s,%s,%s,'Revenue','own.csv','draft',%s,%s,%s)"
+            insert = "insert into sqlarbiter_investigations(id,owner_id,project_id,title,filename,status,source_sha256,contract,profile) values (%s,%s,%s,'Revenue','own.csv','draft',%s,%s,%s)"
             values = [str(uuid4()), owner, project, "a"*64, Jsonb({}), Jsonb({})]
             act(owner, insert, values)
             denied(other, insert, [str(uuid4()), other, project, "b"*64, Jsonb({}), Jsonb({})])
             denied(owner, insert, values)
-            assert act(other, "delete from vdir_investigations returning id") == []
-            denied(owner, "delete from vdir_projects where id=%s", [project])
+            assert act(other, "delete from sqlarbiter_investigations returning id") == []
+            denied(owner, "delete from sqlarbiter_projects where id=%s", [project])
             passed.append("foreign-project-denied-immutable-ID-owner-delete-and-project-reference")
 
             def create_project(i):
                 try:
-                    act(owner, "insert into vdir_projects(id,owner_id,name) values (%s,%s,%s)", [str(uuid4()), owner, "Project " + str(i)])
+                    act(owner, "insert into sqlarbiter_projects(id,owner_id,name) values (%s,%s,%s)", [str(uuid4()), owner, "Project " + str(i)])
                     return True
                 except psycopg.errors.CheckViolation:
                     return False
             with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
                 outcomes = list(pool.map(create_project, range(26)))
             assert sum(outcomes) == 19, outcomes
-            assert act(owner, "select count(*) from vdir_projects")[0][0] == 20
+            assert act(owner, "select count(*) from sqlarbiter_projects")[0][0] == 20
             passed.append("concurrent-project-inserts-enforce-exact-owner-quota")
             for _ in range(99):
                 act(owner, insert, [str(uuid4()), owner, None, "c"*64, Jsonb({}), Jsonb({})])
             denied(owner, insert, [str(uuid4()), owner, None, "d"*64, Jsonb({}), Jsonb({})])
-            assert act(owner, "select count(*) from vdir_investigations")[0][0] == 100
-            assert act(other, "select count(*) from vdir_investigations")[0][0] == 0
+            assert act(owner, "select count(*) from sqlarbiter_investigations")[0][0] == 100
+            assert act(other, "select count(*) from sqlarbiter_investigations")[0][0] == 0
             passed.append("per-owner-investigation-quota-and-complete-isolation")
             print(json.dumps({"passed": True, "checks": passed, "scope": "Actual local PostgreSQL policies; hosted Supabase Auth/email remain untested."}))
         finally:

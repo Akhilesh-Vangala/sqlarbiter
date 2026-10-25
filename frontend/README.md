@@ -1,4 +1,4 @@
-# VerifyOps frontend
+# SQLArbiter frontend
 
 Native browser applications served by the FastAPI backend. No separate Node service.
 

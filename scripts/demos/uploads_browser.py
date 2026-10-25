@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--record", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    project = "RelayOps" if (root/"backend/src/relayops").is_dir() else "VerifyOps" if (root/"backend/src/vdir").is_dir() else "QueryPilot"
+    project = "RelayOps" if (root/"backend/src/relayops").is_dir() else "SQLArbiter" if (root/"backend/src/sqlarbiter").is_dir() else "QueryPilot"
     output = root/args.output
     output.mkdir(parents=True, exist_ok=True)
     server, log = None, None
@@ -30,8 +30,8 @@ def main():
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         url = f"http://127.0.0.1:{port}"
-        environment = dict(os.environ, VDIR_LOAD_DOTENV="0", RELAY_ALLOW_LIVE="0", ANTHROPIC_API_KEY="", OPENAI_API_KEY="", ALLOW_LIVE_AI="false")
-        environment["RELAY_DEMO_SECRET" if project == "RelayOps" else "VDIR_DEMO_SECRET"] = secrets.token_urlsafe(64)
+        environment = dict(os.environ, SQLARBITER_LOAD_DOTENV="0", RELAY_ALLOW_LIVE="0", ANTHROPIC_API_KEY="", OPENAI_API_KEY="", ALLOW_LIVE_AI="false")
+        environment["RELAY_DEMO_SECRET" if project == "RelayOps" else "SQLARBITER_DEMO_SECRET"] = secrets.token_urlsafe(64)
         log = (output/"server.log").open("w")
         server = subprocess.Popen([sys.executable, "-m", "uvicorn", "index:app" if project == "QueryPilot" else "app:app", "--host", "127.0.0.1", "--port", str(port), "--no-access-log"], cwd=root, env=environment, stdout=log, stderr=log)
         for _ in range(200):
@@ -59,15 +59,15 @@ def main():
             checks.append("public-workspace-without-login")
             if project == "RelayOps":
                 source = "order_id,ordered_units,received_units,invoiced_units,available_units,unit_price,delivery_confirmed,inventory_pool\nCLIENT-17,14,9,14,7,4.20,true,SKU-9\nCLIENT-18,8,3,8,7,4.20,true,SKU-9\n"
-            elif project == "VerifyOps":
+            elif project == "SQLArbiter":
                 source = "event_id,amount,category,status\nCLIENT-17,12.34,Custom,completed\nCLIENT-17,12.34,Custom,completed\nCLIENT-18,3.21,Other,pending\n"
             else:
                 source = "transaction_id,region,amount,status\nCLIENT-17,Custom,12.34,completed\nCLIENT-18,Custom,3.21,pending\n"
             page.locator("#file").set_input_files({"name": "customer-export.csv", "mimeType": "text/csv", "buffer": source.encode()})
-            if project == "VerifyOps":
+            if project == "SQLArbiter":
                 page.locator("#review-rules").click()
             expect(page.locator("#contract")).to_be_visible()
-            if project == "VerifyOps":
+            if project == "SQLArbiter":
                 page.locator("#review-definition").click()
                 page.locator("#confirm-rules").check()
             page.locator("#analyze").click()
@@ -86,7 +86,7 @@ def main():
                 report = json.loads(page.locator("#evidence pre").last.text_content())
                 assert report["summary"]["approved_export"] and len(report["results"][0]["receipts"]) == 4
                 checks.append("exact-source-reviewed-export-and-shared-stock")
-            elif project == "VerifyOps":
+            elif project == "SQLArbiter":
                 assert report["summary"]["verified_total_cents"] == 1234
                 assert report["summary"]["duplicate_deliveries"] == 1
             else:
@@ -105,7 +105,7 @@ def main():
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
             checks.append("mobile-without-page-overflow")
             page.locator("#clear").click()
-            if project == "VerifyOps":
+            if project == "SQLArbiter":
                 page.locator("#confirm-clear").click()
             expect(page.locator("#output")).to_be_hidden()
             expect(page.locator("#contract")).to_be_hidden()

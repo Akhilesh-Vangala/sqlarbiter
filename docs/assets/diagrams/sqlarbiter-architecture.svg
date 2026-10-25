@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">SQLArbiter architecture and authority boundaries</title>
+<desc id="desc">Three layers of implemented components. The model proposes; verification and authorization remain separate.</desc>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 7 3.5 0 7" fill="none" stroke="#777"/></marker></defs>
+<rect width="1200" height="660" rx="12" fill="#fafafa"/>
+<text x="32" y="48" font-family="Arial,Helvetica,sans-serif" font-size="28" fill="#141414" font-weight="700" >SQLArbiter / system map</text>
+<text x="32" y="78" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#595959" font-weight="400" >Implemented components · distinct model, runtime and operator authority</text>
+<text x="32" y="130" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#4b4b4b" font-weight="600" letter-spacing="1.2">01 / APPLICATION &amp; JOB OWNERSHIP</text>
+<rect x="32" y="148" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="50" y="178" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Web workbench</text>
+<text x="50" y="204" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >FastAPI admission and local access</text>
+<text x="50" y="226" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Investigations · dbt · evidence · review</text>
+<path d="M385 195H414" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="418" y="148" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="436" y="178" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Persistent jobs</text>
+<text x="436" y="204" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >SQLite WAL and atomic claims</text>
+<text x="436" y="226" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Idempotency · leases · cancellation</text>
+<path d="M771 195H800" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="804" y="148" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="822" y="178" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Separate worker</text>
+<text x="822" y="204" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Source and runtime fingerprints</text>
+<text x="822" y="226" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Execution ownership · publication fencing</text>
+<path d="M1116 244V267H82V312" fill="none" stroke="#a0a0a0" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+<text x="32" y="294" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#4b4b4b" font-weight="600" letter-spacing="1.2">02 / SELECTED LANGGRAPH INVESTIGATOR</text>
+<rect x="32" y="312" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="50" y="342" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Evidence &amp; memory</text>
+<text x="50" y="368" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Read-only DuckDB / SQLite tools</text>
+<text x="50" y="390" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Cited hypotheses · latest evidence IDs</text>
+<path d="M385 359H414" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="418" y="312" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="436" y="342" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Bounded model loop</text>
+<text x="436" y="368" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >AsyncAnthropic typed streaming</text>
+<text x="436" y="390" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Graph checkpoints · per-call receipts</text>
+<path d="M771 359H800" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="804" y="312" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="822" y="342" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Public policy checks</text>
+<text x="822" y="368" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Schema, query shape and citations</text>
+<text x="822" y="390" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >At most two correction iterations</text>
+<path d="M1116 408V431H82V476" fill="none" stroke="#a0a0a0" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+<text x="32" y="458" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#4b4b4b" font-weight="600" letter-spacing="1.2">03 / CORRECTNESS &amp; REVIEW AUTHORITY</text>
+<rect x="32" y="476" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="50" y="506" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Repair proposal</text>
+<text x="50" y="532" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Scoped SQL or single-model dbt patch</text>
+<text x="50" y="554" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Source-bound result and patch hashes</text>
+<path d="M385 523H414" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="418" y="476" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="436" y="506" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Independent verification</text>
+<text x="436" y="532" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Source references and private fixtures</text>
+<text x="436" y="554" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Actual dbt builds · regression outputs</text>
+<path d="M771 523H800" stroke="#777" marker-end="url(#arrow)"/>
+<rect x="804" y="476" width="352" height="95" rx="8" fill="white" stroke="#c6c6c6"/>
+<text x="822" y="506" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#151515" font-weight="600" >Operator review</text>
+<text x="822" y="532" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#505050" font-weight="400" >Immutable exact-version decision</text>
+<text x="822" y="554" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#707070" font-weight="400" >Verified export · edits create new runs</text>
+<path d="M32 616H1168" stroke="#ddd"/>
+<text x="32" y="640" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#555" font-weight="400" >Single-host development system. Live model quality and cloud operation remain pending.</text>
+</svg>

@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from vdir.evaluation.benchmark import PRELIVE_MANIFEST, classify_outcome, corpus_manifest, estimate_cost, main, run_benchmark
-from vdir.evaluation.prelive_cases import prelive_cases
+from sqlarbiter.evaluation.benchmark import PRELIVE_MANIFEST, classify_outcome, corpus_manifest, estimate_cost, main, run_benchmark
+from sqlarbiter.evaluation.prelive_cases import prelive_cases
 from fixtures.pricing import PRICE
 
 
@@ -24,7 +24,7 @@ class PreliveEvaluationTests(unittest.TestCase):
         self.assertEqual(len({r["run_id"] for r in report["records"]}), 8)
 
     def test_evaluator_fault_is_recorded_without_becoming_a_model_failure(self):
-        with tempfile.TemporaryDirectory() as tmp, patch("vdir.evaluation.benchmark.grade", side_effect=ValueError("private-invalid-oracle")):
+        with tempfile.TemporaryDirectory() as tmp, patch("sqlarbiter.evaluation.benchmark.grade", side_effect=ValueError("private-invalid-oracle")):
             report = run_benchmark(Path(tmp)/"benchmark", engine="sqlite", suite="prelive",
                                    case_ids=[prelive_cases()[0].incident.case_id])
         self.assertEqual(report["summary"]["outcomes"], {"evaluator_error": 1})
@@ -44,9 +44,9 @@ class PreliveEvaluationTests(unittest.TestCase):
                 self.assertIsNone(estimate_cost({"status": "completed", "resolved_model": PRICE["model"], "usage": usage}, PRICE))
 
     def test_cli_does_not_announce_success_when_scored_accuracy_hides_an_evaluator_fault(self):
-        with patch("vdir.evaluation.benchmark.load_local_configuration"), \
+        with patch("sqlarbiter.evaluation.benchmark.load_local_configuration"), \
              patch("sys.argv", ["benchmark", "--output", "unused-test-output"]), \
-             patch("vdir.evaluation.benchmark.run_benchmark", return_value={"summary": {
+             patch("sqlarbiter.evaluation.benchmark.run_benchmark", return_value={"summary": {
                  "pass_at_1": 1.0, "valid_evaluation": False, "outcomes": {"verified_repair": 7, "evaluator_error": 1}}}), \
              patch("builtins.print"), self.assertRaises(SystemExit) as caught:
             main()

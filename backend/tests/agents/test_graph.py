@@ -12,13 +12,13 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
-from vdir.domain.cases import incidents
-from vdir.evaluation.evaluation import export_workspace
-from vdir.evaluation.evaluation import grade
-from vdir.evaluation.evaluation import evaluate_all
-from vdir.persistence.jobs import JobStore
-from vdir.persistence.jobs import Conflict
-from vdir.workflows.service import case_version
+from sqlarbiter.domain.cases import incidents
+from sqlarbiter.evaluation.evaluation import export_workspace
+from sqlarbiter.evaluation.evaluation import grade
+from sqlarbiter.evaluation.evaluation import evaluate_all
+from sqlarbiter.persistence.jobs import JobStore
+from sqlarbiter.persistence.jobs import Conflict
+from sqlarbiter.workflows.service import case_version
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 import graph as graph_runtime
@@ -73,20 +73,20 @@ class GraphInvestigatorTests(unittest.TestCase):
             self.run_graph([], recover=True)
 
     @unittest.skipUnless(
-        os.getenv("VDIR_TEST_DATABASE_URL"),
-        "Set VDIR_TEST_DATABASE_URL for PostgreSQL checkpoint integration",
+        os.getenv("SQLARBITER_TEST_DATABASE_URL"),
+        "Set SQLARBITER_TEST_DATABASE_URL for PostgreSQL checkpoint integration",
     )
     def test_postgres_checkpointer_runs_the_real_graph_without_local_checkpoint_state(self):
-        from vdir.persistence.migrations import setup_checkpoints
+        from sqlarbiter.persistence.migrations import setup_checkpoints
 
-        database_url = os.environ["VDIR_TEST_DATABASE_URL"]
+        database_url = os.environ["SQLARBITER_TEST_DATABASE_URL"]
         asyncio.run(setup_checkpoints(database_url))
         thread_id = "integration-" + uuid.uuid4().hex
         with patch.dict(
             os.environ,
             {
-                "VDIR_CHECKPOINT_DATABASE_URL": database_url,
-                "VDIR_CHECKPOINT_THREAD_ID": thread_id,
+                "SQLARBITER_CHECKPOINT_DATABASE_URL": database_url,
+                "SQLARBITER_CHECKPOINT_THREAD_ID": thread_id,
             },
         ):
             response, _ = self.run_graph(

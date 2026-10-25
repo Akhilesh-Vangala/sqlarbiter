@@ -6,11 +6,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vdir.domain.cases import incidents
-from vdir.domain.cases import Incident
-from vdir.domain.cases import Source
-from vdir.evaluation.evaluation import export_workspace
-from vdir.evaluation.evaluation import grade
+from sqlarbiter.domain.cases import incidents
+from sqlarbiter.domain.cases import Incident
+from sqlarbiter.domain.cases import Source
+from sqlarbiter.evaluation.evaluation import export_workspace
+from sqlarbiter.evaluation.evaluation import grade
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "agent/investigator"))
 from tools import EvidenceTools
 from agent_policy import validate_findings
@@ -94,7 +94,7 @@ class AgentMemoryTests(unittest.TestCase):
                 return completion([call("finish", {"status": "no_change", "explanation": "Check current SQL independently.", "evidence_ids": [tools.trace[0]["evidence_id"]]})])
             client = ScriptedClient([completion([call("query", {"sql": case.current_sql})]), plan, findings, finish])
             response = asyncio.run(investigate(tools, client))
-            self.assertEqual(response["graph_run"]["version"], "vdir-graph-3")
+            self.assertEqual(response["graph_run"]["version"], "sqlarbiter-graph-3")
             self.assertEqual(len(response["agent_workflow"]["findings"]), 1)
             self.assertTrue(grade(case, response, Path(directory) / "grading")["passed"])
             self.assertIn("findings", [event["stage"] for event in response["agent_workflow"]["activity"]])

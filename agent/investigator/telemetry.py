@@ -29,17 +29,17 @@ class LocalExporter(SpanExporter):
 
 
 class Telemetry:
-    def __init__(self, directory, service="vdir-investigator"):
+    def __init__(self, directory, service="sqlarbiter-investigator"):
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)
         self.provider = TracerProvider(resource=Resource.create({"service.name": service}))
         self.provider.add_span_processor(SimpleSpanProcessor(LocalExporter(directory / "spans.jsonl")))
-        endpoint = os.environ.get("VDIR_OTLP_ENDPOINT")
+        endpoint = os.environ.get("SQLARBITER_OTLP_ENDPOINT")
         if endpoint:
             from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
             from opentelemetry.sdk.trace.export import BatchSpanProcessor
             self.provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, timeout=3)))
-        self.tracer = self.provider.get_tracer("vdir", "0.2.0")
+        self.tracer = self.provider.get_tracer("sqlarbiter", "0.2.0")
 
     def span(self, name, **attributes):
         attributes.setdefault("openinference.span.kind", "LLM" if name.startswith("llm.") else (
@@ -48,7 +48,7 @@ class Telemetry:
 
     def root(self, name, **attributes):
         attributes.setdefault("openinference.span.kind", "CHAIN")
-        context = extract({"traceparent": os.environ.get("VDIR_TRACEPARENT", "")})
+        context = extract({"traceparent": os.environ.get("SQLARBITER_TRACEPARENT", "")})
         return self.tracer.start_as_current_span(name, context=context, attributes=attributes)
 
     def close(self):

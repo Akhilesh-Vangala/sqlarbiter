@@ -1,6 +1,6 @@
 # Investigator runtime
 
-This runtime is copied into each isolated evidence workspace. Its imports are flat so it runs without the backend or evaluator code. Reference computations and expected results stay in `backend/src/vdir/verification` and `evaluation` and are never exported here.
+This runtime is copied into each isolated evidence workspace. Its imports are flat so it runs without the backend or evaluator code. Reference computations and expected results stay in `backend/src/sqlarbiter/verification` and `evaluation` and are never exported here.
 
 | File | Responsibility |
 | --- | --- |

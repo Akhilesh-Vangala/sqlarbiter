@@ -17,8 +17,8 @@ from urllib.request import build_opener, HTTPCookieProcessor, HTTPRedirectHandle
 import zipfile
 from xml.sax.saxutils import escape
 
-PROJECT = "VerifyOps"
-CANONICAL = "https://verifyops.vercel.app"
+PROJECT = "SQLArbiter"
+CANONICAL = "https://sqlarbiter.vercel.app"
 
 
 class ProbeFailed(ValueError):
@@ -63,7 +63,7 @@ def workbook(rows):
 
 
 def fixture():
-    if PROJECT=='VerifyOps':
+    if PROJECT=='SQLArbiter':
         return ('id,amount,group,status\na,0.10,A,completed\na,0.10,A,completed\nb,0.20,A,completed\n',
             {'key':'c0','amount':'c1','group':'c2','status':'c3'},
             {'unit':'dollars','eligible_status':'completed','reported_total':'0.40'})
@@ -79,7 +79,7 @@ def validate_result(result):
     checks=result.get('checks',{})
     require(bool(checks) and all(v is True for v in checks.values()),'independent-checks')
     summary=result.get('summary',{})
-    if PROJECT=='VerifyOps':
+    if PROJECT=='SQLArbiter':
         require(summary.get('verified_total_cents')==30 and summary.get('duplicate_deliveries')==1,'exact-cents-and-duplicates')
     elif PROJECT=='RelayOps':
         require(summary.get('resolvable')==1 and summary.get('proposed_hold_cents')==250,'workflow-plan-and-amount')

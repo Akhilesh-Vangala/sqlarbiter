@@ -4,10 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vdir.workflows.dbt_workflow import run
+from sqlarbiter.workflows.dbt_workflow import run
 
 
-@unittest.skipUnless(os.getenv("VDIR_RUN_DBT_TESTS") == "1", "Run the separate real-dbt integration job")
+@unittest.skipUnless(os.getenv("SQLARBITER_RUN_DBT_TESTS") == "1", "Run the separate real-dbt integration job")
 class DbtIntegrationTests(unittest.TestCase):
     def test_actual_patch_repairs_all_downstream_models_and_false_fix_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

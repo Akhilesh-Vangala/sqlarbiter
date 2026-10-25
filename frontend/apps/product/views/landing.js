@@ -4,7 +4,7 @@ export function brand(href = "/") {
   return link(
     [
       el("span", { class: "brand-symbol", "aria-hidden": "true" }, "v/"),
-      "VerifyOps",
+      "SQLArbiter",
     ],
     href,
     "brand",
@@ -204,7 +204,7 @@ export function landing(ctx) {
       el(
         "footer",
         { class: "marketing-footer" },
-        el("span", {}, "VerifyOps · Evidence-backed data reliability"),
+        el("span", {}, "SQLArbiter · Evidence-backed data reliability"),
         el(
           "div",
           { class: "actions" },
@@ -212,7 +212,7 @@ export function landing(ctx) {
           link("Engineering demo", "/demo"),
           link(
             "GitHub ↗",
-            "https://github.com/Akhilesh-Vangala/verifyops",
+            "https://github.com/Akhilesh-Vangala/sqlarbiter",
             "",
             { target: "_blank", rel: "noreferrer" },
           ),

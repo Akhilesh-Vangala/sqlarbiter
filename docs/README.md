@@ -1,6 +1,6 @@
-# VerifyOps documentation
+# SQLArbiter documentation
 
-[App](https://verifyops.vercel.app/) · [Project overview](../README.md)
+[App](https://sqlarbiter.vercel.app/) · [Project overview](../README.md)
 
 | Question | Read |
 | --- | --- |

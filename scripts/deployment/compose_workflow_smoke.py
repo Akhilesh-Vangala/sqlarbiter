@@ -8,7 +8,7 @@ import uuid
 base = 'http://127.0.0.1:8000'
 
 def request(path, payload=None, key=None):
-    headers = {'Authorization': 'Bearer ' + os.environ['VDIR_ACCESS_TOKEN'], 'Content-Type': 'application/json'}
+    headers = {'Authorization': 'Bearer ' + os.environ['SQLARBITER_ACCESS_TOKEN'], 'Content-Type': 'application/json'}
     if key:
         headers['Idempotency-Key'] = key
     data = json.dumps(payload).encode() if payload is not None else None

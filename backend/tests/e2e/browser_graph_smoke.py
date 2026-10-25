@@ -20,13 +20,13 @@ sys.path.insert(0, str(ROOT / "backend" / "tests"))
 from graph import investigate
 from tools import EvidenceTools
 from baseline import LATEST_SQL
-from vdir.domain.cases import JOIN_SQL
+from sqlarbiter.domain.cases import JOIN_SQL
 from fixtures.model_fixtures import ScriptedClient
 from fixtures.model_fixtures import completion
 from fixtures.model_fixtures import call
-from vdir.evaluation import evaluation
-from vdir.api.routes import create_app
-from vdir.workflows.service import process_next
+from sqlarbiter.evaluation import evaluation
+from sqlarbiter.api.routes import create_app
+from sqlarbiter.workflows.service import process_next
 
 
 def main():
@@ -73,8 +73,8 @@ def main():
         steps = [clarify] if continuation else [completion([call("contract", {})]), clarify]
         return asyncio.run(investigate(EvidenceTools(workspace), ScriptedClient(steps), **(continuation or {})))
     with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "fixture-no-network",
-            "VDIR_ANTHROPIC_MODEL": "fixture-model", "VDIR_LOAD_DOTENV": "0"}), \
-            patch("vdir.evaluation.evaluation.run_worker", side_effect=provider):
+            "SQLARBITER_ANTHROPIC_MODEL": "fixture-model", "SQLARBITER_LOAD_DOTENV": "0"}), \
+            patch("sqlarbiter.evaluation.evaluation.run_worker", side_effect=provider):
         app = create_app(output / "state", token="")
         with socket.socket() as reserved:
             reserved.bind(("127.0.0.1", 0))

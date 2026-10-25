@@ -9,10 +9,10 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from vdir.persistence.jobs import JobStore
-from vdir.platform.run_contract import RunRecord
-from vdir.uploads.api import attach
-from vdir.workflows.service import case_version, find_case, process_next
+from sqlarbiter.persistence.jobs import JobStore
+from sqlarbiter.platform.run_contract import RunRecord
+from sqlarbiter.uploads.api import attach
+from sqlarbiter.workflows.service import case_version, find_case, process_next
 
 ROOT = Path(__file__).resolve().parents[3]
 UPLOAD = {"csv": "id,amount\na,12.34\nb,12.34\n", "mapping": {"key": "c0", "amount": "c1"}, "options": {}}
@@ -21,7 +21,7 @@ UPLOAD = {"csv": "id,amount\na,12.34\nb,12.34\n", "mapping": {"key": "c0", "amou
 class RunContractTests(unittest.TestCase):
     def setUp(self):
         app = FastAPI()
-        attach(app, "VerifyOps", ROOT)
+        attach(app, "SQLArbiter", ROOT)
         self.client = TestClient(app)
 
     def test_public_run_identity_contract_binding_and_tamper_rejection(self):

@@ -4,9 +4,9 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from vdir.uploads.api import attach
-from vdir.uploads.ingestion import Upload, parse, safe_csv
-from vdir.uploads.service import run
+from sqlarbiter.uploads.api import attach
+from sqlarbiter.uploads.ingestion import Upload, parse, safe_csv
+from sqlarbiter.uploads.service import run
 
 
 class CustomerUploadTests(unittest.TestCase):
@@ -52,7 +52,7 @@ class CustomerUploadTests(unittest.TestCase):
 
     def test_real_api_profile_analysis_and_stream_limit(self):
         app = FastAPI()
-        attach(app, "VerifyOps", Path(__file__).resolve().parents[3])
+        attach(app, "SQLArbiter", Path(__file__).resolve().parents[3])
         with TestClient(app) as client:
             payload = self.upload().model_dump()
             self.assertEqual(client.post("/api/uploads/profile", json={"csv": payload["csv"]}).json()["rows"], 4)

@@ -6,12 +6,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-from vdir.api.routes import create_app
-from vdir.workflows.dbt_service import CASE_ID
-from vdir.persistence.jobs import digest
-from vdir.persistence.jobs import Conflict
-from vdir.persistence.jobs import JobCancelled
-from vdir.workflows.service import process_next
+from sqlarbiter.api.routes import create_app
+from sqlarbiter.workflows.dbt_service import CASE_ID
+from sqlarbiter.persistence.jobs import digest
+from sqlarbiter.persistence.jobs import Conflict
+from sqlarbiter.persistence.jobs import JobCancelled
+from sqlarbiter.workflows.service import process_next
 
 
 def result_for(request, passed=True):
@@ -32,7 +32,7 @@ class DbtAPITests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.tool = self.root / "dbt"
         self.tool.write_text("test-only executable marker")
-        self.available = patch("vdir.workflows.dbt_service.executable", return_value=self.tool)
+        self.available = patch("sqlarbiter.workflows.dbt_service.executable", return_value=self.tool)
         self.available.start()
         self.app = create_app(self.root / "state", token="")
         self.client = TestClient(self.app, base_url="http://localhost", client=("127.0.0.1", 1))
@@ -48,7 +48,7 @@ class DbtAPITests(unittest.TestCase):
 
     def completed(self, passed=True):
         value = self.enqueue().json()
-        with patch("vdir.workflows.dbt_service.execute", side_effect=lambda store, job: result_for(job["request"], passed)):
+        with patch("sqlarbiter.workflows.dbt_service.execute", side_effect=lambda store, job: result_for(job["request"], passed)):
             self.assertTrue(process_next(self.store))
         return self.store.get(value["id"])
 
@@ -62,7 +62,7 @@ class DbtAPITests(unittest.TestCase):
         self.assertEqual(len(self.store.list()), 1)
 
     def test_missing_tooling_is_visible_without_enqueuing_and_paths_are_private(self):
-        with patch("vdir.workflows.dbt_service.executable", return_value=self.root / "missing"):
+        with patch("sqlarbiter.workflows.dbt_service.executable", return_value=self.root / "missing"):
             response = self.client.get("/api/dbt/projects")
             self.assertFalse(response.json()[0]["available"])
             self.assertNotIn(str(self.root), response.text)

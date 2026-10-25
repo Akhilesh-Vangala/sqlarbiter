@@ -121,7 +121,7 @@ export function login(ctx) {
       el(
         "p",
         { class: "hint spaced" },
-        "Cloud storage uses your authenticated account. Your password is not stored by VerifyOps.",
+        "Cloud storage uses your authenticated account. Your password is not stored by SQLArbiter.",
       ),
       form,
       state.account.signup_enabled &&
@@ -251,7 +251,7 @@ export function settings(ctx) {
               download(
                 JSON.stringify(
                   {
-                    format: "verifyops-device-backup-v1",
+                    format: "sqlarbiter-device-backup-v1",
                     exportedAt: new Date().toISOString(),
                     entries,
                     projects,
@@ -259,7 +259,7 @@ export function settings(ctx) {
                   null,
                   2,
                 ),
-                "verifyops-device-backup.json",
+                "sqlarbiter-device-backup.json",
               );
             } catch (error) {
               notify(error.message);
@@ -282,7 +282,7 @@ export function settings(ctx) {
           ),
         ),
         field(
-          "VerifyOps JSON backup",
+          "SQLArbiter JSON backup",
           el("input", {
             type: "file",
             id: "backup-file",
@@ -461,7 +461,7 @@ export function guide() {
         ),
         link(
           "Technical documentation ↗",
-          "https://github.com/Akhilesh-Vangala/verifyops/tree/main/docs",
+          "https://github.com/Akhilesh-Vangala/sqlarbiter/tree/main/docs",
           "quiet",
           { target: "_blank", rel: "noreferrer" },
         ),

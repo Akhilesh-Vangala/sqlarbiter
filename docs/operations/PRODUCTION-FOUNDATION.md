@@ -18,11 +18,11 @@ flowchart LR
     Worker --> OTel
 ```
 
-PostgreSQL now owns queue admission, idempotency, leases, reviews, events and LangGraph checkpoints when `VDIR_DATABASE_URL` and `VDIR_CHECKPOINT_DATABASE_URL` are configured. SQLite remains the default local adapter so the existing offline workflows and their histories keep working.
+PostgreSQL now owns queue admission, idempotency, leases, reviews, events and LangGraph checkpoints when `SQLARBITER_DATABASE_URL` and `SQLARBITER_CHECKPOINT_DATABASE_URL` are configured. SQLite remains the default local adapter so the existing offline workflows and their histories keep working.
 
 ## PostgreSQL behavior
 
-`backend/src/vdir/persistence/postgres_jobs.py` implements the existing `JobStore` contract with:
+`backend/src/sqlarbiter/persistence/postgres_jobs.py` implements the existing `JobStore` contract with:
 
 - schema-version verification before the API or worker accepts work;
 - advisory transaction locks around idempotency and queue-cap admission;
@@ -32,7 +32,7 @@ PostgreSQL now owns queue admission, idempotency, leases, reviews, events and La
 - explicit failed/interrupted/unknown boundaries rather than automatic paid replay;
 - separate liveness (`/healthz`) and database readiness (`/readyz`).
 
-`python -m vdir.persistence.migrations` creates the application schema and the official PostgreSQL LangGraph checkpoint tables. Migrations run as a distinct Compose service and Kubernetes Job. API and worker pods wait for the schema rather than racing startup.
+`python -m sqlarbiter.persistence.migrations` creates the application schema and the official PostgreSQL LangGraph checkpoint tables. Migrations run as a distinct Compose service and Kubernetes Job. API and worker pods wait for the schema rather than racing startup.
 
 The exported LangGraph runtime selects `AsyncPostgresSaver` only when the checkpoint URL is present. Each application job has a stable thread identity; an exact-version continuation uses its parent's thread. The SQLite checkpointer and receipt behavior remain available for the offline adapter.
 
@@ -42,7 +42,7 @@ Compose now runs PostgreSQL, Phoenix/OTLP, one-shot schema migration, FastAPI an
 
 ```sh
 cp .env.example .env
-# Set VDIR_ACCESS_TOKEN and VDIR_POSTGRES_PASSWORD privately.
+# Set SQLARBITER_ACCESS_TOKEN and SQLARBITER_POSTGRES_PASSWORD privately.
 scripts/deployment/compose.sh up --build --wait
 curl http://127.0.0.1:8000/healthz
 curl http://127.0.0.1:8000/readyz

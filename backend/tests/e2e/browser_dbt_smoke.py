@@ -23,12 +23,12 @@ def main():
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
     base = "http://127.0.0.1:" + str(port)
-    environment = {**os.environ, "VDIR_LOAD_DOTENV": "0", "PYTHONPATH": str(ROOT / "backend" / "src")}
-    for name in ("ANTHROPIC_API_KEY", "VDIR_ANTHROPIC_MODEL", "VDIR_ACCESS_TOKEN", "VDIR_PUBLIC_ORIGIN"):
+    environment = {**os.environ, "SQLARBITER_LOAD_DOTENV": "0", "PYTHONPATH": str(ROOT / "backend" / "src")}
+    for name in ("ANTHROPIC_API_KEY", "SQLARBITER_ANTHROPIC_MODEL", "SQLARBITER_ACCESS_TOKEN", "SQLARBITER_PUBLIC_ORIGIN"):
         environment.pop(name, None)
     errors, checks = [], []
     with (output / "server.log").open("w") as logs:
-        process = subprocess.Popen([sys.executable, "-m", "vdir.cli.serve", "--port", str(port), "--state-dir", str(output / "state")],
+        process = subprocess.Popen([sys.executable, "-m", "sqlarbiter.cli.serve", "--port", str(port), "--state-dir", str(output / "state")],
                                    cwd=ROOT, env=environment, stdout=logs, stderr=logs)
         try:
             with httpx.Client(base_url=base, timeout=5) as client:

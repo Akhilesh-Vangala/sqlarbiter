@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: verifyops-api
+  name: sqlarbiter-api
 spec:
   replicas: 2
   revisionHistoryLimit: 3
@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/component: api
     spec:
-      serviceAccountName: verifyops-api
+      serviceAccountName: sqlarbiter-api
       terminationGracePeriodSeconds: 30
       securityContext:
         runAsNonRoot: true
@@ -29,14 +29,14 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-schema
-          image: verifyops
+          image: sqlarbiter
           imagePullPolicy: IfNotPresent
-          command: ["python", "-m", "vdir.workers.wait_for_database"]
+          command: ["python", "-m", "sqlarbiter.workers.wait_for_database"]
           envFrom:
             - configMapRef:
-                name: verifyops-config
+                name: sqlarbiter-config
             - secretRef:
-                name: verifyops-secrets
+                name: sqlarbiter-secrets
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -44,13 +44,13 @@ spec:
               drop: ["ALL"]
       containers:
         - name: api
-          image: verifyops
+          image: sqlarbiter
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: verifyops-config
+                name: sqlarbiter-config
             - secretRef:
-                name: verifyops-secrets
+                name: sqlarbiter-secrets
           ports:
             - name: http
               containerPort: 8000
@@ -98,7 +98,7 @@ spec:
       volumes:
         - name: state
           persistentVolumeClaim:
-            claimName: verifyops-state
+            claimName: sqlarbiter-state
         - name: tmp
           emptyDir:
             sizeLimit: 256Mi

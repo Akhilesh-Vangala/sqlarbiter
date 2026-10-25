@@ -1,12 +1,12 @@
 import json
 import unittest
 
-from vdir.evaluation.benchmark import corpus_manifest
-from vdir.evaluation.benchmark import MANIFEST
-from vdir.evaluation.benchmark import pass_at_k
-from vdir.evaluation.benchmark import estimate_cost
-from vdir.evaluation.benchmark_cases import benchmark_cases
-from vdir.evaluation.evaluation import reference_outcome
+from sqlarbiter.evaluation.benchmark import corpus_manifest
+from sqlarbiter.evaluation.benchmark import MANIFEST
+from sqlarbiter.evaluation.benchmark import pass_at_k
+from sqlarbiter.evaluation.benchmark import estimate_cost
+from sqlarbiter.evaluation.benchmark_cases import benchmark_cases
+from sqlarbiter.evaluation.evaluation import reference_outcome
 
 
 class BenchmarkContractTests(unittest.TestCase):

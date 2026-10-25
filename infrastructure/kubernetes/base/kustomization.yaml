@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: verifyops
+namespace: sqlarbiter
 resources:
   - namespace.yaml
   - configmap.yaml
@@ -16,10 +16,10 @@ resources:
   - network-policies.yaml
 labels:
   - pairs:
-      app.kubernetes.io/name: verifyops
-      app.kubernetes.io/part-of: verifyops
+      app.kubernetes.io/name: sqlarbiter
+      app.kubernetes.io/part-of: sqlarbiter
     includeSelectors: true
 images:
-  - name: verifyops
-    newName: verifyops
+  - name: sqlarbiter
+    newName: sqlarbiter
     newTag: local

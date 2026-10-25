@@ -3,11 +3,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vdir.workflows.dbt_workflow import independent_outputs
-from vdir.workflows.dbt_workflow import fixtures
-from vdir.workflows.dbt_workflow import patch_sql
-from vdir.workflows.dbt_workflow import review
-from vdir.workflows.dbt_workflow import digest
+from sqlarbiter.workflows.dbt_workflow import independent_outputs
+from sqlarbiter.workflows.dbt_workflow import fixtures
+from sqlarbiter.workflows.dbt_workflow import patch_sql
+from sqlarbiter.workflows.dbt_workflow import review
+from sqlarbiter.workflows.dbt_workflow import digest
 
 
 class DbtBoundaryTests(unittest.TestCase):

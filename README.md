@@ -1,8 +1,8 @@
-# VerifyOps
+# SQLArbiter
 
-VerifyOps investigates business-metric discrepancies and repairs the SQL that caused them. A checkpointed LangGraph agent gathers evidence through read-only tools and proposes a fix. An independent verifier and a real dbt pipeline decide whether that fix is correct. The agent never grades its own output, and an operator approves only the exact version that passed.
+SQLArbiter investigates business-metric discrepancies and repairs the SQL that caused them. A checkpointed LangGraph agent gathers evidence through read-only tools and proposes a fix. An independent verifier and a real dbt pipeline decide whether that fix is correct. The agent never grades its own output, and an operator approves only the exact version that passed.
 
-**Live:** https://verifyops.vercel.app
+**Live:** https://sqlarbiter.vercel.app
 
 ## Architecture
 
@@ -30,7 +30,7 @@ flowchart LR
 | --- | --- | --- |
 | Frontend | `frontend/apps/` | Product workspace, guided sandbox, operator workbench. Native ES modules, no build step. |
 | Agent | `agent/investigator/` | LangGraph state machine, evidence tools, async model transport, call receipts. Flat imports so it runs without backend or evaluator code. |
-| Backend | `backend/src/vdir/` | API, job store, worker, verification, evaluation, dbt workflow, spend ledger, telemetry. |
+| Backend | `backend/src/sqlarbiter/` | API, job store, worker, verification, evaluation, dbt workflow, spend ledger, telemetry. |
 | dbt project | `backend/dbt/revenue_incident/` | Restricted repair target with five regression fixtures. |
 | Infrastructure | `infrastructure/` | Compose topology, Kustomize base with `kind` and `aws` overlays, AWS Terraform, Supabase migration. |
 
@@ -118,7 +118,7 @@ The corpus has six controls and 32 variants across join fan-out, outer-join null
 ```text
 frontend/apps/          product, demo, workbench, uploads
 agent/investigator/     graph, agent_policy, model, tools, engines, baseline, spending, telemetry, worker
-backend/src/vdir/       api, workers, persistence, workflows, verification, evaluation, domain, platform, uploads, product, cli
+backend/src/sqlarbiter/       api, workers, persistence, workflows, verification, evaluation, domain, platform, uploads, product, cli
 backend/dbt/            revenue_incident project
 backend/data/           benchmark manifests, contract, pricing
 backend/tests/          api, agents, verification, persistence, workflows, e2e, fixtures
@@ -129,11 +129,11 @@ scripts/                checks, demos, deployment, development
 ## Quick start
 
 ```sh
-git clone https://github.com/Akhilesh-Vangala/verifyops.git
-cd verifyops
+git clone https://github.com/Akhilesh-Vangala/sqlarbiter.git
+cd sqlarbiter
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r backend/requirements/development.txt
-PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.serve
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter.cli.serve
 ```
 
 The server listens on `127.0.0.1:8000`. For the full stack with PostgreSQL, Phoenix, migrations, API, and worker:
@@ -146,8 +146,8 @@ scripts/deployment/compose.sh up --build --wait
 ## Testing
 
 ```sh
-PYTHONPATH=backend/src VDIR_LOAD_DOTENV=0 python -m unittest discover -s backend/tests -v
-PYTHONPATH=backend/src python -m vdir.evaluation.benchmark --output artifacts/generated/benchmark --samples 1
+PYTHONPATH=backend/src SQLARBITER_LOAD_DOTENV=0 python -m unittest discover -s backend/tests -v
+PYTHONPATH=backend/src python -m sqlarbiter.evaluation.benchmark --output artifacts/generated/benchmark --samples 1
 python scripts/checks/check_repository.py
 ```
 

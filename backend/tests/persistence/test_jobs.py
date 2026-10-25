@@ -5,11 +5,11 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
-from vdir.persistence.jobs import Conflict
-from vdir.persistence.jobs import JobStore
-from vdir.workflows.service import case_version
-from vdir.workflows.service import find_case
-from vdir.workflows.service import process_next
+from sqlarbiter.persistence.jobs import Conflict
+from sqlarbiter.persistence.jobs import JobStore
+from sqlarbiter.workflows.service import case_version
+from sqlarbiter.workflows.service import find_case
+from sqlarbiter.workflows.service import process_next
 
 
 def request(case_id="case-001"):
@@ -46,9 +46,9 @@ class PersistentJobTests(unittest.TestCase):
         job_id, _ = self.store.enqueue(request(), "heartbeat-job")
         job = self.store.claim(lease_seconds=2)
         now = time.time()
-        with patch("vdir.persistence.jobs.time.time", return_value=now + 1):
+        with patch("sqlarbiter.persistence.jobs.time.time", return_value=now + 1):
             self.store.heartbeat(job)
-        with patch("vdir.persistence.jobs.time.time", return_value=now + 3):
+        with patch("sqlarbiter.persistence.jobs.time.time", return_value=now + 3):
             self.assertIsNone(self.store.claim())
             self.assertEqual(self.store.get(job_id)["status"], "running")
         with self.assertRaises(Conflict):
@@ -86,7 +86,7 @@ class PersistentJobTests(unittest.TestCase):
             "response": {"decision": {"status": "candidate"}, "trace": ["large-evidence" * 1000]}})
         self.store.enqueue(request(), "pending-summary")
         original_loads = json.loads
-        with patch("vdir.persistence.jobs.json.loads", wraps=original_loads) as loader:
+        with patch("sqlarbiter.persistence.jobs.json.loads", wraps=original_loads) as loader:
             summaries = self.store.list()
             self.assertEqual(loader.call_count, 2)
             self.assertTrue(all("large-evidence" not in call.args[0] for call in loader.call_args_list))
@@ -105,7 +105,7 @@ class PersistentJobTests(unittest.TestCase):
             if index == 51:
                 result["response"]["graph_run"] = {"status": "paused"}
             self.store.finish(self.store.claim(), result=result)
-        with patch("vdir.persistence.jobs.json.loads", side_effect=AssertionError("Stats must not hydrate results")):
+        with patch("sqlarbiter.persistence.jobs.json.loads", side_effect=AssertionError("Stats must not hydrate results")):
             self.assertEqual(self.store.stats(), {"completed": 51, "verified_candidates": 26})
         self.assertEqual(len(self.store.list()), 50)
         self.assertEqual(len(JobStore(self.root).list()), 50)

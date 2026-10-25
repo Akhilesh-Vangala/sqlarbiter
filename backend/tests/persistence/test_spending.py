@@ -7,9 +7,9 @@ import unittest
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
-from vdir.platform.spending import SpendLedger
-from vdir.platform.spending import SpendRejected
-from vdir.platform.spending import dollars
+from sqlarbiter.platform.spending import SpendLedger
+from sqlarbiter.platform.spending import SpendRejected
+from sqlarbiter.platform.spending import dollars
 
 from fixtures.pricing import PRICE
 
@@ -78,7 +78,7 @@ class SpendTests(unittest.TestCase):
     def test_independent_processes_cannot_overadmit_the_shared_allowance(self):
         SpendLedger(self.path, PRICE, "1", ".05")
         script = '''import json,sys
-from vdir.platform.spending import SpendLedger,SpendRejected
+from sqlarbiter.platform.spending import SpendLedger,SpendRejected
 ledger=SpendLedger(sys.argv[1],json.loads(sys.argv[2]),"1",".05")
 try:
  ledger.reserve(sys.argv[3],"configured-model",1000,1000)

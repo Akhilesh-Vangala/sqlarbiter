@@ -5,7 +5,7 @@ The [migration](migrations/001_product_workspace.sql) defines owner-isolated, im
 The policy check creates and drops its own random test database and needs an explicit administrative test URL:
 
 ```sh
-VDIR_PRODUCT_TEST_ADMIN_URL=postgresql://test-host/test-db python scripts/checks/product_rls.py
+SQLARBITER_PRODUCT_TEST_ADMIN_URL=postgresql://test-host/test-db python scripts/checks/product_rls.py
 ```
 
 Use a disposable database for this script. The application needs only the HTTPS provider URL and the publishable key, and it refuses service-role keys.

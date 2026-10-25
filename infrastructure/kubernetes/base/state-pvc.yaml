@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: verifyops-state
+  name: sqlarbiter-state
 spec:
   accessModes:
     - ReadWriteMany

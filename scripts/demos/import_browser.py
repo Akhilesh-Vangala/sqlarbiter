@@ -8,12 +8,12 @@ from playwright.sync_api import sync_playwright,expect
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--url');p.add_argument('--output',default='artifacts/generated/import-browser');p.add_argument('--axe');args=p.parse_args()
- root=Path(__file__).resolve().parents[2];relay=(root/'backend/src/relayops').is_dir();verify=(root/'backend/src/vdir').is_dir();brand='RelayOps' if relay else 'VerifyOps' if verify else 'QueryPilot'
+ root=Path(__file__).resolve().parents[2];relay=(root/'backend/src/relayops').is_dir();verify=(root/'backend/src/sqlarbiter').is_dir();brand='RelayOps' if relay else 'SQLArbiter' if verify else 'QueryPilot'
  out=root/args.output;out.mkdir(parents=True,exist_ok=True);server=log=None;url=args.url
  if not url:
   with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
-  url=f'http://127.0.0.1:{port}';prefix='RELAY' if relay else 'VDIR' if verify else 'QUERY'
-  env=dict(os.environ,VDIR_LOAD_DOTENV='0',RELAY_ALLOW_LIVE='0',ALLOW_LIVE_AI='false',ANTHROPIC_API_KEY='',OPENAI_API_KEY='')
+  url=f'http://127.0.0.1:{port}';prefix='RELAY' if relay else 'SQLARBITER' if verify else 'QUERY'
+  env=dict(os.environ,SQLARBITER_LOAD_DOTENV='0',RELAY_ALLOW_LIVE='0',ALLOW_LIVE_AI='false',ANTHROPIC_API_KEY='',OPENAI_API_KEY='')
   env.update({prefix+'_DEMO_SECRET':secrets.token_urlsafe(64),prefix+'_REPORT_SIGNING_KEY':secrets.token_urlsafe(64),prefix+'_SUPABASE_URL':'',prefix+'_SUPABASE_PUBLISHABLE_KEY':''})
   log=(out/'server.log').open('w');server=subprocess.Popen([sys.executable,'-m','uvicorn','app:app' if relay or verify else 'index:app','--host','127.0.0.1','--port',str(port),'--no-access-log'],cwd=root,env=env,stdout=log,stderr=log)
   for _ in range(200):

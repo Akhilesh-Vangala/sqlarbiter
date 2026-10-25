@@ -6,12 +6,12 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 
-from vdir.domain.cases import incidents
-from vdir.evaluation.evaluation import evaluate_all
-from vdir.evaluation.evaluation import export_workspace
-from vdir.evaluation.evaluation import grade
-from vdir.evaluation.evaluation import reference_outcome
-from vdir.evaluation.evaluation import run_worker
+from sqlarbiter.domain.cases import incidents
+from sqlarbiter.evaluation.evaluation import evaluate_all
+from sqlarbiter.evaluation.evaluation import export_workspace
+from sqlarbiter.evaluation.evaluation import grade
+from sqlarbiter.evaluation.evaluation import reference_outcome
+from sqlarbiter.evaluation.evaluation import run_worker
 
 
 class IncidentEnvironmentTests(unittest.TestCase):
@@ -109,7 +109,7 @@ class IncidentEnvironmentTests(unittest.TestCase):
     def test_rpc_has_no_filesystem_or_import_tools(self):
         workspace = export_workspace(self.cases[0], self.root / "evidence")
         requests = [{"method": "read_file", "params": {"path": "../../reference.py"}},
-                    {"method": "import", "params": {"module": "vdir.verification.reference"}},
+                    {"method": "import", "params": {"module": "sqlarbiter.verification.reference"}},
                     {"method": [], "params": {}},
                     {"method": "query", "params": {"sql": "SELECT * FROM sqlite_master"}},
                     {"method": "query", "params": {"sql": "ATTACH DATABASE '/tmp/hidden' AS hidden"}},

@@ -28,7 +28,7 @@ variable "cluster_endpoint_public_access_cidrs" {
 
 variable "project_name" {
   type    = string
-  default = "verifyops"
+  default = "sqlarbiter"
 }
 
 variable "environment" {

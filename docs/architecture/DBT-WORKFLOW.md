@@ -28,18 +28,18 @@ Approval/rejection reuses the application's exact-version immutable review API. 
 
 All new API routes inherit the existing bearer/local-loopback, host/origin, JSON/body, CSP and no-store boundaries. Arbitrary project paths/code uploads are rejected by the request schema. Generic metric revision/resume routes cannot reinterpret dbt jobs. dbt clarification continuation remains unavailable; historical paused evidence can be inspected but needs a fresh controlled run rather than automatic paid replay.
 
-The project version hashes trusted source assets, implementation, runtime, and dependency locks. The worker checks that version before execution. A source or code change invalidates queued work. Owner-fenced progress cannot be published after cancellation or lease loss. Each dbt subprocess runs in a supervised process group. Cancellation, shutdown, and lost ownership stop and reap it. Expired work is interrupted and is not retried. PostgreSQL coordinates the queue when `VDIR_DATABASE_URL` is set. [Runtime](../operations/PRODUCTION-FOUNDATION.md).
+The project version hashes trusted source assets, implementation, runtime, and dependency locks. The worker checks that version before execution. A source or code change invalidates queued work. Owner-fenced progress cannot be published after cancellation or lease loss. Each dbt subprocess runs in a supervised process group. Cancellation, shutdown, and lost ownership stop and reap it. Expired work is interrupted and is not retried. PostgreSQL coordinates the queue when `SQLARBITER_DATABASE_URL` is set. [Runtime](../operations/PRODUCTION-FOUNDATION.md).
 
 ## Tooling and containers
 
-Local default: .venv-dbt/bin/dbt; VDIR_DBT_EXECUTABLE overrides trusted service configuration only. The Docker dependencies now include /opt/dbt as a separate pinned virtual environment for both test/runtime stages. App and dbt Click/Pydantic dependencies remain separate. No user installs or API credentials are needed to run the fixed sample from the browser once the image/environment is built.
+Local default: .venv-dbt/bin/dbt; SQLARBITER_DBT_EXECUTABLE overrides trusted service configuration only. The Docker dependencies now include /opt/dbt as a separate pinned virtual environment for both test/runtime stages. App and dbt Click/Pydantic dependencies remain separate. No user installs or API credentials are needed to run the fixed sample from the browser once the image/environment is built.
 
 CI runs the actual browser dbt journey in its isolated dbt job and in the full container suite. The browser test creates temporary state, performs real project builds, downloads/revises/reviews, checks responsive monochrome routes and cancels work without publishing a result. API tests cover unauthorized access, idempotency, unsupported uploads, stale/cross-type revisions, failed/tampered artifacts and owner-fenced progress. A separate real-process cancellation test confirms dbt supervision terminates/reaps interrupted work.
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.serve --port 8000
-VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python backend/tests/e2e/browser_dbt_smoke.py
-VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -v
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter.cli.serve --port 8000
+SQLARBITER_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python backend/tests/e2e/browser_dbt_smoke.py
+SQLARBITER_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -v
 ```
 
 Open http://127.0.0.1:8000/dbt. Fixed execution does not call a model. A configured provider uses the shared spend ledger.

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: verifyops-worker
+  name: sqlarbiter-worker
 spec:
   replicas: 3
   revisionHistoryLimit: 3
@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/component: worker
     spec:
-      serviceAccountName: verifyops-worker
+      serviceAccountName: sqlarbiter-worker
       terminationGracePeriodSeconds: 45
       securityContext:
         runAsNonRoot: true
@@ -29,14 +29,14 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-schema
-          image: verifyops
+          image: sqlarbiter
           imagePullPolicy: IfNotPresent
-          command: ["python", "-m", "vdir.workers.wait_for_database"]
+          command: ["python", "-m", "sqlarbiter.workers.wait_for_database"]
           envFrom:
             - configMapRef:
-                name: verifyops-config
+                name: sqlarbiter-config
             - secretRef:
-                name: verifyops-secrets
+                name: sqlarbiter-secrets
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -44,14 +44,14 @@ spec:
               drop: ["ALL"]
       containers:
         - name: worker
-          image: verifyops
+          image: sqlarbiter
           imagePullPolicy: IfNotPresent
-          command: ["python", "-m", "vdir.workers.worker", "--state-dir", "/state"]
+          command: ["python", "-m", "sqlarbiter.workers.worker", "--state-dir", "/state"]
           envFrom:
             - configMapRef:
-                name: verifyops-config
+                name: sqlarbiter-config
             - secretRef:
-                name: verifyops-secrets
+                name: sqlarbiter-secrets
           volumeMounts:
             - name: state
               mountPath: /state
@@ -72,7 +72,7 @@ spec:
       volumes:
         - name: state
           persistentVolumeClaim:
-            claimName: verifyops-state
+            claimName: sqlarbiter-state
         - name: tmp
           emptyDir:
             sizeLimit: 1Gi

@@ -57,7 +57,7 @@ def execute(path, engine, schema, sql, limit=100):
     sql = select_sql(sql, engine, schema)
     # Outer LIMIT preserves inner GROUP BY/window/UNION semantics; fetch one extra
     # row solely to report truncation. It does not bound scan/aggregation work.
-    bounded = "SELECT * FROM (%s) AS vdir_bounded LIMIT %d" % (sql, limit + 1)
+    bounded = "SELECT * FROM (%s) AS sqlarbiter_bounded LIMIT %d" % (sql, limit + 1)
     if engine == "duckdb":
         import duckdb
         conn = duckdb.connect(str(path), read_only=True, config={

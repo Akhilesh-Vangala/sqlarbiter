@@ -31,7 +31,7 @@ from agent_policy import validate_findings
 from agent_policy import working_memory
 from tools import ToolRejected
 
-GRAPH_VERSION = "vdir-graph-3"
+GRAPH_VERSION = "sqlarbiter-graph-3"
 CONFIG = {"configurable": {"thread_id": "investigation"}, "recursion_limit": 160}
 
 
@@ -63,7 +63,7 @@ def activity(state, stage, status, **fields):
 def evidence_version(workspace):
     digest = hashlib.sha256(GRAPH_VERSION.encode())
     packages = ["langgraph", "langgraph-checkpoint", "langgraph-checkpoint-sqlite", "anthropic"]
-    if os.getenv("VDIR_CHECKPOINT_DATABASE_URL"):
+    if os.getenv("SQLARBITER_CHECKPOINT_DATABASE_URL"):
         packages.append("langgraph-checkpoint-postgres")
     for package in packages:
         digest.update((package + package_version(package)).encode())
@@ -78,10 +78,10 @@ def evidence_version(workspace):
 
 
 def graph_config(workspace):
-    if not os.getenv("VDIR_CHECKPOINT_DATABASE_URL"):
+    if not os.getenv("SQLARBITER_CHECKPOINT_DATABASE_URL"):
         thread_id = "investigation"
     else:
-        thread_id = os.getenv("VDIR_CHECKPOINT_THREAD_ID")
+        thread_id = os.getenv("SQLARBITER_CHECKPOINT_THREAD_ID")
     if not thread_id:
         thread_id = hashlib.sha256(str(workspace.resolve()).encode()).hexdigest()
     if len(thread_id) > 128:
@@ -91,7 +91,7 @@ def graph_config(workspace):
 
 @asynccontextmanager
 async def checkpoint_saver(workspace):
-    database_url = os.getenv("VDIR_CHECKPOINT_DATABASE_URL")
+    database_url = os.getenv("SQLARBITER_CHECKPOINT_DATABASE_URL")
     if database_url:
         from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 

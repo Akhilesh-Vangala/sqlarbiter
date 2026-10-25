@@ -1,4 +1,4 @@
-# VerifyOps architecture
+# SQLArbiter architecture
 
 ## Implemented private runtime
 

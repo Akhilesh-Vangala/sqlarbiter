@@ -203,7 +203,7 @@ resource "aws_db_subnet_group" "postgres" {
 
 resource "aws_security_group" "postgres" {
   name_prefix = "${local.name}-postgres-"
-  description = "PostgreSQL from VerifyOps EKS only"
+  description = "PostgreSQL from SQLArbiter EKS only"
   vpc_id      = var.vpc_id
   egress {
     protocol    = "-1"
@@ -231,8 +231,8 @@ resource "aws_db_instance" "postgres" {
   storage_type                    = "gp3"
   storage_encrypted               = true
   kms_key_id                      = aws_kms_key.platform.arn
-  db_name                         = "verifyops"
-  username                        = "verifyops"
+  db_name                         = "sqlarbiter"
+  username                        = "sqlarbiter"
   password                        = random_password.postgres.result
   db_subnet_group_name            = aws_db_subnet_group.postgres.name
   vpc_security_group_ids          = [aws_security_group.postgres.id]
@@ -270,7 +270,7 @@ resource "aws_secretsmanager_secret_version" "database" {
 
 resource "aws_security_group" "efs" {
   name_prefix = "${local.name}-efs-"
-  description = "EFS from VerifyOps EKS only"
+  description = "EFS from SQLArbiter EKS only"
   vpc_id      = var.vpc_id
 }
 

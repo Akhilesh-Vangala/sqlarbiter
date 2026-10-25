@@ -23,9 +23,9 @@ class AnthropicClient:
     def __init__(self, sdk=None, telemetry=None, event_path=None, spend=None):
         from anthropic import AsyncAnthropic
         self.api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        self.model = os.environ.get("VDIR_ANTHROPIC_MODEL", "")
+        self.model = os.environ.get("SQLARBITER_ANTHROPIC_MODEL", "")
         if not self.api_key or not self.model:
-            raise InvestigationFailed("Set ANTHROPIC_API_KEY and VDIR_ANTHROPIC_MODEL locally")
+            raise InvestigationFailed("Set ANTHROPIC_API_KEY and SQLARBITER_ANTHROPIC_MODEL locally")
         # Injected mock transports may opt into accounting; real clients require it.
         try:
             self.spend = spend if spend is not None else (SpendLedger.from_environment() if sdk is None else None)
@@ -34,7 +34,7 @@ class AnthropicClient:
         self.sdk = sdk or AsyncAnthropic(api_key=self.api_key, base_url="https://api.anthropic.com",
                                         timeout=20, max_retries=0, _strict_response_validation=True)
         fallback_id = hashlib.sha256(str(Path(event_path).resolve().parent).encode()).hexdigest() if event_path else uuid.uuid4().hex
-        self.run_id = os.environ.get("VDIR_BUDGET_RUN_ID") or os.environ.get("VDIR_RUN_ID") or fallback_id
+        self.run_id = os.environ.get("SQLARBITER_BUDGET_RUN_ID") or os.environ.get("SQLARBITER_RUN_ID") or fallback_id
         if not isinstance(self.run_id, str) or not 1 <= len(self.run_id) <= 128 or not all(c.isascii() and (c.isalnum() or c in "_-") for c in self.run_id):
             raise InvestigationFailed("Invalid execution identifier")
         self.sdk_max_retries = 0 if self.spend else getattr(self.sdk, "max_retries", 0)
@@ -232,7 +232,7 @@ async def _investigate(tools, client, messages, usage, repeats, metadata, save):
         telemetry = getattr(tools, "telemetry", None)
         if telemetry:
             with telemetry.span("llm.round", **{"gen_ai.request.model": getattr(client, "model", "scripted"),
-                                                  "vdir.round": round_index + 1}) as span:
+                                                  "arbiter.round": round_index + 1}) as span:
                 result = await client.complete(messages, definitions(), max_tokens=min(2048, remaining))
                 for name, value in (result.get("usage") or {}).items() if isinstance(result, dict) and isinstance(result.get("usage"), dict) else []:
                     if type(value) is int:

@@ -36,9 +36,9 @@ spec:
           image: postgres:17-alpine
           env:
             - name: POSTGRES_DB
-              value: verifyops
+              value: sqlarbiter
             - name: POSTGRES_USER
-              value: verifyops
+              value: sqlarbiter
             - name: POSTGRES_PASSWORD
               value: kind-only-password
           ports:
@@ -46,7 +46,7 @@ spec:
               containerPort: 5432
           readinessProbe:
             exec:
-              command: ["pg_isready", "-U", "verifyops", "-d", "verifyops"]
+              command: ["pg_isready", "-U", "sqlarbiter", "-d", "sqlarbiter"]
             periodSeconds: 3
           securityContext:
             allowPrivilegeEscalation: false

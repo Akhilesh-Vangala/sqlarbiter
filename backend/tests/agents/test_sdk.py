@@ -38,11 +38,11 @@ class SDKTests(unittest.IsolatedAsyncioTestCase):
                              http_client=httpx2.AsyncClient(transport=httpx2.MockTransport(handler)),
                              _strict_response_validation=True)
         with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-only-secret",
-                                    "VDIR_ANTHROPIC_MODEL": "configured-model"}):
+                                    "SQLARBITER_ANTHROPIC_MODEL": "configured-model"}):
             return AnthropicClient(sdk=sdk, event_path=event_path, spend=spend)
 
     async def test_spend_rejection_prevents_messages_request(self):
-        from vdir.platform.spending import SpendLedger
+        from sqlarbiter.platform.spending import SpendLedger
         from fixtures.pricing import PRICE
         paths = []
         async def handler(request):
@@ -62,7 +62,7 @@ class SDKTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(ledger.summary()["accounted_usd"], 0)
 
     async def test_spend_stream_timeout_retains_reservation_without_automatic_retry(self):
-        from vdir.platform.spending import SpendLedger
+        from sqlarbiter.platform.spending import SpendLedger
         from fixtures.pricing import PRICE
         generations = []
         async def handler(request):
@@ -86,7 +86,7 @@ class SDKTests(unittest.IsolatedAsyncioTestCase):
             self.assertAlmostEqual(ledger.summary()["accounted_usd"], .02056)
 
     async def test_spend_success_reconciles_complete_stream_usage(self):
-        from vdir.platform.spending import SpendLedger
+        from sqlarbiter.platform.spending import SpendLedger
         from fixtures.pricing import PRICE
         async def handler(request):
             if "/models/" in request.url.path:
@@ -166,8 +166,8 @@ class SDKTests(unittest.IsolatedAsyncioTestCase):
     async def test_langgraph_uses_real_sdk_streaming_with_mock_http_transport(self):
         from graph import investigate as graph_investigate
         from tools import EvidenceTools
-        from vdir.domain.cases import incidents
-        from vdir.evaluation.evaluation import export_workspace
+        from sqlarbiter.domain.cases import incidents
+        from sqlarbiter.evaluation.evaluation import export_workspace
         from telemetry import Telemetry
         rounds = 0
         async def handler(request):

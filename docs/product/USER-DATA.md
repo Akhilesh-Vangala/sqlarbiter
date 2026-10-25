@@ -1,4 +1,4 @@
-# VerifyOps: work with your own data
+# SQLArbiter: work with your own data
 
 CSV, TSV, Excel `.xlsx`, JSON, and JSONL are accepted. [Formats and limits](FILE-IMPORTS.md). PDFs and images are refused.
 
@@ -38,4 +38,4 @@ See the `uploads` package and `backend/tests/api/test_uploads.py` for expected v
 
 ## Product journey
 
-[Pages, guided review, saved-work consent, report authenticity, and optional cloud accounts](PRODUCT-WORKSPACE.md). Account sign-in is off unless `VDIR_SUPABASE_URL` and `VDIR_SUPABASE_PUBLISHABLE_KEY` are set.
+[Pages, guided review, saved-work consent, report authenticity, and optional cloud accounts](PRODUCT-WORKSPACE.md). Account sign-in is off unless `SQLARBITER_SUPABASE_URL` and `SQLARBITER_SUPABASE_PUBLISHABLE_KEY` are set.

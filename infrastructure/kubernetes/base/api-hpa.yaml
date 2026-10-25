@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: verifyops-api
+  name: sqlarbiter-api
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: verifyops-api
+    name: sqlarbiter-api
   minReplicas: 2
   maxReplicas: 6
   behavior:

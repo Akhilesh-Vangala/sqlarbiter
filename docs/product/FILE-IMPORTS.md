@@ -1,4 +1,4 @@
-# VerifyOps: supported file imports
+# SQLArbiter: supported file imports
 
 The public product accepts **CSV, TSV, Excel `.xlsx`, JSON and JSONL**. Select one file using the chooser or drop zone. It is parsed and profiled before the existing reviewed business rules run. File extension changes do not bypass the original result/approval checks.
 

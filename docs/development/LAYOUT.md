@@ -1,9 +1,9 @@
-# VerifyOps component layout
+# SQLArbiter component layout
 
 Run commands from the repository root unless a command states otherwise. The file tree is organized by ownership at the root and responsibility inside each component.
 
 ```text
-verifyops/
+sqlarbiter/
 ├── frontend/
 │   └── apps/
 │       ├── demo/
@@ -22,7 +22,7 @@ verifyops/
 ├── agent/
 │   └── investigator/
 ├── backend/
-│   ├── src/vdir/
+│   ├── src/sqlarbiter/
 │   ├── tests/
 │   ├── data/
 │   └── dbt/revenue_incident/
@@ -53,14 +53,14 @@ Backend APIs own request validation, identity and action authority. Agents propo
 
 GitHub, Python, and Vercel discovery files, private-configuration examples, and the primary README stay at the root. Compose is under `infrastructure/containers`. `scripts/deployment/compose.sh` sets the repository directory so build contexts, the private root `.env`, and volume names stay stable.
 
-Source-path changes intentionally change runtime and review fingerprints. Preserve old results; start a fresh investigation when stale checkpoints or checked proposals are rejected. The exportable VerifyOps investigator deliberately keeps a small flat runtime when copied into an isolated workspace; evaluator references remain outside that runtime.
+Source-path changes intentionally change runtime and review fingerprints. Preserve old results; start a fresh investigation when stale checkpoints or checked proposals are rejected. The exportable SQLArbiter investigator deliberately keeps a small flat runtime when copied into an isolated workspace; evaluator references remain outside that runtime.
 
 [Branch policy](BRANCHING.md) · [Backend](../../backend/README.md) · [Frontend](../../frontend/README.md) · [Infrastructure](../../infrastructure/README.md) · [Scripts](../../scripts/README.md)
 
 ## Full directory navigation
 
 ```text
-verifyops/
+sqlarbiter/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   └── workflows/
@@ -80,7 +80,7 @@ verifyops/
 │   ├── docker/
 │   ├── requirements/
 │   ├── src/
-│   │   └── vdir/
+│   │   └── sqlarbiter/
 │   │       ├── api/
 │   │       ├── cli/
 │   │       ├── domain/

@@ -4,7 +4,7 @@ import json
 import threading
 import unittest
 from unittest.mock import patch
-from vdir.uploads import stream as runtime
+from sqlarbiter.uploads import stream as runtime
 
 
 class StreamRecoveryTests(unittest.IsolatedAsyncioTestCase):

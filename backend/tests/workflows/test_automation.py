@@ -10,17 +10,17 @@ from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-from vdir.api.routes import create_app
-from vdir.persistence.jobs import Conflict
-from vdir.persistence.jobs import JobCancelled
-from vdir.persistence.jobs import JobStore
-from vdir.workflows.service import process_next
-from vdir.workflows.service import case_version
-from vdir.workflows.service import find_case
-from vdir.evaluation.evaluation import run_worker
-from vdir.evaluation.evaluation import execution_scope
-from vdir.evaluation.evaluation import ExecutionInterrupted
-from vdir.evaluation.evaluation import InvestigatorError
+from sqlarbiter.api.routes import create_app
+from sqlarbiter.persistence.jobs import Conflict
+from sqlarbiter.persistence.jobs import JobCancelled
+from sqlarbiter.persistence.jobs import JobStore
+from sqlarbiter.workflows.service import process_next
+from sqlarbiter.workflows.service import case_version
+from sqlarbiter.workflows.service import find_case
+from sqlarbiter.evaluation.evaluation import run_worker
+from sqlarbiter.evaluation.evaluation import execution_scope
+from sqlarbiter.evaluation.evaluation import ExecutionInterrupted
+from sqlarbiter.evaluation.evaluation import InvestigatorError
 
 
 def request(case="case-001"):
@@ -68,7 +68,7 @@ class AutomationTests(unittest.TestCase):
         def cancel_during_result(store, job, telemetry):
             store.cancel(identity)
             return {"response": {"decision": {"status": "candidate"}}, "grading": {"passed": True}}
-        with patch("vdir.workflows.service.execute_one", side_effect=cancel_during_result):
+        with patch("sqlarbiter.workflows.service.execute_one", side_effect=cancel_during_result):
             self.assertTrue(process_next(self.store))
         value = self.store.get(identity)
         self.assertEqual(value["status"], "cancelled")

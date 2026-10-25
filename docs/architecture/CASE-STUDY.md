@@ -1,12 +1,12 @@
-# VerifyOps / engineering case study
+# SQLArbiter / engineering case study
 
 **Executing SQL successfully is weaker evidence than showing that the business outputs are correct.**
 
-[Recorded demo](../DEMO.md) · [System map](../assets/diagrams/verifyops-architecture.svg) · [Full flows](SYSTEM-FLOWCHARTS.md) · [Run it](../../README.md#quick-start)
+[Recorded demo](../DEMO.md) · [System map](../assets/diagrams/sqlarbiter-architecture.svg) · [Full flows](SYSTEM-FLOWCHARTS.md) · [Run it](../../README.md#quick-start)
 
 ## The original business case
 
-![Original retry deliveries inflate revenue from 1200 to 2400 cents until event identity is restored](../assets/branding/verifyops-case-light.svg)
+![Original retry deliveries inflate revenue from 1200 to 2400 cents until event identity is restored](../assets/branding/sqlarbiter-case-light.svg)
 
 The original payment-revenue seed contains deliveries `d1` and `d2` for the same immutable event `e1`, each carrying 1,200 cents. The defective intermediate preserves delivery-grain rows, so September 30 reports 2,400 cents. A restricted event-identity repair restores 1,200 cents while retaining separate valid events with equal values.
 
@@ -19,10 +19,10 @@ A repair can execute, appear reasonable, and pass the original incident while br
 | Responsibility | Owned implementation | Why it matters |
 | --- | --- | --- |
 | Investigate source evidence | [graph.py](../../agent/investigator/graph.py), [tools.py](../../agent/investigator/tools.py) | Checkpointed transitions, bounded SQL tools, hypotheses and executed/cited findings. |
-| Bound model execution | [model.py](../../agent/investigator/model.py), [spending.py](../../backend/src/vdir/platform/spending.py) | Typed async model transport, call receipts, token/time limits and retained estimated commitments. |
-| Check correctness independently | [evaluation.py](../../backend/src/vdir/evaluation/evaluation.py), [reference.py](../../backend/src/vdir/verification/reference.py) | Separate source references and private regressions outside model authority. |
-| Execute the real dbt repair | [dbt_workflow.py](../../backend/src/vdir/workflows/dbt_workflow.py), [original project](../../backend/dbt/revenue_incident) | Actual seed/run/test, restricted model patch and fresh builds across designed fixtures. |
-| Own durable execution/review | [jobs.py](../../backend/src/vdir/persistence/jobs.py), [worker.py](../../backend/src/vdir/workers/worker.py), [dbt_service.py](../../backend/src/vdir/workflows/dbt_service.py) | Claims/leases, cancellation, guarded publication and source/model/patch/report integrity. |
+| Bound model execution | [model.py](../../agent/investigator/model.py), [spending.py](../../backend/src/sqlarbiter/platform/spending.py) | Typed async model transport, call receipts, token/time limits and retained estimated commitments. |
+| Check correctness independently | [evaluation.py](../../backend/src/sqlarbiter/evaluation/evaluation.py), [reference.py](../../backend/src/sqlarbiter/verification/reference.py) | Separate source references and private regressions outside model authority. |
+| Execute the real dbt repair | [dbt_workflow.py](../../backend/src/sqlarbiter/workflows/dbt_workflow.py), [original project](../../backend/dbt/revenue_incident) | Actual seed/run/test, restricted model patch and fresh builds across designed fixtures. |
+| Own durable execution/review | [jobs.py](../../backend/src/sqlarbiter/persistence/jobs.py), [worker.py](../../backend/src/sqlarbiter/workers/worker.py), [dbt_service.py](../../backend/src/sqlarbiter/workflows/dbt_service.py) | Claims/leases, cancellation, guarded publication and source/model/patch/report integrity. |
 
 ## Authority boundaries
 
@@ -59,9 +59,9 @@ The passing repair is checked with actual dbt builds over five designed fixtures
 | --- | --- | --- |
 | Plausible equal-value deduplication | Reject through independent regression rather than approve based on the original metric. | [Recorded demo](../DEMO.md), [real dbt integration](../../backend/tests/workflows/test_dbt_integration.py) |
 | Edited SQL after verification | Disable old approval and create a separately checked revision. | [dbt browser journey](../../backend/tests/e2e/browser_dbt_smoke.py) |
-| Failed/tampered patch | Block approval and verified download. | [dbt browser workflow](DBT-WORKFLOW.md), [service implementation](../../backend/src/vdir/workflows/dbt_service.py) |
-| Missing authoritative source facts | Request clarification; do not invent a timezone or conflicting event payload. | [Development cases](../../backend/src/vdir/domain/cases.py), [agent flow](AGENT-ORCHESTRATION.md) |
-| Cancellation or lost ownership | Stop controlled work and fence result publication. | [Worker](../../backend/src/vdir/workers/worker.py), [job store](../../backend/src/vdir/persistence/jobs.py) |
+| Failed/tampered patch | Block approval and verified download. | [dbt browser workflow](DBT-WORKFLOW.md), [service implementation](../../backend/src/sqlarbiter/workflows/dbt_service.py) |
+| Missing authoritative source facts | Request clarification; do not invent a timezone or conflicting event payload. | [Development cases](../../backend/src/sqlarbiter/domain/cases.py), [agent flow](AGENT-ORCHESTRATION.md) |
+| Cancellation or lost ownership | Stop controlled work and fence result publication. | [Worker](../../backend/src/sqlarbiter/workers/worker.py), [job store](../../backend/src/sqlarbiter/persistence/jobs.py) |
 | Interrupted model generation | Retain uncertain receipts; explicit compatible recovery only. | [Model/recovery boundaries](AGENT-ORCHESTRATION.md), [transport](../../agent/investigator/model.py) |
 
 ## What the evidence establishes

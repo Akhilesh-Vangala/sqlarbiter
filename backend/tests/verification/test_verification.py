@@ -2,12 +2,12 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 
-from vdir.domain.environment import snapshots
-from vdir.verification.reference import expected_revenue
-from vdir.verification.runner import QueryRejected
-from vdir.verification.runner import run_query
-from vdir.verification.verifier import verify
-from vdir.verification.verifier import verify_suite
+from sqlarbiter.domain.environment import snapshots
+from sqlarbiter.verification.reference import expected_revenue
+from sqlarbiter.verification.runner import QueryRejected
+from sqlarbiter.verification.runner import run_query
+from sqlarbiter.verification.verifier import verify
+from sqlarbiter.verification.verifier import verify_suite
 
 SQL_DIR = Path(__file__).resolve().parents[3] / "backend/data" / "development" / "sql"
 
@@ -65,7 +65,7 @@ class RevenueVerificationTests(unittest.TestCase):
             verify_suite([], "SELECT 1")
 
     def test_write_and_filesystem_operations_are_denied(self):
-        for sql in ("DELETE FROM orders", "ATTACH DATABASE '/tmp/vdir-denied.db' AS other",
+        for sql in ("DELETE FROM orders", "ATTACH DATABASE '/tmp/sqlarbiter-denied.db' AS other",
                     "SELECT load_extension('anything')", "PRAGMA database_list",
                     "SELECT * FROM sqlite_master", "SELECT 1; SELECT 2"):
             with self.subTest(sql=sql), self.assertRaises(QueryRejected):

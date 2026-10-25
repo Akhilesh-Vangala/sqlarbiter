@@ -8,7 +8,7 @@ import uuid
 
 assert sys.version_info[:2] == (3, 11)
 base = "http://127.0.0.1:8000"
-token = os.environ["VDIR_ACCESS_TOKEN"]
+token = os.environ["SQLARBITER_ACCESS_TOKEN"]
 
 def request(path, payload=None, key=None):
     headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}

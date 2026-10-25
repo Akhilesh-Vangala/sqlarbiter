@@ -1,6 +1,6 @@
 # LangGraph investigator
 
-The owned workflow is `vdir-graph-3`. LangGraph 1.2.14, checkpoint 4.2.0, and the SQLite checkpointer 3.1.1 are pinned. The app selects `langgraph` beside `baseline` and `anthropic`. The fixed diagnostic remains the default. Graph-3 adds a strict findings node, a twelve-identifier public memory index, SQL inspection profiles, hypothesis plans, executed-test requirements, and public SQL prechecks. A checkpoint from an older graph version cannot be continued. Completed results stay readable.
+The owned workflow is `sqlarbiter-graph-3`. LangGraph 1.2.14, checkpoint 4.2.0, and the SQLite checkpointer 3.1.1 are pinned. The app selects `langgraph` beside `baseline` and `anthropic`. The fixed diagnostic remains the default. Graph-3 adds a strict findings node, a twelve-identifier public memory index, SQL inspection profiles, hypothesis plans, executed-test requirements, and public SQL prechecks. A checkpoint from an older graph version cannot be continued. Completed results stay readable.
 
 [Findings, workflows, and cancellation](WORKFLOWS.md).
 
@@ -48,7 +48,7 @@ This checks execution, columns and completeness, **not business correctness**. A
 
 Completed/paused results expose `agent_workflow` (plan revisions, activity, correction count and public precheck) in JSON exports and the app's **Agent activity** tab. Entries are recorded node events, not fabricated live progress. Manually edited SQL revisions remove inherited workflow/model/graph metadata, so a prior agent assessment is never presented as checking a different SQL version.
 
-`AsyncSqliteSaver` writes `graph-checkpoints.sqlite` between transitions for offline runs. `AsyncPostgresSaver` is used when `VDIR_CHECKPOINT_DATABASE_URL` is set. The separate receipt journal reserves each call before execution and persists the completed result before the graph commit. [Persistence](https://docs.langchain.com/oss/python/langgraph/persistence).
+`AsyncSqliteSaver` writes `graph-checkpoints.sqlite` between transitions for offline runs. `AsyncPostgresSaver` is used when `SQLARBITER_CHECKPOINT_DATABASE_URL` is set. The separate receipt journal reserves each call before execution and persists the completed result before the graph commit. [Persistence](https://docs.langchain.com/oss/python/langgraph/persistence).
 
 The job service owns admission, leases and review; LangGraph owns investigation transitions. A `needs_information` decision interrupts the graph and is independently checked before the app records a `paused` result. POST `/api/jobs/{id}/resume` accepts the exact `parent_version` and 1–2000 characters of `guidance`, with the existing authentication/origin/body/idempotency controls. A transaction allows one child continuation per parent. The worker clones public evidence and committed SQLite state using database backup, then resumes the child. The parent result/version stays immutable; its audit records the child. Repeated identical submissions reuse the same child, while competing/stale submissions fail.
 
@@ -59,15 +59,15 @@ Restored budgets include consumed rounds, tools/repetitions, reported tokens, co
 Enter the private provider key/model in ignored .env. The app enables LangGraph when configured; no key is shown in browser configuration. Example live commands from the project directory (billable):
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir --investigate artifacts/generated/live-graph-six --investigator langgraph --engine duckdb
-PYTHONPATH=backend/src .venv/bin/python -m vdir.evaluation.benchmark --output artifacts/generated/live-graph-benchmark --investigator langgraph --samples 1
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter --investigate artifacts/generated/live-graph-six --investigator langgraph --engine duckdb
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter.evaluation.benchmark --output artifacts/generated/live-graph-benchmark --investigator langgraph --samples 1
 ```
 
 The app's paused result offers an investigation guidance field and Resume investigation button. Changing source data requires a new incident. Standalone exported CLI runs may be explicitly recovered/continued (these commands return an investigator response; they do not independently grade the continuation):
 
 ```sh
-PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.graph_resume --workspace artifacts/generated/live-graph-six/case-003/evidence --guidance-file /path/to/guidance.txt
-PYTHONPATH=backend/src .venv/bin/python -m vdir.cli.graph_resume --workspace artifacts/generated/standalone-interrupted/evidence --recover
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter.cli.graph_resume --workspace artifacts/generated/live-graph-six/case-003/evidence --guidance-file /path/to/guidance.txt
+PYTHONPATH=backend/src .venv/bin/python -m sqlarbiter.cli.graph_resume --workspace artifacts/generated/standalone-interrupted/evidence --recover
 ```
 
 Use the app API for app-owned jobs so admission/ownership/audit rules remain enforced. Graph version, installed framework/provider versions, source bytes and exported code are checked on resume. Checkpoint migration is deliberately unsupported; changed versions require a new run.

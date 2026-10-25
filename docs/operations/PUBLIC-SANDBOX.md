@@ -1,6 +1,6 @@
 # Interactive public app and recording
 
-The [public VerifyOps app](https://verifyops.vercel.app/demo) now has an executable guided sandbox, in addition to the full private workbench. [Watch the continuous browser recording](https://verifyops.vercel.app/demo/recording). This supersedes the earlier read-only public deployment for the `/demo` experience; legacy private write routes remain blocked.
+The [public SQLArbiter app](https://sqlarbiter.vercel.app/demo) now has an executable guided sandbox, in addition to the full private workbench. [Watch the continuous browser recording](https://sqlarbiter.vercel.app/demo/recording). This supersedes the earlier read-only public deployment for the `/demo` experience; legacy private write routes remain blocked.
 
 ## Actual workflow
 
@@ -11,24 +11,24 @@ These are original synthetic fixtures and actual existing planner/verifier/execu
 ## Request and authority boundaries
 
 - `app.py` selects public mode and disables provider keys, persistent databases and embedded workers. Exact `/api/demo/*` POST paths are permitted; legacy writes remain HTTP405.
-- `backend/src/vdir/api/public_demo.py` reconstructs an isolated original fixture for each request and calls the existing implementation. No client-supplied business state is trusted.
+- `backend/src/sqlarbiter/api/public_demo.py` reconstructs an isolated original fixture for each request and calls the existing implementation. No client-supplied business state is trusted.
 - `demo_security.py` signs expiring source/result/stage envelopes with a private deployment secret. The envelope is bound to an HttpOnly, SameSite=Strict anonymous browser cookie; changed source/result versions, tampering and cross-browser reuse are rejected.
 - Session history is kept in this browser's sessionStorage. Exported JSON omits the workflow envelope. There is no shared public history or durable review ledger.
 - A previously signed branch can be replayed or forked until expiry. Each replay starts a fresh isolated fixture. This is not global exactly-once execution, irrevocable review, tenant identity or production business mutation.
-- The functions use temporary files and bounded inputs. VerifyOps limits each instance to two concurrent investigations and checks a25second execution allowance. These are per-instance controls, not a distributed rate limiter or a billing cap.
-- Secrets `VDIR_DEMO_SECRET` must be configured privately (at least48characters); never put them in tracked files or a browser bundle. No model key is needed for this sandbox.
+- The functions use temporary files and bounded inputs. SQLArbiter limits each instance to two concurrent investigations and checks a25second execution allowance. These are per-instance controls, not a distributed rate limiter or a billing cap.
+- Secrets `SQLARBITER_DEMO_SECRET` must be configured privately (at least48characters); never put them in tracked files or a browser bundle. No model key is needed for this sandbox.
 
 ## Reproduce and inspect
 
 ```sh
 python scripts/demos/public_demo_browser.py
-python scripts/demos/public_demo_browser.py --url https://verifyops.vercel.app
+python scripts/demos/public_demo_browser.py --url https://sqlarbiter.vercel.app
 python scripts/demos/public_demo_browser.py --record --publish-assets --output artifacts/generated/public-demo-recording
 ```
 
 The browser runner exercises actual actions, failed-state boundaries, a JSON download, reload/history, a second isolated browser, mobile layout and the native video player. Unit tests in `tests/test_public_demo.py` cover tampering, cross-browser scope and version/review/write gates. CI also retains the existing private integration, container and infrastructure checks.
 
-Recordings are Playwright WebM captures of the browser journey. The tracked file is `frontend/apps/demo/assets/media/walkthrough.webm`. The six-frame preview is `docs/assets/demos/verifyops-interactive-demo.gif`. [Source hashes](../demos/interactive-recording.json) bind the capture.
+Recordings are Playwright WebM captures of the browser journey. The tracked file is `frontend/apps/demo/assets/media/walkthrough.webm`. The six-frame preview is `docs/assets/demos/sqlarbiter-interactive-demo.gif`. [Source hashes](../demos/interactive-recording.json) bind the capture.
 
 The native suite is 202 tests, with five PostgreSQL or dbt skips unless that integration is configured. The public browser journey covers investigation, a rejected repair, and exact-result review. PostgreSQL, container, and dbt checks run in CI.
 

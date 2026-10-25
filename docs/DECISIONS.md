@@ -47,7 +47,7 @@ Authoritative event IDs define deduplication, so a payload conflict cannot be re
 
 ## ADR-006 Persistent jobs and a separate worker
 
-FastAPI handles HTTP and a separate worker executes investigations. Queued work, results, and reviews survive restart. Atomic claims, renewable leases, and explicit interrupted outcomes prevent concurrent ownership and automatic paid retries. SQLite is the offline adapter; PostgreSQL is selected with `VDIR_DATABASE_URL` ([ADR-019](#adr-019-postgresql-coordination-and-kubernetes)).
+FastAPI handles HTTP and a separate worker executes investigations. Queued work, results, and reviews survive restart. Atomic claims, renewable leases, and explicit interrupted outcomes prevent concurrent ownership and automatic paid retries. SQLite is the offline adapter; PostgreSQL is selected with `SQLARBITER_DATABASE_URL` ([ADR-019](#adr-019-postgresql-coordination-and-kubernetes)).
 
 ## ADR-007 Version-bound review
 

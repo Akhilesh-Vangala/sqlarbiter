@@ -11,11 +11,11 @@ import httpx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from vdir.product.accounts import Provider, attach as accounts
-from vdir.uploads.api import attach as uploads
-from vdir.uploads.ingestion import Preview, Upload, UploadProblem, preview, profile
-from vdir.uploads.service import run
-from vdir.uploads.signing import attest, verify_report
+from sqlarbiter.product.accounts import Provider, attach as accounts
+from sqlarbiter.uploads.api import attach as uploads
+from sqlarbiter.uploads.ingestion import Preview, Upload, UploadProblem, preview, profile
+from sqlarbiter.uploads.service import run
+from sqlarbiter.uploads.signing import attest, verify_report
 
 ROOT = Path(__file__).resolve().parents[3]
 SOURCE = "id,amount,region,status\na,12.34,East,done\na,12.34,East,done\nb,2.50,West,pending\n"
@@ -29,7 +29,7 @@ def upload(source=SOURCE):
 class ProductEvidenceTests(unittest.TestCase):
     def setUp(self):
         self.app = FastAPI()
-        uploads(self.app, "VerifyOps", ROOT)
+        uploads(self.app, "SQLArbiter", ROOT)
         self.client = TestClient(self.app)
 
     def test_profile_and_preview_find_late_error_without_exposing_every_record(self):
@@ -65,7 +65,7 @@ class ProductEvidenceTests(unittest.TestCase):
         self.assertEqual(result["summary"]["excluded_source_rows"], 1)
 
     def test_attestation_rejects_nested_tampering_and_wrong_key(self):
-        with patch.dict(os.environ, {"VDIR_REPORT_SIGNING_KEY": "a"*64}):
+        with patch.dict(os.environ, {"SQLARBITER_REPORT_SIGNING_KEY": "a"*64}):
             report = attest(run(upload()))
             self.assertTrue(verify_report(report))
             altered = copy.deepcopy(report)
@@ -74,7 +74,7 @@ class ProductEvidenceTests(unittest.TestCase):
             altered = copy.deepcopy(report)
             altered["checks"][next(iter(altered["checks"]))] = False
             self.assertFalse(verify_report(altered))
-        with patch.dict(os.environ, {"VDIR_REPORT_SIGNING_KEY": "b"*64}):
+        with patch.dict(os.environ, {"SQLARBITER_REPORT_SIGNING_KEY": "b"*64}):
             self.assertFalse(verify_report(report))
         for receipt in (None, "bad", {}, {"version": "v1", "signature": "x"}):
             self.assertFalse(verify_report({"attestation": receipt}))
@@ -107,7 +107,7 @@ class HostedAccountTests(unittest.TestCase):
         self.status = 200
         self.service = Provider("https://account.example", "sb_publishable_" + "x"*32, httpx.MockTransport(self.respond))
         app = FastAPI()
-        uploads(app, "VerifyOps", ROOT)
+        uploads(app, "SQLArbiter", ROOT)
         accounts(app, self.service)
         self.client = TestClient(app, base_url="https://verify.example")
 
@@ -204,13 +204,13 @@ class HostedAccountTests(unittest.TestCase):
             Provider("https://account.example", "sb_secret_admin")
         with self.assertRaises(ValueError):
             Provider("https://account.example/redirect", "sb_publishable_"+"x"*32)
-        with patch.dict(os.environ, {"VDIR_ACCOUNT_SIGNUP": "0"}):
+        with patch.dict(os.environ, {"SQLARBITER_ACCOUNT_SIGNUP": "0"}):
             self.assertFalse(self.client.get("/api/account/config").json()["signup_enabled"])
             self.assertEqual(self.client.post("/api/account/sign-up", json={}).status_code, 403)
 
     def test_missing_configuration_is_explicitly_disabled(self):
         app = FastAPI()
-        with patch.dict(os.environ, {"VDIR_SUPABASE_URL": "", "VDIR_SUPABASE_PUBLISHABLE_KEY": ""}):
+        with patch.dict(os.environ, {"SQLARBITER_SUPABASE_URL": "", "SQLARBITER_SUPABASE_PUBLISHABLE_KEY": ""}):
             accounts(app)
         with TestClient(app) as client:
             self.assertFalse(client.get("/api/account/config").json()["enabled"])

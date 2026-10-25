@@ -1,7 +1,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: verifyops-api
+  name: sqlarbiter-api
 spec:
   minAvailable: 1
   selector:

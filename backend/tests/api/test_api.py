@@ -11,11 +11,11 @@ except ImportError:
     AVAILABLE = False
 
 if AVAILABLE:
-    from vdir.api.routes import create_app
+    from sqlarbiter.api.routes import create_app
 
-from vdir.domain.cases import JOIN_SQL
-from vdir.persistence.jobs import JobStore
-from vdir.workflows.service import process_next
+from sqlarbiter.domain.cases import JOIN_SQL
+from sqlarbiter.persistence.jobs import JobStore
+from sqlarbiter.workflows.service import process_next
 
 
 @unittest.skipUnless(AVAILABLE, "Install web/test dependencies for API checks")
@@ -39,7 +39,7 @@ class WorkbenchAPITests(unittest.TestCase):
         self.assertEqual(self.client.get("/readyz").json(), {"status": "ready"})
 
     def test_metric_definition_exposes_only_current_public_metadata_and_requires_access(self):
-        from vdir.domain.cases import incidents
+        from sqlarbiter.domain.cases import incidents
         case = incidents()[0]
         response = self.client.get("/api/incidents/" + case.case_id)
         value = response.json()
@@ -192,9 +192,9 @@ class WorkbenchAPITests(unittest.TestCase):
             create_app(self.root, token="", public_origin="https://workbench.example")
 
     def test_public_showcase_allows_remote_reads_and_blocks_changes(self):
-        with patch.dict(os.environ, {"VDIR_PUBLIC_SHOWCASE": "1"}):
+        with patch.dict(os.environ, {"SQLARBITER_PUBLIC_SHOWCASE": "1"}):
             public_app = create_app(self.root / "public", token="", operator="public-showcase")
-        with TestClient(public_app, base_url="https://verifyops.example", client=("203.0.113.10", 1)) as public:
+        with TestClient(public_app, base_url="https://sqlarbiter.example", client=("203.0.113.10", 1)) as public:
             self.assertEqual(public.get("/").status_code, 200)
             config = public.get("/api/config")
             self.assertEqual(config.status_code, 200)
@@ -234,7 +234,7 @@ class WorkbenchAPITests(unittest.TestCase):
         from fixtures.model_fixtures import ScriptedClient
         from fixtures.model_fixtures import completion
         from fixtures.model_fixtures import call
-        from vdir.evaluation import evaluation
+        from sqlarbiter.evaluation import evaluation
         original_worker = evaluation.run_worker
         identities = []
         def provider(workspace, *, mode="baseline", requests=None, continuation=None, spend_root=None):
@@ -252,8 +252,8 @@ class WorkbenchAPITests(unittest.TestCase):
                     "evidence_ids": [evidence], "affected_ids": ["t1", "t2"], "required_fields": ["utc_offset_minutes"]})])
             steps = [clarify] if continuation else [completion([call("contract", {})]), clarify]
             return asyncio.run(graph_investigate(EvidenceTools(workspace), ScriptedClient(steps), **(continuation or {})))
-        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-only", "VDIR_ANTHROPIC_MODEL": "test-only"}), \
-                patch("vdir.evaluation.evaluation.run_worker", side_effect=provider):
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-only", "SQLARBITER_ANTHROPIC_MODEL": "test-only"}), \
+                patch("sqlarbiter.evaluation.evaluation.run_worker", side_effect=provider):
             response = self.client.post("/api/jobs", json={"case_id": "case-003", "investigator": "langgraph"},
                 headers={"Idempotency-Key": "graph-pausing"})
             self.assertEqual(response.status_code, 202)

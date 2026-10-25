@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from opentelemetry.proto.collector.trace.v1.trace_service_pb2 import ExportTraceServiceRequest
-from vdir.platform.observability import Telemetry
+from sqlarbiter.platform.observability import Telemetry
 
 
 class TraceExportTests(unittest.TestCase):
@@ -30,11 +30,11 @@ class TraceExportTests(unittest.TestCase):
         thread.start()
         try:
             with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {
-                    "VDIR_OTLP_ENDPOINT": "http://127.0.0.1:%d/v1/traces" % server.server_port}):
+                    "SQLARBITER_OTLP_ENDPOINT": "http://127.0.0.1:%d/v1/traces" % server.server_port}):
                 telemetry = Telemetry(directory)
                 with telemetry.root("investigation"):
                     with telemetry.span("llm.round", **{"gen_ai.usage.input_tokens": 20}):
-                        with telemetry.span("tool.query", **{"vdir.engine": "duckdb"}):
+                        with telemetry.span("tool.query", **{"arbiter.engine": "duckdb"}):
                             pass
                 telemetry.close()
                 local = [json.loads(line) for line in (Path(directory) / "spans.jsonl").read_text().splitlines()]

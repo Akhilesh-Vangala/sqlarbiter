@@ -33,7 +33,7 @@ class EvidenceTools:
         return json.loads(path.read_text())
 
     def call(self, method, params=None):
-        context = self.telemetry.span("tool." + str(method), **{"vdir.engine": self.engine}) if self.telemetry else nullcontext()
+        context = self.telemetry.span("tool." + str(method), **{"arbiter.engine": self.engine}) if self.telemetry else nullcontext()
         with context:
             return self._call(method, params)
 

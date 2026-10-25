@@ -1,19 +1,19 @@
 # Reproducible local production topology. PostgreSQL owns durable coordination;
 # the shared state volume holds bounded execution workspaces and local evidence.
 x-environment: &environment
-  VDIR_ACCESS_TOKEN: ${VDIR_ACCESS_TOKEN:?Set a private operator access code of at least 32 characters}
-  VDIR_OPERATOR_NAME: ${VDIR_OPERATOR_NAME:-operator}
-  VDIR_PUBLIC_ORIGIN: ${VDIR_PUBLIC_ORIGIN:-}
+  SQLARBITER_ACCESS_TOKEN: ${SQLARBITER_ACCESS_TOKEN:?Set a private operator access code of at least 32 characters}
+  SQLARBITER_OPERATOR_NAME: ${SQLARBITER_OPERATOR_NAME:-operator}
+  SQLARBITER_PUBLIC_ORIGIN: ${SQLARBITER_PUBLIC_ORIGIN:-}
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-  VDIR_ANTHROPIC_MODEL: ${VDIR_ANTHROPIC_MODEL:-}
-  VDIR_STATE_DIR: /state
-  VDIR_DATABASE_URL: postgresql://verifyops:${VDIR_POSTGRES_PASSWORD:?Set VDIR_POSTGRES_PASSWORD}@postgres:5432/verifyops
-  VDIR_CHECKPOINT_DATABASE_URL: postgresql://verifyops:${VDIR_POSTGRES_PASSWORD}@postgres:5432/verifyops
-  VDIR_DATABASE_POOL_SIZE: ${VDIR_DATABASE_POOL_SIZE:-5}
-  VDIR_RUN_BUDGET_USD: ${VDIR_RUN_BUDGET_USD:-1}
-  VDIR_TOTAL_BUDGET_USD: ${VDIR_TOTAL_BUDGET_USD:-5}
-  VDIR_SQL_ENGINE: ${VDIR_SQL_ENGINE:-duckdb}
-  VDIR_OTLP_ENDPOINT: ${VDIR_OTLP_ENDPOINT:-http://phoenix:6006/v1/traces}
+  SQLARBITER_ANTHROPIC_MODEL: ${SQLARBITER_ANTHROPIC_MODEL:-}
+  SQLARBITER_STATE_DIR: /state
+  SQLARBITER_DATABASE_URL: postgresql://sqlarbiter:${SQLARBITER_POSTGRES_PASSWORD:?Set SQLARBITER_POSTGRES_PASSWORD}@postgres:5432/sqlarbiter
+  SQLARBITER_CHECKPOINT_DATABASE_URL: postgresql://sqlarbiter:${SQLARBITER_POSTGRES_PASSWORD}@postgres:5432/sqlarbiter
+  SQLARBITER_DATABASE_POOL_SIZE: ${SQLARBITER_DATABASE_POOL_SIZE:-5}
+  SQLARBITER_RUN_BUDGET_USD: ${SQLARBITER_RUN_BUDGET_USD:-1}
+  SQLARBITER_TOTAL_BUDGET_USD: ${SQLARBITER_TOTAL_BUDGET_USD:-5}
+  SQLARBITER_SQL_ENGINE: ${SQLARBITER_SQL_ENGINE:-duckdb}
+  SQLARBITER_OTLP_ENDPOINT: ${SQLARBITER_OTLP_ENDPOINT:-http://phoenix:6006/v1/traces}
 
 x-runtime: &runtime
   build:
@@ -37,13 +37,13 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: verifyops
-      POSTGRES_USER: verifyops
-      POSTGRES_PASSWORD: ${VDIR_POSTGRES_PASSWORD:?Set VDIR_POSTGRES_PASSWORD}
+      POSTGRES_DB: sqlarbiter
+      POSTGRES_USER: sqlarbiter
+      POSTGRES_PASSWORD: ${SQLARBITER_POSTGRES_PASSWORD:?Set SQLARBITER_POSTGRES_PASSWORD}
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U verifyops -d verifyops"]
+      test: ["CMD-SHELL", "pg_isready -U sqlarbiter -d sqlarbiter"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -63,7 +63,7 @@ services:
 
   migrate:
     <<: *runtime
-    command: ["python", "-m", "vdir.persistence.migrations"]
+    command: ["python", "-m", "sqlarbiter.persistence.migrations"]
     depends_on:
       postgres:
         condition: service_healthy
@@ -72,7 +72,7 @@ services:
   api:
     <<: *runtime
     ports:
-      - "127.0.0.1:${VDIR_PORT:-8000}:8000"
+      - "127.0.0.1:${SQLARBITER_PORT:-8000}:8000"
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -81,7 +81,7 @@ services:
 
   worker:
     <<: *runtime
-    command: ["python", "-m", "vdir.workers.worker", "--state-dir", "/state"]
+    command: ["python", "-m", "sqlarbiter.workers.worker", "--state-dir", "/state"]
     depends_on:
       migrate:
         condition: service_completed_successfully

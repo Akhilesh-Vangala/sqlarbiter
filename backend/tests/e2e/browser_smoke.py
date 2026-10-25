@@ -14,7 +14,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import expect
-from vdir.domain.cases import JOIN_SQL
+from sqlarbiter.domain.cases import JOIN_SQL
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -26,14 +26,14 @@ def main():
         connection.bind(("127.0.0.1", 0))
         port = connection.getsockname()[1]
     environment = os.environ.copy()
-    environment["VDIR_LOAD_DOTENV"] = "0"
-    for name in ("ANTHROPIC_API_KEY", "VDIR_ANTHROPIC_MODEL", "VDIR_ACCESS_TOKEN", "VDIR_PUBLIC_ORIGIN"):
+    environment["SQLARBITER_LOAD_DOTENV"] = "0"
+    for name in ("ANTHROPIC_API_KEY", "SQLARBITER_ANTHROPIC_MODEL", "SQLARBITER_ACCESS_TOKEN", "SQLARBITER_PUBLIC_ORIGIN"):
         environment.pop(name, None)
     environment["PYTHONPATH"] = str(ROOT / "backend" / "src")
     url = "http://127.0.0.1:%d" % port
     errors = []
     with (output / "server.log").open("w") as logs:
-        process = subprocess.Popen([sys.executable, "-m", "vdir.cli.serve", "--port", str(port),
+        process = subprocess.Popen([sys.executable, "-m", "sqlarbiter.cli.serve", "--port", str(port),
                                     "--state-dir", str(output / "state")], cwd=str(ROOT),
                                    env=environment, stdout=logs, stderr=logs)
         try:

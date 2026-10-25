@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-from vdir.api.routes import create_app
+from sqlarbiter.api.routes import create_app
 
 
 class PublicDemoTests(unittest.TestCase):
@@ -14,10 +14,10 @@ class PublicDemoTests(unittest.TestCase):
         self.env = patch.dict(
             os.environ,
             {
-                "VDIR_PUBLIC_SHOWCASE": "1",
-                "VDIR_PUBLIC_DEMO": "1",
-                "VDIR_DEMO_SECRET": "local-test-secret-" + "x" * 64,
-                "VDIR_LOAD_DOTENV": "0",
+                "SQLARBITER_PUBLIC_SHOWCASE": "1",
+                "SQLARBITER_PUBLIC_DEMO": "1",
+                "SQLARBITER_DEMO_SECRET": "local-test-secret-" + "x" * 64,
+                "SQLARBITER_LOAD_DOTENV": "0",
             },
         )
         self.env.start()
@@ -39,7 +39,7 @@ class PublicDemoTests(unittest.TestCase):
         return r.json()
 
     def test_base_interpreter_can_load_only_trusted_external_dependencies(self):
-        from vdir.evaluation import evaluation
+        from sqlarbiter.evaluation import evaluation
 
         # Mimic a serverless base interpreter without the parent's venv paths.
         with patch.object(evaluation.sys, "executable", sys._base_executable):
@@ -120,7 +120,7 @@ class PublicDemoTests(unittest.TestCase):
                 ).status_code,
                 403,
             )
-        with patch("vdir.api.demo_security.time.time", return_value=9999999999):
+        with patch("sqlarbiter.api.demo_security.time.time", return_value=9999999999):
             self.assertEqual(
                 self.client.post(
                     "/api/demo/review", json={"token": token, "action": "approve"}

@@ -6,9 +6,9 @@ import time
 import unittest
 from pathlib import Path
 
-from vdir.workflows.dbt_workflow import run_dbt
-from vdir.evaluation.evaluation import ExecutionInterrupted
-from vdir.evaluation.evaluation import execution_scope
+from sqlarbiter.workflows.dbt_workflow import run_dbt
+from sqlarbiter.evaluation.evaluation import ExecutionInterrupted
+from sqlarbiter.evaluation.evaluation import execution_scope
 
 
 @unittest.skipUnless(os.name == "posix", "Process-group dbt execution uses POSIX supervision")

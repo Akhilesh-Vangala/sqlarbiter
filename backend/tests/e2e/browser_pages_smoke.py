@@ -11,8 +11,8 @@ from unittest.mock import patch
 import uvicorn
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import expect
-from vdir.api.routes import create_app
-from vdir.workflows.service import process_next
+from sqlarbiter.api.routes import create_app
+from sqlarbiter.workflows.service import process_next
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -23,7 +23,7 @@ def main():
     def execute(store):
         with ThreadPoolExecutor(max_workers=1) as workers:
             return workers.submit(process_next, store).result()
-    with patch.dict(os.environ, {'ANTHROPIC_API_KEY': '', 'VDIR_ANTHROPIC_MODEL': '', 'VDIR_LOAD_DOTENV': '0'}):
+    with patch.dict(os.environ, {'ANTHROPIC_API_KEY': '', 'SQLARBITER_ANTHROPIC_MODEL': '', 'SQLARBITER_LOAD_DOTENV': '0'}):
         app = create_app(output / 'state', token='', operator='page-test-operator')
         with socket.socket() as reserve:
             reserve.bind(('127.0.0.1', 0)); port = reserve.getsockname()[1]

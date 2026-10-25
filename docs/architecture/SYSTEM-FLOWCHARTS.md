@@ -1,4 +1,4 @@
-# VerifyOps system flowcharts
+# SQLArbiter system flowcharts
 
 Flows for the workbench, the investigator, and the dbt repair. [Overview](OVERVIEW.md).
 

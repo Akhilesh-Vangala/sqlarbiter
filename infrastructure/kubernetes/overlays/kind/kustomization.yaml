@@ -1,20 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: verifyops
+namespace: sqlarbiter
 resources:
   - ../../base
   - postgres.yaml
 secretGenerator:
-  - name: verifyops-secrets
+  - name: sqlarbiter-secrets
     literals:
-      - VDIR_DATABASE_URL=postgresql://verifyops:kind-only-password@postgres:5432/verifyops
-      - VDIR_CHECKPOINT_DATABASE_URL=postgresql://verifyops:kind-only-password@postgres:5432/verifyops
-      - VDIR_ACCESS_TOKEN=kind-only-access-token-0000000000000000
+      - SQLARBITER_DATABASE_URL=postgresql://sqlarbiter:kind-only-password@postgres:5432/sqlarbiter
+      - SQLARBITER_CHECKPOINT_DATABASE_URL=postgresql://sqlarbiter:kind-only-password@postgres:5432/sqlarbiter
+      - SQLARBITER_ACCESS_TOKEN=kind-only-access-token-0000000000000000
 generatorOptions:
   disableNameSuffixHash: true
 images:
-  - name: verifyops
-    newName: verifyops
+  - name: sqlarbiter
+    newName: sqlarbiter
     newTag: kind
 patches:
   - path: kind-patch.yaml

@@ -1,4 +1,4 @@
-# VerifyOps infrastructure
+# SQLArbiter infrastructure
 
 | Folder | Contents |
 | --- | --- |

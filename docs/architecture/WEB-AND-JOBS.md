@@ -54,5 +54,5 @@ Source/execution version hashes bind the incident records, contract, transformat
 
 The local launcher binds 127.0.0.1; unauthenticated API requests require a loopback peer and an allowed Host. POST requests require JSON and reject mismatched browser origins. Responses use a restrictive content security policy. No general CORS permission is enabled.
 
-`VDIR_ACCESS_TOKEN` enables shared operator bearer access. It must contain at least 32 characters. The browser prompts for the code and keeps it in memory. `VDIR_PUBLIC_ORIGIN` requires HTTPS plus configured operator access. The token is a shared operator credential. Authentication is server configuration.
+`SQLARBITER_ACCESS_TOKEN` enables shared operator bearer access. It must contain at least 32 characters. The browser prompts for the code and keeps it in memory. `SQLARBITER_PUBLIC_ORIGIN` requires HTTPS plus configured operator access. The token is a shared operator credential. Authentication is server configuration.
 

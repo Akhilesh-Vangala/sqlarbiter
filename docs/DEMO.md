@@ -1,8 +1,8 @@
-# VerifyOps recorded demonstration
+# SQLArbiter recorded demonstration
 
-[Open the working app](https://verifyops.vercel.app/demo) · [Watch the continuous recording](https://verifyops.vercel.app/demo/recording) · [Download the WebM](../frontend/apps/demo/assets/media/walkthrough.webm) · [Capture/source manifest](demos/interactive-recording.json)
+[Open the working app](https://sqlarbiter.vercel.app/demo) · [Watch the continuous recording](https://sqlarbiter.vercel.app/demo/recording) · [Download the WebM](../frontend/apps/demo/assets/media/walkthrough.webm) · [Capture/source manifest](demos/interactive-recording.json)
 
-![Actual guided browser journey](assets/demos/verifyops-interactive-demo.gif)
+![Actual guided browser journey](assets/demos/sqlarbiter-interactive-demo.gif)
 
 The GIF is a six-frame preview. The WebM is a Playwright screen recording of the browser journey and the server results. The cases are the original development incidents.
 
@@ -33,6 +33,6 @@ Older private workbench/dbt captures remain available in docs/assets and their d
 
 ## Product workspace recording
 
-[Watch the file-to-report journey](https://verifyops.vercel.app/uploads/recording.html) · [Source and media manifest](demos/uploads-recording.json). The capture shows the landing, empty workspace, source preview, contract review, independent result, quality and SQL evidence, consented save, and saved history.
+[Watch the file-to-report journey](https://sqlarbiter.vercel.app/uploads/recording.html) · [Source and media manifest](demos/uploads-recording.json). The capture shows the landing, empty workspace, source preview, contract review, independent result, quality and SQL evidence, consented save, and saved history.
 
 Reproduce with `python scripts/demos/product_browser.py --record --output artifacts/generated/product-recording`. The optional `--axe` points to pinned axe-core 4.14.0.
