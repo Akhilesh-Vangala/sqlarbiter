@@ -38,10 +38,6 @@ GET `/api/incidents/{case_id}` exposes only current public case metadata: ID/tit
 
 API tests verify schema and contract equivalence, field boundaries, exclusion of private snapshot names, 404 behavior, and protected access. The server validates investigation section names.
 
-## Executed verification
+## Tests
 
-Local **111 unit tests / 31 existing browser checks / 20 scripted graph checks / 23 workflow/cancellation checks / 22 distinct-page checks** pass, totaling 96 browser checks. Page checks cover metric search/current metadata, preselected setup reload/cancel, real run/group execution, section links/reload/history, unavailable activity, settings, separate workflow collection/detail, missing metric/retry and six page types at five widths (320–1440 pixels), including neutral palette checks. Existing review/export/clarification/cancellation flows were rerun.
-
-Screenshots were inspected at desktop/mobile sizes. Tests initially found an ambiguous breadcrumb/navigation selector, a 320px navigation overflow, inherited large checkbox heights and an uncaught missing-case exception. Navigation selectors are scoped, mobile items fit, checkbox sizes are explicit and missing cases return 404.
-
-The same111unit/96browser checks passed in the current Linux ARM64 test container, exit0; unchanged fixed benchmark38/38. Read-only host45page/layout combinations and92,049neutral color values pass, with no mutation/error/overflow and one existing run preserved. Executed reports/logs/source hashes are collected under `artifacts/generated/proper-pages-001/summary.json`. Current localhost8000 is updated; Compose remains the preceding deep-workflows source and was not redeployed in this milestone. Earlier evidence belongs to its dated milestone and remains preserved. These pages are the project application, not the personal portfolio; `portfolio/` remains empty. No hosted model generation, external publication or cloud deployment occurred.
+`backend/tests/e2e/browser_pages_smoke.py` covers metric search and metadata, preselected setup with reload and cancel, run and workflow execution, section links with reload and history, unavailable activity, settings, workflow collection and detail, and a missing metric. It renders six page types at five widths from 320 to 1440 pixels.

@@ -4,7 +4,7 @@
 
 | Scope | Implemented checks |
 | --- | --- |
-| Native regression suite | 147 cases. Five PostgreSQL or dbt cases skip unless that integration is configured. CI provides those services. |
+| Native regression suite | 202 tests. Five PostgreSQL or dbt cases skip unless that integration is configured. CI provides PostgreSQL in the tests job and dbt in its own job. |
 | Public browser journey | Actual investigation, evidence/verification, version-bound review, false SQL repair rejection, JSON download, reload/history, mobile layout and video metadata. |
 | Private integration | Original SQL/workflow/cancellation/pages suites and actual dbt browser execution; native PostgreSQL ownership and Kind two-worker execution. |
 | Known synthetic regression | 38 fixed-diagnostic cases, plus five dbt fixtures and four output relations per patch verification. |

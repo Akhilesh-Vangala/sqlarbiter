@@ -1,7 +1,13 @@
-# Browser integration journeys
+# Browser journeys
 
-These scripts exercise real API/worker/frontend behavior across the repository. Run them from the root with PYTHONPATH=backend/src and installed Chromium.
+Playwright scripts that drive the API, worker, and frontend together. Run them from the repository root with `PYTHONPATH=backend/src` and Chromium installed.
 
-The graph journey uses deterministic provider fixtures from backend/tests/model_fixtures.py. Its explicit test-only import path keeps those fixtures outside production runtime code and avoids importing an entire unit-test module. Exported investigator tools remain under backend/investigator_runtime.
+| Script | Journey |
+| --- | --- |
+| `browser_smoke.py` | Investigation, evidence, revision, review, export, reload |
+| `browser_graph_smoke.py` | LangGraph investigator with scripted provider responses |
+| `browser_automation_smoke.py` | Multi-metric workflows and cancellation |
+| `browser_pages_smoke.py` | Page routes, history, and responsive layouts |
+| `browser_dbt_smoke.py` | dbt project run, patch download, revision, review |
 
-Generated captures/state stay under ignored artifacts/generated. [Current layout](../../../docs/development/LAYOUT.md).
+The graph journey loads responses from `backend/tests/fixtures/model_fixtures.py`. Generated captures and state go to the ignored `artifacts/generated/`.

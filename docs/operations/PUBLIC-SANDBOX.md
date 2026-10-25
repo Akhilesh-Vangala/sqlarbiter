@@ -30,7 +30,7 @@ The browser runner exercises actual actions, failed-state boundaries, a JSON dow
 
 Recordings are Playwright WebM captures of the browser journey. The tracked file is `frontend/apps/demo/assets/media/walkthrough.webm`. The six-frame preview is `docs/assets/demos/verifyops-interactive-demo.gif`. [Source hashes](../demos/interactive-recording.json) bind the capture.
 
-The native suite is 147 unit tests, with five PostgreSQL or dbt skips unless that integration is configured. The public browser journey covers investigation, a rejected repair, and exact-result review. PostgreSQL, container, and dbt checks run in CI.
+The native suite is 202 tests, with five PostgreSQL or dbt skips unless that integration is configured. The public browser journey covers investigation, a rejected repair, and exact-result review. PostgreSQL, container, and dbt checks run in CI.
 
 ## Observed deployment fixes
 

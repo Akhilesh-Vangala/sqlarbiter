@@ -66,7 +66,7 @@
     "backend/src/vdir/product/accounts.py": "8759c4be8003938414f8bff0414a2759ddbcb2735101a102a83a55b8d9b18711",
     "backend/src/vdir/product/api.py": "64dca786b60c6216c452fdc72ba8e248090dda25ef34f7a249673e99ac2c2e75",
     "backend/src/vdir/uploads/__init__.py": "6cf9cc3f23b8eb7fecf7b1f708e9627b7d6c5aacbe313fc0034cc082b4496ee4",
-    "backend/src/vdir/uploads/api.py": "95cf11c8a3d8d2158117655b2e8faf9d1083070fcac062ab5266f5baf417cb97",
+    "backend/src/vdir/uploads/api.py": "11c45d7d3aee44546011ee3d37cc645645271847ec56718f0338a336a73b9e6f",
     "backend/src/vdir/uploads/imports.py": "d025a3e701bca899913b580737065f1cb2f87084babc8699d582c03cb5ed778f",
     "backend/src/vdir/uploads/ingestion.py": "5d8bc63659a13b09d848639d1ce1870583f70a46c9c29f9465b521d25f9883a5",
     "backend/src/vdir/uploads/service.py": "6ea1eecfe0e5585fc7855c470829b5d4a1b43a3aa93939231bc2b2c05bedd5fd",

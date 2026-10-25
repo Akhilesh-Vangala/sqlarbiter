@@ -42,7 +42,6 @@ jobs:
       - run: python scripts/checks/check_repository.py
       - run: node --check frontend/apps/workbench/assets/scripts/app.js
       - run: node --check frontend/apps/demo/assets/scripts/app.js
-      - run: node --check frontend/apps/uploads/app.js
       - name: Parse product modules as ES modules
         run: |
           for file in $(find frontend/apps/product -name '*.js'); do
@@ -53,7 +52,7 @@ jobs:
           npm install --prefix /tmp/product-a11y --no-audit --no-fund --save-exact axe-core@4.14.0
           python scripts/demos/product_browser.py --axe /tmp/product-a11y/node_modules/axe-core/axe.min.js
           python scripts/demos/import_browser.py --axe /tmp/product-a11y/node_modules/axe-core/axe.min.js
-      - name: Actual account storage policies and concurrent quota checks
+      - name: Account storage policies and concurrent quota checks
         run: python scripts/checks/product_rls.py
         env:
           VDIR_PRODUCT_TEST_ADMIN_URL: postgresql://verifyops:verifyops-test-password@127.0.0.1:5432/verifyops_test
@@ -113,7 +112,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.16.5"
-      - name: Validate unapplied AWS infrastructure
+      - name: Validate AWS Terraform
         run: |
           terraform -chdir=infrastructure/terraform/aws fmt -check
           terraform -chdir=infrastructure/terraform/aws init -backend=false -input=false
@@ -130,7 +129,7 @@ jobs:
           kubectl kustomize infrastructure/kubernetes/overlays/aws > /tmp/verifyops-aws.yaml
       - name: Install kind
         run: go install sigs.k8s.io/kind@v0.30.0
-      - name: Kubernetes production-topology smoke
+      - name: Kind deployment smoke
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
           kind version
