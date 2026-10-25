@@ -1,6 +1,6 @@
-name: Engineering proposal
-description: Propose a measurable improvement to the supported workflow.
-title: "[Proposal]: "
+name: Change request
+description: Describe a change to the supported workflow.
+title: "[Change]: "
 body:
   - type: textarea
     id: problem
@@ -12,7 +12,7 @@ body:
   - type: textarea
     id: design
     attributes:
-      label: Proposed behavior and authority boundaries
+      label: Behavior and authority boundaries
       description: Explain the design, alternatives and effects on evidence, verification, review or recovery.
     validations:
       required: true

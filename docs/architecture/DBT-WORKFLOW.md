@@ -1,6 +1,6 @@
 # dbt project investigations in the browser
 
-October 12, 2026. Implements the browser integration of the [original dbt repair pipeline](SPENDING-AND-DBT.md). Existing six metric scenarios, history, spending controls and monochrome styling are preserved. The project accepts one trusted original sample; arbitrary repository uploads/remote warehouse connectors are not implemented.
+Browser integration of the [dbt repair pipeline](SPENDING-AND-DBT.md). The project accepts one trusted original sample.
 
 ## Pages and operator flow
 
@@ -28,7 +28,7 @@ Approval/rejection reuses the application's exact-version immutable review API. 
 
 All new API routes inherit the existing bearer/local-loopback, host/origin, JSON/body, CSP and no-store boundaries. Arbitrary project paths/code uploads are rejected by the request schema. Generic metric revision/resume routes cannot reinterpret dbt jobs. dbt clarification continuation remains unavailable; historical paused evidence can be inspected but needs a fresh controlled run rather than automatic paid replay.
 
-The project version hashes trusted source assets, implementation, runtime and dependency locks. The worker checks it before execution; changing source/code invalidates queued work rather than silently operating on another revision. Owner-fenced progress cannot be published after cancellation or lease loss. Each dbt subprocess runs in a supervised process group with90-second/log allowances; cancellation/shutdown/lost ownership stop and reap it. The full queued workflow has a600-second cooperative deadline, retaining existing270-second model-worker/240-second async and3-second query limits. Expired work is interrupted, never silently retried. PostgreSQL/distributed recovery and per-investigation OS isolation remain future release work.
+The project version hashes trusted source assets, implementation, runtime, and dependency locks. The worker checks that version before execution. A source or code change invalidates queued work. Owner-fenced progress cannot be published after cancellation or lease loss. Each dbt subprocess runs in a supervised process group. Cancellation, shutdown, and lost ownership stop and reap it. Expired work is interrupted and is not retried. PostgreSQL coordinates the queue when `VDIR_DATABASE_URL` is set. [Runtime](../operations/PRODUCTION-FOUNDATION.md).
 
 ## Tooling and containers
 
@@ -42,4 +42,4 @@ VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python backend/tests/e2e/bro
 VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -v
 ```
 
-Open http://127.0.0.1:8000/dbt. With configured API credit/key, explicit AI selections use the existing shared spend ledger; fixed execution does not call a model. Live AI quality, actual operator feedback, PostgreSQL migration, individual identity and cloud deployment remain pending. The nine-milestone tracker is not incremented by browser integration alone.
+Open http://127.0.0.1:8000/dbt. Fixed execution does not call a model. A configured provider uses the shared spend ledger.

@@ -1,6 +1,6 @@
 # PostgreSQL, Docker, Kubernetes and AWS foundation
 
-October 14, 2026 verification update. The production foundation is merged through [protected PR #4](https://github.com/Akhilesh-Vangala/verifyops/pull/4) and [current-main CI 38484384448](https://github.com/Akhilesh-Vangala/verifyops/actions/runs/38484384448) at main `0f71effb690e5c3b24c5fe97a1636b1c59f18f45`. It is infrastructure and durability work, not a claim that the application has completed monitored cloud or live-model milestones.
+PostgreSQL coordinates queue admission, leases, reviews, and LangGraph checkpoints. Kubernetes packages the API, worker, and migration roles. Terraform for AWS is validated in CI.
 
 ## Resulting topology
 
@@ -75,7 +75,7 @@ kubectl kustomize infrastructure/kubernetes/base
 
 ## Terraform
 
-`infrastructure/terraform/aws` prepares, but does not apply:
+`infrastructure/terraform/aws` defines:
 
 - an encrypted EKS control plane with restricted administrator CIDRs and full control-plane logs;
 - an on-demand managed node group;
@@ -107,16 +107,4 @@ An isolated PostgreSQL 17.11 installation was initialized under the ignored proj
 
 Actual post-merge Linux CI passes the native PostgreSQL suite, 96 native and 120 container browser checks, dedicated real dbt integration, runtime Docker build, Terraform validation, all Kustomize renders and the real Kind deployment smoke. Logs show the migration Job complete, API deployment ready, two worker pods running and authenticated baseline completion passing independent grading. This confirms container/ephemeral-cluster execution; AWS remains unapplied and the public Vercel service remains read-only. Downloaded exact-head logs/metadata are retained locally under `artifacts/generated/production-foundation-001/`.
 
-Kind runs with its default CNI; this smoke does not establish NetworkPolicy enforcement. A policy-capable staging CNI and dedicated deny/allow tests remain required.
-
-## Remaining release gates
-
-This foundation does not yet complete:
-
-- individual OIDC identity, workspace roles or cross-tenant authorization;
-- object-store synchronization that removes the shared POSIX workspace;
-- one isolated task per untrusted dbt project;
-- a deployed EKS/RDS/EFS environment, TLS/domain wiring or operational alert proof;
-- live-model held-out evaluation, user validation or measured production SLOs.
-
-The current Kubernetes architecture is a truthful staging step: distributed coordination is PostgreSQL-backed, while execution artifacts use EFS. Moving immutable artifacts to S3 and isolating each untrusted execution are subsequent security and scalability slices.
+Kind runs with its default CNI. The smoke submits an authenticated baseline incident and requires an independently verified result. Coordination is PostgreSQL-backed. Execution artifacts use the shared filesystem claim.

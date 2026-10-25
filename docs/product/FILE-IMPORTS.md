@@ -10,7 +10,7 @@ The public product accepts **CSV, TSV, Excel `.xlsx`, JSON and JSONL**. Select o
 | JSON | A non-empty array of flat record objects. Every object must have the same field set; use null for a missing value. The first record fixes column order. Numeric lexemes use Decimal rather than a binary-float intermediate. |
 | JSONL | One flat object per line, same field requirements; blank record lines are refused. |
 
-TSV/JSON/JSONL/Excel normalize to an inspectable CSV table. The browser records format, selected sheet, original-file SHA256 and normalized-table SHA256. Import metadata describes conversion; it does not authenticate a business document or establish real-world truth. Checked report receipts authenticate the computed report and its normalized source contract, as before. Device snapshots and portable backups retain the normalized table/rules/report; they do not archive the original binary workbook. Cloud saves remain unavailable until a real provider is configured.
+TSV/JSON/JSONL/Excel normalize to an inspectable CSV table. The browser records format, selected sheet, original-file SHA256 and normalized-table SHA256. Import metadata describes conversion; it does not authenticate a business document or establish real-world truth. Checked report receipts authenticate the computed report and its normalized source contract, as before. Device snapshots and portable backups retain the normalized table, rules, and report. They do not archive the original binary workbook. Cloud save runs only when a provider is configured.
 
 ## Limits and rejection behavior
 

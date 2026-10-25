@@ -1,8 +1,6 @@
 # Shared spend admission and original dbt repair workflow
 
-October 12, 2026. Implemented and verified locally. Live model quality/cloud operation remain unverified.
-
-Later October12: the trusted sample is now available as a queued browser project with progress, revisions, protected patch downloads and exact-version review. [Browser workflow](DBT-WORKFLOW.md). The CLI-only/pending browser statements below describe the earlier milestone. Arbitrary repository/warehouse connectors remain pending.
+The trusted sample runs as a queued browser project with progress, revisions, protected patch downloads, and exact-version review. [Browser workflow](DBT-WORKFLOW.md). The CLI below runs the same repair.
 
 ## Spend admission
 
@@ -19,7 +17,7 @@ VDIR_TOTAL_BUDGET_USD=5
 
 Default ledger: state-dir/spend.sqlite. API/workers/CLI share it when using the same state configuration. Override VDIR_SPEND_LEDGER with a common absolute path when needed. VDIR_PRICE_PROFILE defaults to backend/data/pricing/claude-sonnet-5-5.json, checked against [official pricing](https://platform.claude.com/docs/en/about-claude/pricing) on October12. Reservations conservatively use the highest configured input/cache rate, including one-hour cache writes; current requests send no cache controls. Profiles must match resolved models. Ledger policy is bound at creation: changing limits/rates cannot silently reset balances. Preserve old records and explicitly select a new ledger for a new allowance period. Do not discard unknown receipts to manufacture available budget. Provider-side billing settings complement these controls.
 
-Authenticated GET /api/spend exposes allowances, remaining estimate and settled/reserved/unknown/overrun counts, without paths or credentials. Settings displays actual read-only amounts and unresolved requests. Graph child continuation is a new workspace allowance; inherited token budgets and the shared ledger still apply. Operator billing reconciliation and PostgreSQL coordination remain pending.
+Authenticated `GET /api/spend` exposes allowances, the remaining estimate, and settled, reserved, unknown, and overrun counts. Settings shows those recorded amounts. A graph continuation gets a new workspace allowance. Inherited token budgets and the shared ledger still apply.
 
 ## Original payment-revenue incident
 
@@ -44,9 +42,7 @@ PYTHONPATH=backend/src .venv/bin/python -m vdir.workflows.dbt_workflow --output 
 VDIR_RUN_DBT_TESTS=1 VDIR_LOAD_DOTENV=0 PYTHONPATH=backend/src .venv/bin/python -m unittest discover -s backend/tests -p test_dbt_integration.py -v
 ```
 
-Other machines: python3.11 -m venv .venv-dbt, then .venv-dbt/bin/python -m pip install -r backend/requirements-dbt.txt. VDIR_DBT_EXECUTABLE/--dbt-executable overrides the tooling binary. Container images include the source fixture; executing dbt also requires its tooling environment. This is a CLI workflow, not yet a queued browser dbt connector.
-
---investigator langgraph or anthropic makes billable calls with private provider configuration and valid spend policy. No live generation is in this milestone. Evaluate a small case first and report real failures/results.
+Other machines: `python3.11 -m venv .venv-dbt`, then `.venv-dbt/bin/python -m pip install -r backend/requirements/dbt.txt`. `VDIR_DBT_EXECUTABLE` overrides the tooling binary. Container images include the source fixture and the dbt environment. The same project is queued from the browser.
 
 Exact-version local review:
 
@@ -54,10 +50,6 @@ Exact-version local review:
 PYTHONPATH=backend/src .venv/bin/python -m vdir.workflows.dbt_workflow --review-report artifacts/generated/my-dbt-run/report.json --expected-version REPORT_VERSION --action approved --note "Reviewed contract and independent checks"
 ```
 
-Use the actual version. Approval requires passing verification and matching report/diff hashes; review.json is immutable. It records local review only, with no production SQL write/merge. No actual operator approval of the generated demonstration is claimed; test approvals use temporary directories.
+Use the actual version. Approval requires passing verification and matching report and diff hashes. `review.json` is immutable. Review records the decision. It does not write production SQL.
 
-## Evidence and release boundaries
-
-Local artifacts/generated/dbt-incident-003/report.json passes five fixtures/four output relations; original daily amount2400 becomes1200. Real integration also rejects the equal-value false fix. Cost tests cover independent-process admission, restart/unknown retention, invalid model/policy/usage, overrun blocking and real SDK mocked-HTTP spend/no-retry/settlement. CI has a separate dbt job; final remote outcomes are recorded separately after verification.
-
-No PostgreSQL migration, individual authentication, OS execution sandbox, cloud deployment, live benchmark or user feedback claimed. dbt release milestone remains partial until live diagnosis and actual operator review. Vercel remains optional for a later frontend; full app/API/worker hosting still uses a proposed container architecture.
+The repair is checked across five fixtures and four output relations. The original daily amount moves from 2400 cents to 1200. The equal-value false fix fails regression. CI runs this in the dedicated dbt job. PostgreSQL coordinates API and worker processes when configured. [Runtime](../operations/PRODUCTION-FOUNDATION.md).

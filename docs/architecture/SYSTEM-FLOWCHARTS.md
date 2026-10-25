@@ -1,6 +1,6 @@
 # VerifyOps system flowcharts
 
-Current implementation, October 12, 2026. This is the visual reference for the [README](../../README.md). Live model quality and cloud deployment remain pending. Framework integration and scripted-provider tests do not establish AI accuracy.
+Flows for the workbench, the investigator, and the dbt repair. [Overview](OVERVIEW.md).
 
 ## Application and authority boundaries
 
@@ -39,7 +39,7 @@ flowchart TD
 - The worker owns execution and result publication. Cancellation or lost ownership prevents publication.
 - The investigator sees exported public evidence, not private regression data or reference answers.
 - Verification compares outputs with independent references, rather than accepting the model's own assertion.
-- Review records approval/rejection of the exact result. Production SQL application and repository merge are not implemented.
+- Review records approval or rejection of the exact result. It does not apply SQL to a warehouse or merge a repository.
 
 ## LangGraph AI layers
 
@@ -132,12 +132,12 @@ The project accepts one trusted original sample, not arbitrary repository upload
 
 | Layer | Ownership and persistence |
 | --- | --- |
-| Job lifecycle | SQLite jobs, events, workflows and reviews; atomic claims, renewable leases, heartbeats, owner-fenced progress/publication. |
-| Agent state | SQLite LangGraph checkpoints plus a separate call-receipt journal. Unresolved receipts block automatic replay. |
+| Job lifecycle | SQLite locally, PostgreSQL when configured. Atomic claims, renewable leases, heartbeats, owner-fenced publication. |
+| Agent state | LangGraph checkpoints plus a separate call-receipt journal. Unresolved receipts block automatic replay. |
 | Model spending | Shared estimated spend ledger: reserve before generation; settle complete reported usage; retain unknown reservations. Real generation retries are disabled. |
 | Cancellation | Supervised subprocess groups stop and reap work. Already-sent provider requests can still be billed. |
 | Observability | OTel spans propagate through jobs, model calls, tools and verification; JSONL locally or optional OTLP/Phoenix. |
-| Evaluation | Known 38-case synthetic corpus and repeated-attempt reporting; scripted integration checks remain separate from live quality. |
-| Delivery | Actual native, container and dbt GitHub Actions jobs; archived reports; no API key required for CI. |
+| Evaluation | Known 38-case synthetic corpus and repeated-attempt reporting. |
+| Delivery | Native, container, and dbt GitHub Actions jobs. |
 
-SQLite is single-host state. Individual identity, PostgreSQL/distributed recovery, OS-isolated execution, broader held-out/safety tests, actual user feedback and monitored cloud hosting remain pending. See [operational limits](../operations/PRODUCTION-FOUNDATION.md), [graph design](AGENT-ORCHESTRATION.md), [dbt workflow](DBT-WORKFLOW.md), and [spend accounting](SPENDING-AND-DBT.md).
+[Runtime](../operations/PRODUCTION-FOUNDATION.md) · [Graph](AGENT-ORCHESTRATION.md) · [dbt workflow](DBT-WORKFLOW.md) · [Spend accounting](SPENDING-AND-DBT.md).

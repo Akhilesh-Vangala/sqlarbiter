@@ -1,8 +1,8 @@
 # Findings, multi-metric workflows and cancellation
 
-October 8 later user direction: “have proper opages”. [Application pages](APPLICATION-PAGES.md) now provide full investigation/workflow setup and separate workflow collection/detail, with metrics/settings and direct section links. This supersedes setup-dialog descriptions below; cancellation/evidence inspection remain contextual dialogs. Agent/backend lifecycle behavior is unchanged.
+[Application pages](APPLICATION-PAGES.md) provide investigation and workflow setup, separate workflow collection and detail, metrics, settings, and direct section links. Cancellation and evidence inspection stay in contextual dialogs.
 
-October 8, 2026. Implemented in the existing project, with unchanged pinned dependencies. This milestone adds owned workflow **vdir-graph-3**, source-cited findings and public working memory, two analytical diagnostics, atomic multi-metric admission, supervised investigator cancellation and a monochrome Workflows page. Local checks: **109 unit tests, 31 existing browser checks, 20 scripted-provider graph browser checks and 23 automation browser checks**. The same checks pass inside Linux ARM64 Docker, exit 0. Read-only host verification covers 25 views and 52,049 neutral color values with no mutations, browser errors or overflow. Rebuilt Compose passes seven actual separate-worker workflow/cancellation/history checks.
+The owned workflow is `vdir-graph-3`: source-cited findings, public working memory, two analytical diagnostics, atomic multi-metric admission, and supervised cancellation.
 
 ## Business workflow
 
@@ -16,7 +16,7 @@ The graph now routes `record_findings` to a dedicated validation/checkpoint node
 
 Findings are model interpretations, not certified conclusions. Replacing a finding updates the current revision/hypothesis entry; prior plan revisions remain present. Three plan revisions with three hypotheses bound the ledger to nine entries. Source/runtime fingerprints bind checkpoints to this run. Old graph-2 checkpoints cannot be continued after the version change; their saved completed results remain readable. Manual candidate revisions still discard inherited agent assessments.
 
-Before each model round, the controller builds public working memory from the latest plan, its findings and the latest twelve evidence identifiers/methods/completeness flags. It appends this memory to the graph system prompt, and the official SDK counts and sends that same prompt. Raw result rows are not copied into this index. Original transcripts/receipts and resource limits remain intact: this is **not context compaction or a demonstrated token reduction**. Neither memory nor operator guidance overrides the authoritative contract or independent private evaluator. Structured memory follows the rationale in [Anthropic's context engineering guidance](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents); its benefit to live model quality still requires comparison.
+Before each model round, the controller builds public working memory from the latest plan, its findings and the latest twelve evidence identifiers/methods/completeness flags. It appends this memory to the graph system prompt, and the official SDK counts and sends that same prompt. Raw result rows are not copied into this index. Original transcripts/receipts and resource limits remain intact: this is **not context compaction or a demonstrated token reduction**. Neither memory nor operator guidance overrides the authoritative contract or the independent evaluator. The memory index follows the shape described in [Anthropic's context engineering guidance](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
 
 ```mermaid
 flowchart TD
@@ -70,10 +70,6 @@ Heartbeats keep a cancelling lease alive while its owner shuts down. Racing canc
 
 New routes `/workflows` and `/workflows/{id}` support reload, browser navigation and investigation-to-workflow back links. The workflow setup and cancellation overlays use native dialogs with focus return/Escape behavior; draft fields survive polling. Missing groups show an explicit unavailable/retry state. All content uses text nodes. The home page links into workflows; run context offers cancellation only for applicable states. Black/white/neutral gray styling and responsive navigation are preserved.
 
-Tests cover concurrent idempotent admission/capacity rollback, cancellation before/after claim and before publication, expired ownership, shutdown, actual child termination/reaping and output overflow; both diagnostic dialects include duplicate/null/unmatched/empty cases. Browser checks exercise real fixed-investigator grouped verification, scripted-provider graph findings, cancellation/audit safety, deep links/back/reload, no-approval cancelled outcomes, stable drafts and 320–1440-pixel layouts. No hosted model generation was performed.
+Tests cover concurrent idempotent admission and capacity rollback, cancellation before and after claim and before publication, expired ownership, shutdown, child termination, and output overflow. Browser checks exercise grouped verification, scripted graph findings, cancellation, deep links, and 320–1440-pixel layouts.
 
-Executed evidence is collected under `artifacts/generated/deep-workflows-001/summary.json` (ignored/local). Existing historical milestone reports remain intact. SQLite job/checkpoint state is still single-host; individual identity, distributed durable state, external dbt/warehouse integration, isolated execution, live matched evaluations, remote CI and cloud deployment remain release work.
-
-## Executed release-check evidence
-
-Test image/container: vdir:deep-workflows-test / vdir-deep-workflows-check, exit0. Both platforms pass109unit +31existing/20graph/23automationbrowser checks. Fixed38-case benchmark passes all known cases under this runtime hash. Compose rebuilt current API/worker after idle checks and verified grouped outcomes, exports/no automatic approval, immutable finished members and six cancellations; eighteen old Compose runs preserved. Host localhost8000 was restarted with one old run/status/result version preserved. No volumes/history were deleted or credentials copied. Full executed logs/copied reports/source hashes are in artifacts/generated/deep-workflows-001/summary.json; generated artifacts remain ignored and machine-local.
+The default local store is SQLite. PostgreSQL coordinates replicated API and worker processes. [Runtime](../operations/PRODUCTION-FOUNDATION.md).

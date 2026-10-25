@@ -1,6 +1,6 @@
 # Application pages
 
-October 8, 2026. User: “have proper opages”. Implemented a distinct page for each main task in the existing monochrome application. Investigation/workflow setup now occupy full pages. Workflow collection and detail no longer share a list-and-detail workspace. Evidence drawers and cancellation confirmations remain dialogs because they are contextual actions.
+Each main task has its own page. Investigation and workflow setup occupy full pages. Workflow collection and detail are separate. Evidence drawers and cancellation confirmations stay dialogs because they are contextual actions.
 
 ## Page map
 
@@ -36,7 +36,7 @@ A fixed investigator has no graph activity. Opening its activity URL explicitly 
 
 GET `/api/incidents/{case_id}` exposes only current public case metadata: ID/title/description, contract, current SQL, lineage, source table definitions, current snapshot ID and version. It includes no source rows, regression snapshots or evaluator functions/answers. Existing API access and no-store/CSP controls apply. Config adds the non-secret `access_mode` label (`local_loopback` or `shared_operator`) so settings describes the real mode rather than suggesting individual accounts exist.
 
-API tests verify current schema/contract equivalence, field boundaries, exclusion of private snapshot names, 404 behavior and protected access. The server validates investigation section names. Source/model/queue dependencies and graph-3 are unchanged; live AI quality remains unmeasured.
+API tests verify schema and contract equivalence, field boundaries, exclusion of private snapshot names, 404 behavior, and protected access. The server validates investigation section names.
 
 ## Executed verification
 

@@ -24,7 +24,7 @@ flowchart LR
     Checks --> Merge["Squash merge with conventional title"]
     Merge --> Main
     Merge --> Cleanup["Delete merged work branch"]
-    Main --> Release["Tag a verified commit when release gates are met"]
+    Main --> Release["Tag a verified commit for a supported release"]
 ```
 
 ## Protected main

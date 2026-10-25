@@ -1,12 +1,8 @@
 # Web workbench and persistent jobs
 
-October 8 page update: [full task pages and section URLs](APPLICATION-PAGES.md) replace setup dialogs. Workflow collection/detail are separate; metric catalog/definitions and read-only settings are implemented. Local/Linux111unit +96browser checks and host45page/layout checks pass. API/current-public-metadata access tests retain the evaluator boundary. Earlier dialogs/layouts below are preserved historical descriptions.
+FastAPI serves the HTML, CSS, and JavaScript workbench. A separate worker executes investigations and independent verification. [Page map](APPLICATION-PAGES.md). [Workflows and cancellation](WORKFLOWS.md).
 
-October 8: [graph findings, multi-metric workflow admission, worker cancellation and new workflow pages](WORKFLOWS.md) are implemented and verified with 109 unit / 74 browser checks locally and in Linux containers. State is still single-host, and live model quality remains unmeasured. Earlier milestone evidence below is preserved.
-
-Implemented October 7, 2026. Local application at http://127.0.0.1:8000 when the launcher is running. FastAPI serves an original HTML/CSS/JavaScript interface; the separate worker executes investigations and independent verification. This application belongs to the project, not the personal portfolio folder.
-
-User-requested monochrome theme: black surfaces, white type and neutral gray controls/borders across desktop/mobile, evidence/SQL, dialogs, statuses and toasts. Success/failure/clarification retain explicit labels/icons and distinct/dashed borders; no color filter is used. October 8 adds a home overview, dedicated record pages and inspection overlays. Earlier UI milestones are preserved in PROGRESS.md.
+The interface uses black surfaces, white type, and neutral controls. Success, failure, and clarification keep explicit labels.
 
 ## Operator journey
 
@@ -20,7 +16,7 @@ The investigation queue searches titles/run IDs and filters verified repair cand
 
 Details show source scenario context, run method/engine, actual timestamps and recorded review actor/time. Inspect the finding and independent checks, expand actual tool evidence, and compare current/candidate SQL side by side on desktop (stacked on smaller screens). Editing SQL creates a new verification job. Approval is disabled until the edited version has its own successful checks. Missing source information and healthy no-change outcomes are explicit, with no repair approval. **Metric definition** exposes the authoritative contract. The audit trail/full version hash is a secondary expandable section. Tabs support arrows/Home/End and visible keyboard focus.
 
-Unchanged polling preserves drafts/focus and avoids replacing queue/history DOM unnecessarily. Changing selected runs clears stale controls during loading; late responses for another selection or an older result cannot replace the current detail. Synthetic sample scope and absent production connections stay explicit. The UI does not imply SSO, customer warehouse connections or a production-ready deployment.
+Unchanged polling preserves drafts and focus. Changing the selected run clears stale controls during loading. A late response for another selection cannot replace the current detail.
 
 Graph-2 results add **Agent activity**, containing recorded hypothesis plans/SQL tests, actual node activity, corrections and public precheck status. This shows saved task artifacts, not hidden reasoning or fabricated live progress. Public checks cover execution/schema/completeness; independent correctness remains in Summary. Operator-edited revisions omit inherited agent workflow/graph/model metadata so checks from a different SQL version are not shown as current.
 
@@ -46,7 +42,7 @@ Use an 8–128 character Idempotency-Key for each new run/revision. Repeating th
 
 ## Persistence and recovery
 
-October 8 queue reads project only public metadata and JSON outcome fields; full evidence results are not deserialized in Python for list responses. Totals use a database aggregate, preserving whole-workspace scope beyond the 50-item list. SQLite still parses stored JSON; these changes do not demonstrate distributed scale or measured speedup. Idempotent indexes support recent-run ordering, status/created scans and audit lookup. Overlapping interval refreshes are coalesced; selected-ID/timestamp guards and unchanged-render caching preserve the existing response/draft behavior.
+List responses project public metadata and JSON outcome fields. Totals use a database aggregate across the workspace, beyond the 50-item list. Idempotent indexes support recent-run ordering, status scans, and audit lookup. Overlapping interval refreshes are coalesced; selected-ID/timestamp guards and unchanged-render caching preserve the existing response/draft behavior.
 
 State directory contains jobs.sqlite and per-job runs/. SQLite uses WAL, foreign keys, parameterized statements and BEGIN IMMEDIATE transactions. Separate API/worker processes share this local directory. Claims atomically assign one owner and a 300-second lease; the active worker renews it every 30 seconds. Expired jobs become interrupted when a worker next claims work. They are never automatically retried. Queued jobs survive process restarts. A worker must still own the unexpired lease to publish its result.
 
@@ -58,24 +54,5 @@ Source/execution version hashes bind the incident records, contract, transformat
 
 The local launcher binds 127.0.0.1; unauthenticated API requests require a loopback peer and an allowed Host. POST requests require JSON and reject mismatched browser origins. Responses use a restrictive content security policy. No general CORS permission is enabled.
 
-VDIR_ACCESS_TOKEN enables shared operator bearer access. It must contain at least 32 characters. The browser prompts for the code and keeps it in memory, without storing it in the URL or browser storage. VDIR_PUBLIC_ORIGIN requires HTTPS plus configured operator access. Shared access is not individual identity, SSO, authorization roles or multi-tenant isolation; these remain release work. Authentication changes are server-side configuration, not model instructions.
+`VDIR_ACCESS_TOKEN` enables shared operator bearer access. It must contain at least 32 characters. The browser prompts for the code and keeps it in memory. `VDIR_PUBLIC_ORIGIN` requires HTTPS plus configured operator access. The token is a shared operator credential. Authentication is server configuration.
 
-## Verification evidence
-
-Completed October 8 Linux container also passes **92 unit / 31 workflow browser / 18 graph browser checks**, exit 0; fixed benchmark38/38. Evidence: artifacts/generated/workspace-pages-001/summary.json/logs/copied reports. This supersedes pending Linux verification in the local milestone below. Existing Compose deployment is unchanged from October7; host8000 runs the new pages.
-
-October 8 source passes **92 unit / 31 workflow browser / 18 scripted-provider graph browser checks locally**. New coverage: real home data/scenarios, full-record route/reload, contextual/browser navigation, drawer focus/audit/evidence, keyboard search/empty state, mobile drawer, responsive neutral home palette, missing-run recovery, protected page/API boundaries and summary aggregation beyond 50 results. Current browser artifacts: browser-smoke-77173933 and browser-graph-6385015a. Desktop/mobile screenshots inspected; host route restart preserved one existing run/version. Linux packaging result is appended after execution. Earlier counts below are milestone history.
-
-Current graph-2 source passes **89 unit / 21 workflow browser / 18 graph browser checks locally**, including rendered planned repairs/public prechecks, paused guidance activity, mobile plan layout and stale metadata removal after an operator revision. Browser artifact browser-graph-19a63c9c; screenshots inspected. [Graph policy and packaging evidence](AGENT-ORCHESTRATION.md). Below is the preceding UI-only milestone.
-
-Latest UI redesign: **21 workflow browser checks, 11 scripted-provider LangGraph browser checks and 12 API tests pass locally**. Coverage retains repair/evidence/failed revision/exact review/XSS-safe notes/export/clarification/no-change/reload/worker shutdown, and adds modal keyboard behavior, SQL comparison, draft/focus preservation, submitted SQLite engine, queue filters/empty state, history search/navigation/reload, keyboard tabs and mobile history/dialog. Read-only host check covers **22 views across 320/390/768/1024/1440 pixels**, all computed colors neutral, no horizontal overflow/page errors or API mutations. Host report/screenshots: artifacts/generated/enterprise-ui-001. Run with the project .venv Python against setup/command-records/2026-10-07-enterprise-ui-check.py; workflow scripts regenerate their own ignored reports/screenshots. Desktop/mobile screens were visually inspected. Containers were not rebuilt for this frontend change; below is historical backend/container evidence.
-
-59 unittest checks pass on Python 3.11.17 locally and inside containers, covering queue races, owner/lease renewal, restart persistence, idempotency, body/origin/host boundaries, exact-version review, immutable reviews, failing/mutating SQL and existing environment/model tests. Real Chromium smoke passed 13 checks including evidence expansion, edited-candidate approval blocking, failed revision, review/export, escaped notes, clarification, healthy no-change, browser reload, a 390-pixel mobile layout and idle launcher/worker shutdown.
-
-Local generated browser report (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/result.json`; not a published file), desktop view (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/desktop-result.png`; not a published file) and mobile view (local historical capture: `../../artifacts/generated/browser-smoke-76f81514/mobile-result.png`; not a published file) are ignored artifacts, not portable source files. Regenerate with the browser smoke command in the README. Browser tests strip model credentials, disable .env loading and make no provider calls.
-
-## Remaining production work
-
-No cloud deployment or live hosted-model run exists. The earlier prepared-only Docker status is superseded: test/runtime images and Compose API/worker/Phoenix were built and run in a local Lima guest, with passing container tests and restart/tracing checks. Remote CI remains unverified. Model learning, customer-realistic incidents/untouched release splits, Postgres/object storage, individual authentication, distributed job orchestration, container-level repair isolation, operational alerts and controlled promotion remain unfinished.
-
-Current app investigations explicitly record analytical engine (DuckDB default, SQLite optional) in the request/input version; candidate revisions retain the parent engine. Job state remains single-host SQLite WAL. For a distributed release replace queue leases with a durable queue/PostgreSQL claims; no such scaling implementation is claimed. Job/investigator/tool/verification traces are propagated into Phoenix. [Executed container/restart/tracing evidence](../evaluation/BENCHMARK.md).

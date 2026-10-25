@@ -10,14 +10,10 @@ The canonical application is https://verifyops.vercel.app/. Vercel serves the ap
 python3 scripts/checks/public_health.py
 ```
 
-The probe has per-request and aggregate deadlines, bounded responses and same-origin redirect checks. It performs no automatic retry that would hide a failed observation. Latencies are individual observations, not an SLA or a historical percentile. A successful monitor does not prove live AI quality, real-user feedback or durable tenant operation.
+The probe has per-request and aggregate deadlines, bounded responses, and same-origin redirect checks. It does not retry a failed observation. Latencies are individual observations.
 
-GitHub schedules can be delayed or dropped during high load and public-repository schedules can be disabled after 60 days of inactivity; scheduled workflows execute from the default branch. These limits come from [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule). This workflow detects sampled failures; it does not guarantee uninterrupted uptime or prevent serverless cold starts. Vercel platform/account limits remain applicable. A dedicated external uptime/SLO service is a separate operational decision.
+GitHub schedules can be delayed or dropped during high load, and public-repository schedules can be disabled after 60 days of inactivity. Scheduled workflows execute from the default branch. These limits come from [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 
 ## Stream recovery
 
-Progress uses a 32-event mailbox with coalesced loop wakeups and an independent terminal slot. A progress burst cannot drop the final result/error. A 25-second response deadline yields an actionable failure rather than an unending heartbeat. Closing the browser or exceeding the deadline suppresses late report delivery/signing when the calculation has not finished. Already-running bounded read-only threads may finish; the application does not claim they were killed. No business-system writes run in this public path.
-
-## Remaining gates
-
-Live model credentials/budget and independent live benchmarks remain needed. Hosted authentication requires a real configured identity service. Durable monitored private workers, tenant isolation under representative load, recovery/restore SLOs and actual user feedback are not established by this public monitor.
+Progress uses a 32-event mailbox with coalesced loop wakeups and an independent terminal slot. A progress burst cannot drop the final result or error. A 25-second response deadline returns a failure. Closing the browser or exceeding the deadline suppresses late report delivery when the calculation has not finished. No business-system writes run on this public path.

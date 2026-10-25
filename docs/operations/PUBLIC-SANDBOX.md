@@ -28,11 +28,9 @@ python scripts/demos/public_demo_browser.py --record --publish-assets --output a
 
 The browser runner exercises actual actions, failed-state boundaries, a JSON download, reload/history, a second isolated browser, mobile layout and the native video player. Unit tests in `tests/test_public_demo.py` cover tampering, cross-browser scope and version/review/write gates. CI also retains the existing private integration, container and infrastructure checks.
 
-Recordings are continuous Playwright WebM captures of real interactions, with no fabricated results. The tracked file is `frontend/apps/demo/assets/media/walkthrough.webm`; the README GIF is a separate six-frame preview. [Source hashes and recording provenance](../demos/history/2026-10-14-interactive-recording.json) identify the source at capture. Automated synthetic review is not user feedback or evidence of live-model quality.
+Recordings are Playwright WebM captures of the browser journey. The tracked file is `frontend/apps/demo/assets/media/walkthrough.webm`. The six-frame preview is `docs/assets/demos/verifyops-interactive-demo.gif`. [Source hashes](../demos/interactive-recording.json) bind the capture.
 
-Local verification: 147 unit tests, with5 PostgreSQL/dbt skips; the new public browser journey passes. Actual protected Vercel previews pass investigation, bad-repair rejection and exact-result review. Required PostgreSQL/container/dbt checks gate promotion; current results are linked from [the protected implementation PR](https://github.com/Akhilesh-Vangala/verifyops/pull/6).
-
-Persistent monitored cloud workers, individual identity, live model evaluations and actual user feedback remain separate delivery gates. The public sandbox does not complete those milestones.
+The native suite is 147 unit tests, with five PostgreSQL or dbt skips unless that integration is configured. The public browser journey covers investigation, a rejected repair, and exact-result review. PostgreSQL, container, and dbt checks run in CI.
 
 ## Observed deployment fixes
 

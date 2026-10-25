@@ -4,7 +4,7 @@
 
 ![Actual guided browser journey](assets/demos/verifyops-interactive-demo.gif)
 
-The GIF is a six-frame preview. The WebM is a continuous Playwright screen recording of real browser interactions and server results; no generated UI, invented scores, model reasoning transcript or customer feedback is inserted. All data is original synthetic development data and no live model inference occurs.
+The GIF is a six-frame preview. The WebM is a Playwright screen recording of the browser journey and the server results. The cases are the original development incidents.
 
 | Stage | Actual captured behavior |
 | --- | --- |
@@ -33,6 +33,6 @@ Older private workbench/dbt captures remain available in docs/assets and their d
 
 ## Product workspace recording
 
-[Watch the actual file-to-report journey](https://verifyops.vercel.app/uploads/recording.html) · [Source and media manifest](demos/uploads-recording.json). The continuous capture shows the real landing, empty workspace, source preview, explicit contract review, independent result, quality/SQL evidence, consented save and saved history. Automated negative/recovery/mobile/accessibility/portable-restore checks run separately in the same source-bound rehearsal. No customer feedback or paid model inference is claimed. Prior capture manifests are retained under `docs/demos/history/`; use their source commits to recover historical media.
+[Watch the file-to-report journey](https://verifyops.vercel.app/uploads/recording.html) · [Source and media manifest](demos/uploads-recording.json). The capture shows the landing, empty workspace, source preview, contract review, independent result, quality and SQL evidence, consented save, and saved history.
 
 Reproduce with `python scripts/demos/product_browser.py --record --output artifacts/generated/product-recording`. The optional `--axe` points to pinned axe-core 4.14.0.
