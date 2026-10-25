@@ -76,7 +76,7 @@ def attach(app, project, root):
 
     @app.get("/uploads-assets/{name}", include_in_schema=False)
     def assets(name: str):
-        if name not in ("app.js", "style.css", "recording.html", "walkthrough.webm", "poster.png"):
+        if name not in ("style.css", "recording.html", "walkthrough.webm", "poster.png"):
             raise HTTPException(404, "Asset unavailable")
         return FileResponse(static/name, headers={"Cache-Control": "no-store"})
 

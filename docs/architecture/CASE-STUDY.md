@@ -66,7 +66,7 @@ The passing repair is checked with actual dbt builds over five designed fixtures
 
 ## What the evidence establishes
 
-Recorded CI evidence includes 133 unit passes plus one optional integration skip per workbench suite, 96 native browser checks, 120 container checks including 24 dbt checks, a dedicated real dbt job, a runtime build and 38 known fixed-diagnostic cases. Reproduction is in the [contribution guide](../../.github/CONTRIBUTING.md).
+CI runs 202 native tests, 96 browser checks across four workbench journeys, 24 dbt browser checks, the same suites inside the test container, a dedicated dbt job, a runtime build, and the 38-case fixed-diagnostic benchmark. Reproduction is in the [contribution guide](../../.github/CONTRIBUTING.md).
 
 The recording shows app and dbt execution, 20 output checks, false-fix rejection, and exact-version review.
 

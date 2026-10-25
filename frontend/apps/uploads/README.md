@@ -1,3 +1,3 @@
-# Own-data workspace
+# Upload recording
 
-Accessible monochrome upload, column mapping, explicit contract review, checked results and CSV/JSON exports. Files and results are held in browser memory, never local/session storage. Served at `/uploads` by the backend; [contracts and limits](../../../docs/product/USER-DATA.md).
+`recording.html` plays the recorded file-to-report journey at `/uploads/recording.html`. `walkthrough.webm` and `poster.png` are hash-bound by [the recording manifest](../../../docs/demos/uploads-recording.json). The upload workspace itself is the [product app](../product/). [File contracts](../../../docs/product/USER-DATA.md).
